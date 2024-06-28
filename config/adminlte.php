@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'E.COM',
     'title_prefix' => '',
-    'title_postfix' => '',
+    'title_postfix' => 'Home',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,9 +63,9 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>.COM</b>',
+    'logo_img' => 'vendor/adminlte/dist/img/E.COM-LOGO.SVG',
+    'logo_img_class' => 'brand-image img-circle elevation-2',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Admin Logo',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/E.COM-LOGO.SVG',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -113,7 +113,7 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/E.COM-LOGO.SVG',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
@@ -314,6 +314,45 @@ return [
             'text' => 'blog',
             'url' => 'admin/blog',
             'can' => 'manage-blog',
+        ],
+        [
+            'text' => 'Dashboard',
+            'url' => 'admin/pages',
+            'icon' => 'fas fa-tachometer-alt',
+            'label' => '',
+            'label_color' => '',
+        ],
+        [
+            'text' => 'Users',
+            'url' => 'admin/pages',
+            'icon' => 'fas fa-fw fa-user',
+            'label' => '',
+            'label_color' => '',
+        ],
+        [
+            'text' => 'Settings',
+            'url' => 'admin/pages',
+            'icon' => 'fas fa-cog',
+            'label' => '',
+            'label_color' => '',
+            'submenu' => [
+                [
+                    'text' => 'App',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Website',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Roles',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Permission',
+                    'url' => '#',
+                ],
+            ],
         ],
         [
             'text' => 'pages',
