@@ -21,7 +21,7 @@
     <tbody>{{ $slot }}</tbody>
 
     {{-- Table footer --}}
-    @isset($withFooter)
+    @if(isset($withFooter) && $withFooter)
         <tfoot @isset($footerTheme) class="thead-{{ $footerTheme }}" @endisset>
             <tr>
                 @foreach($heads as $th)
@@ -29,7 +29,7 @@
                 @endforeach
             </tr>
         </tfoot>
-    @endisset
+    @endif
 
 </table>
 

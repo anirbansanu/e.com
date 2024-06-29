@@ -47,6 +47,7 @@
         @endif
     @endif
 
+    <link rel="stylesheet" href="{{ asset('vendor/custom/custom.css') }}">
     {{-- Custom Stylesheets (post AdminLTE) --}}
     @yield('adminlte_css')
 
