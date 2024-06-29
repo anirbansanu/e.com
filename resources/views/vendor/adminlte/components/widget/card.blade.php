@@ -5,7 +5,7 @@
         <div class="{{ $makeCardHeaderClass() }}">
 
             {{-- Title --}}
-            <h3 class="{{ $makeCardTitleClass() }}">
+            <h3 class="fw-bold {{ $makeCardTitleClass() }}">
                 @isset($icon)<i class="{{ $icon }} mr-1"></i>@endisset
                 @isset($title){{ $title }}@endisset
             </h3>

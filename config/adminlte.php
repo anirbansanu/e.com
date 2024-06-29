@@ -324,7 +324,7 @@ return [
         ],
         [
             'text' => 'Users',
-            'url' => 'admin/pages',
+            'url' => 'users',
             'icon' => 'fas fa-fw fa-user',
             'label' => '',
             'label_color' => '',

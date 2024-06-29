@@ -1,0 +1,13 @@
+.thead-secondary{
+    background-color: rgb(112, 176, 253);
+    color: rgb(26, 25, 25);
+    font-size: large;
+    font-weight: bolder;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+
+}
+.fw-bold{
+    font-weight: bolder;
+}
+
