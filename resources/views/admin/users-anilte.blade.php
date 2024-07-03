@@ -20,8 +20,8 @@
         <x-slot name="body">
             <x-anilte-datatable
                 url="{{ route('users.index') }}"
-                :thead="[['data'=>'name','title'=>'Name'],
-                        ['data'=>'email','title'=>'Email'],
+                :thead="[['data'=>'name','title'=>'Name','sortable'=>true],
+                        ['data'=>'email','title'=>'Email','sortable'=>true],
                         ['data'=>'updated_at','title'=>'Updated At']]"
                 :tbody="$data"
                 :actions="[['route'=>'users.edit','data'=>'edit','title'=>'Edit','btn-class'=>'btn-info','icon'=>'fas fa-pencil-alt'],

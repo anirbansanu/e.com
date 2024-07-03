@@ -51,7 +51,23 @@
             <th>Sl No</th>
             @foreach($thead as $_index=>$th)
                 @if (isset($th['sortable']) && $th['sortable'] == true)
-                    <th href="{{ url($url, ['query' => $query, 'sort_by' => $th['data'], 'sort_order' => ($sort_by == $th['data'] && $sort_order == 'asc') ? 'desc' : 'asc']) }}">{{ $th['title'] }}</th>
+                    <th>
+                        <a href="{{ url($url, [
+                            'search' => $search,
+                            'sort_by' => $th['data'],
+                            'sort_order' => ($sort_by == $th['data'] && $sort_order == 'asc') ? 'desc' : 'asc',
+                            'entries' => $entries
+                        ]) }}">
+                            {{ $th['title'] }}
+                            @if($sort_by == $th['data'])
+                                @if($sort_order == 'asc')
+                                    <i class="fas fa-arrow-up"></i>
+                                @else
+                                    <i class="fas fa-arrow-down"></i>
+                                @endif
+                            @endif
+                        </a>
+                    </th>
                 @else
                     <th>{{ $th['title'] ?? ""}}</th>
                 @endif
