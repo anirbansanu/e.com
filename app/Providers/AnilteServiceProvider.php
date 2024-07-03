@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\View\Components\Anilte\AnilteDatatable;
+use App\View\Components\Anilte\Card;
 
 class AnilteServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,6 @@ class AnilteServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::component('anilte-datatable', AnilteDatatable::class);
+        Blade::component('anilte-card', Card::class);
     }
 }

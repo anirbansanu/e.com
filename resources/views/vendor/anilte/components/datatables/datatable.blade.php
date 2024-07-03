@@ -13,7 +13,7 @@
     'total' => 0,
     'per_page' => 10,
 ])
-<div class="container p-0 m-0">
+<div class="container-fluid p-0 m-0">
     <div class="d-flex flex-row align-items-center justify-content-between p-0 m-0">
         @if($showentries)
             <form class="form-group m-2 d-flex" action="{{ $url }}" method="GET" id="show-entries-form">
@@ -93,7 +93,7 @@
         </tbody>
     </table>
     {{-- Add pagination links --}}
-    <div class="d-flex justify-content-between mt-3">
+    <div class="d-flex justify-content-between m-2">
         <div>
             Showing {{ $tbody->firstItem() }} to {{ $tbody->lastItem() }} of {{ $total }} entries
         </div>
