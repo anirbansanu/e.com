@@ -43,7 +43,7 @@
         $currentPage = request()->get('page', 1);
         $startingSlNo = ($currentPage - 1) * $perPage + 1;
     @endphp
-    <x-adminlte-card header-class="fw-bold" body-class="p-0" title="Users Management" theme="primary" icon="fas fa-list-alt" maximizable collapsible >
+    <x-adminlte-card header-class="fw-bold" body-class="p-0" title="Users Management" theme="primary" icon="fas fa-list-alt" maximizable >
 
         {{-- Minimal example / fill data using the component slot --}}
         <x-adminlte-datatable id="table1" :heads="$heads" :withFooter="false" head-theme="primary" striped hoverable

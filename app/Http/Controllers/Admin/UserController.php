@@ -14,9 +14,20 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $data = User::latest()->paginate(5);
+        $search = $request->input('search');
+        $sort_by = $request->input('sort_by', 'updated_at');
+        $sort_order = $request->input('sort_order', 'desc');
+        $entries = $request->input('entries', config('app.pagination_limit'));
+
+        $data = User::where(function ($query) use ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
+        })
+        ->orderBy($sort_by, $sort_order)
+        ->paginate($entries);
         // dd($data);
-        return view('admin.users',compact('data'));
+        $data->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order, 'entries'=>$entries]);
+        return view('admin.users-anilte',compact('data',"search","sort_by","sort_order",'entries'));
     }
 
     public function create()

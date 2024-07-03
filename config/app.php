@@ -196,6 +196,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
 
+        // my custom providers
+        App\Providers\AnilteServiceProvider::class,
     ],
 
     /*
@@ -212,5 +214,5 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
-
+    'pagination_limit' => env('PAGINATION_LIMIT', 20),
 ];
