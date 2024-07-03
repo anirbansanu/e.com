@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $data = User::latest()->paginate(5);
         // dd($data);
-        return view('admin.users',compact('data'));
+        return view('admin.users2',compact('data'));
     }
 
     public function create()

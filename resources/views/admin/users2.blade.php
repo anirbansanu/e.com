@@ -45,36 +45,30 @@
     @endphp
     <x-adminlte-card header-class="fw-bold" body-class="p-0" title="Users Management" theme="primary" icon="fas fa-list-alt" maximizable >
 
-        {{-- Minimal example / fill data using the component slot --}}
-        <x-adminlte-datatable id="table1" :heads="$heads" :withFooter="false" head-theme="primary" striped hoverable
-            bordered compressed>
-            @foreach ($config['data'] as $index => $row)
-                <tr>
-                    <td>{{ $startingSlNo + $index }}</td>
-                    @foreach ($columns as $cell)
-                        <td>{!! $row[$cell] !!}</td>
-                    @endforeach
-                    <td class="d-flex">
-                        @foreach ($_btns as $cell)
-                            {!! $cell !!}
-                        @endforeach
-                    </td>
-                </tr>
-            @endforeach
-        </x-adminlte-datatable>
-
+        <x-anilte-datatable
+            url="{{ route('users.index') }}"
+            :thead="[['data'=>'name','title'=>'Name'],
+                    ['data'=>'email','title'=>'Email'],
+                    ['data'=>'updated_at','title'=>'Updated At']]"
+            :tbody="$data"
+            :actions="[['route'=>'users.edit','data'=>'edit','title'=>'Edit','btn-class'=>'btn-info','icon'=>'fas fa-pencil-alt'],
+            ['route'=>'users.destroy','data'=>'delete','title'=>'Delete','btn-class'=>'btn-danger btn-delete','icon'=>'fas fa-trash', ]]"
+            :entries="request()->get('entries', 10)"
+            :search="request()->get('search', '')"
+            :sort_by="request()->get('sort_by', 'updated_at')"
+            :sort_order="request()->get('sort_order', 'desc')"
+            :searchable="true"
+            :showentries="true"
+            :current_page="$data->currentPage()"
+            :total="$data->total()"
+            :per_page="$data->perPage()"
+        />
 
 
         {{-- Compressed with style options / fill data using the plugin config --}}
         {{-- <x-adminlte-datatable id="table1" :heads="$heads" head-theme="light" :config="$config" striped hoverable bordered compressed/> --}}
 
-        {{-- Add pagination links --}}
-        <div class="d-flex justify-content-between p-3">
-            <div class="mb-3">
-                Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} records
-            </div>
-            {{ $data->links('vendor.pagination.bootstrap-4') }}
-        </div>
+
 
     </x-adminlte-card>
 @stop
