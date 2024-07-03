@@ -214,5 +214,5 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
-
+    'pagination_limit' => env('PAGINATION_LIMIT', 20),
 ];

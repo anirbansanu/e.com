@@ -33,6 +33,7 @@
             <form action="{{ $url }}" method="GET" class="form-group m-2">
                 <div class="input-group input-group-sm" style="width: 250px;">
                     <input type="text" name="search" id="search" class="form-control float-right" placeholder="Search by Name, Description" value="{{ $search }}">
+                    <input type="hidden" class="d-none" name="entries" value="{{ $entries }}">
                     <input type="hidden" class="d-none" name="sort_by" value="{{ $sort_by }}">
                     <input type="hidden" class="d-none" name="sort_order" value="{{ $sort_order }}">
                     <div class="input-group-append">
