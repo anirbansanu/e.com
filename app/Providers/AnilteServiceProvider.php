@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\View\Components\Anilte\AnilteDatatable;
 use App\View\Components\Anilte\Card;
+use App\View\Components\Anilte\TabNavItem;
 
 class AnilteServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,6 @@ class AnilteServiceProvider extends ServiceProvider
     {
         Blade::component('anilte-datatable', AnilteDatatable::class);
         Blade::component('anilte-card', Card::class);
+        Blade::component('anilte::tab-nav-item', TabNavItem::class);
     }
 }

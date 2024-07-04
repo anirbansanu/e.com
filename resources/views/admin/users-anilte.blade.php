@@ -13,9 +13,18 @@
     {{-- Setup data for datatables using anilte--}}
 
 
-    <x-anilte-card headerClass="p-2" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
+    <x-anilte-card headerClass="p-0 border-bottom-0" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-            <span class="card-title">Card Title</span>
+
+            <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+
+                <x-anilte::tab-nav-item route="users.index" icon="fas fa-list-alt ">Users</x-anilte::tab-nav-item>
+
+                <x-anilte::tab-nav-item route="users.create" icon="fas fa-plus-square">Create User</x-anilte::tab-nav-item>
+
+
+
+            </div>
         </x-slot>
         <x-slot name="body">
             <x-anilte-datatable
