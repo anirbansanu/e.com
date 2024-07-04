@@ -27,7 +27,7 @@ class UserController extends Controller
         ->paginate($entries);
         // dd($data);
         $data->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order, 'entries'=>$entries]);
-        return view('admin.users-anilte',compact('data',"search","sort_by","sort_order",'entries'));
+        return view('admin.users.index',compact('data',"search","sort_by","sort_order",'entries'));
     }
 
     public function create()
@@ -58,7 +58,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        return view('users.show',compact('user'));
+        return view('admin.users.index',compact('user'));
     }
 
     public function edit($id)
@@ -67,7 +67,7 @@ class UserController extends Controller
         $roles = Role::pluck('name','name')->all();
         $userRole = $user->roles->pluck('name','name')->all();
 
-        return view('users.edit',compact('user','roles','userRole'));
+        return view('admin.users.index',compact('user','roles','userRole'));
     }
 
     public function update(Request $request, $id)
@@ -101,5 +101,40 @@ class UserController extends Controller
         User::find($id)->delete();
         return redirect()->route('users.index')
                         ->with('success','User deleted successfully');
+    }
+
+    public function trash(Request $request)
+    {
+        $search = $request->input('search');
+        $sort_by = $request->input('sort_by', 'updated_at');
+        $sort_order = $request->input('sort_order', 'desc');
+        $entries = $request->input('entries', config('app.pagination_limit'));
+
+
+        $data = User::onlyTrashed()
+                    ->where(function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('email', 'like', '%' . $search . '%');
+                    })
+                    ->orderBy($sort_by, $sort_order)
+                    ->paginate($entries);
+
+        return view('admin.users.trash', compact('data', 'entries', 'search', 'sort_by', 'sort_order'));
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('users.trash')->with('success', 'User restored successfully');
+    }
+
+    public function forceDelete($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->route('users.trash')->with('success', 'User deleted permanently');
     }
 }

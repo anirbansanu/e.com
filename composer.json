@@ -12,7 +12,6 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.5",
-        "paypal/rest-api-sdk-php": "^1.6",
         "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {
@@ -25,6 +24,9 @@
         "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
+        "files": [
+            "app/Helpers/helpers.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
@@ -35,6 +37,7 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+
     },
     "scripts": {
         "post-autoload-dump": [

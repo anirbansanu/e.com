@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\View\Components\Anilte\AnilteDatatable;
 use App\View\Components\Anilte\Card;
+use App\View\Components\Anilte\TabNavItem;
+use App\View\Components\Anilte\DeleteButton;
+use App\View\Components\Anilte\EditButton;
+use App\View\Components\Anilte\RestoreButton;
+use App\View\Components\Anilte\ViewButton;
 
 class AnilteServiceProvider extends ServiceProvider
 {
@@ -26,7 +31,18 @@ class AnilteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Blade::component('anilte-datatable', AnilteDatatable::class);
-        Blade::component('anilte-card', Card::class);
+        $components = [
+            'datatable' => AnilteDatatable::class,
+            'card' => Card::class,
+            'tab-nav-item' => TabNavItem::class,
+            'delete-btn' => DeleteButton::class,
+            'edit-btn' => EditButton::class,
+            'restore-btn' => RestoreButton::class,
+            'view-btn' => ViewButton::class,
+        ];
+
+        foreach ($components as $alias => $component) {
+            Blade::component("anilte::$alias", $component);
+        }
     }
 }

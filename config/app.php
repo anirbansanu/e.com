@@ -198,6 +198,7 @@ return [
 
         // my custom providers
         App\Providers\AnilteServiceProvider::class,
+        App\Providers\BladeServiceProvider::class,
     ],
 
     /*

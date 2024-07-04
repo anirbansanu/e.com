@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,5 +22,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('users',App\Http\Controllers\Admin\UserController::class);
+Route::get('/users/trash', [UserController::class, 'trash'])->name('users.trash');
+Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+Route::resource('users',UserController::class);
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+

@@ -88,33 +88,67 @@
 
                     <td data-th="{{$th['title']??""}}">
                         @foreach($actions as $action)
-                            <a href="{{ route($action['route'], $_item['id']) }}" class="btn {{$action['btn-class']}} btn-sm"
 
-                            @if ($action['data']='delete')
-                                data-alert-title="{{ __('Delete '.$_item['name']??"") }}"
-                                data-confirm="{{ __('Confirm') }}"
-                                data-cancel="{{ __('Cancel') }}"
-                                title="{{ __('Delete') }}"
-                            @endif
-                            >
-                                <i class="{{$action['icon']}}">
-                                </i>
-                                {{$action['title']??""}}
-                            </a>
-
+                            @switch($action['data'])
+                                @case('delete')
+                                    <x-anilte::delete-btn
+                                        :route="$action['route']"
+                                        :routeParams="[$_item['id']]"
+                                        :icon="$action['icon'] ?? 'fas fa-trash'"
+                                        :label="$action['title'] ?? 'Delete'"
+                                        :alertTitle="isset($action['alertTitle']) && isset($_item['name']) ? $action['alertTitle'].' '.$_item['name'] : 'Are you sure?'"
+                                        :text="$action['text'] ?? 'You won\'t be able to revert this!'"
+                                        :iconType="$action['iconType'] ?? 'warning'"
+                                        :cancelBtn="$action['cancelBtn'] ?? true"
+                                        :confirmText="$action['confirmText'] ?? 'Yes, delete it!'"
+                                        :cancelText="$action['cancelText'] ?? 'Cancel'"
+                                    />
+                                    @break
+                                @case('edit')
+                                    <x-anilte::edit-btn
+                                        :route="$action['route']"
+                                        :routeParams="[$_item['id']]"
+                                        :icon="$action['icon'] ?? 'fas fa-pencil-alt'"
+                                        :label="$action['title'] ?? 'Edit'"
+                                    />
+                                    @break
+                                @case('restore')
+                                    <x-anilte::restore-btn
+                                        :route="$action['route']"
+                                        :routeParams="[$_item['id']]"
+                                        :icon="$action['icon'] ?? 'fas fa-undo'"
+                                        :label="$action['title'] ?? 'Restore'"
+                                    />
+                                    @break
+                                @case('view')
+                                    <x-anilte::view-btn
+                                        :route="$action['route']"
+                                        :routeParams="[$_item['id']]"
+                                        :icon="$action['icon'] ?? 'fas fa-eye'"
+                                        :label="$action['title'] ?? 'View'"
+                                    />
+                                    @break
+                                @default
+                                    <a href="{{ route($action['route'], $_item['id']) }}" class="btn {{$action['btn-class']}} btn-sm" >
+                                        <i class="{{$action['icon']}}">
+                                        </i>
+                                        {{$action['title']??""}}
+                                    </a>
+                            @endswitch
                         @endforeach
+
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
     {{-- Add pagination links --}}
-    <div class="d-flex justify-content-between m-2">
+    <div class="d-flex justify-content-between align-items-center m-4">
         <div>
             Showing {{ $tbody->firstItem() }} to {{ $tbody->lastItem() }} of {{ $total }} entries
         </div>
-        <div>
+
             {{ $tbody->appends(request()->query())->links("vendor.pagination.bootstrap-4") }}
-        </div>
+
     </div>
 </div>
