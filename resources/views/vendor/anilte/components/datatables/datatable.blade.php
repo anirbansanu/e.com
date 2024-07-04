@@ -109,12 +109,12 @@
         </tbody>
     </table>
     {{-- Add pagination links --}}
-    <div class="d-flex justify-content-between m-2">
+    <div class="d-flex justify-content-between align-items-center m-4">
         <div>
             Showing {{ $tbody->firstItem() }} to {{ $tbody->lastItem() }} of {{ $total }} entries
         </div>
-        <div>
+
             {{ $tbody->appends(request()->query())->links("vendor.pagination.bootstrap-4") }}
-        </div>
+
     </div>
 </div>

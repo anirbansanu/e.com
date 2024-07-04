@@ -13,7 +13,7 @@
     {{-- Setup data for datatables using anilte--}}
 
 
-    <x-anilte-card headerClass="p-0 border-bottom-0" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
+    <x-anilte::card headerClass="p-0 border-bottom-0" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
 
             <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
@@ -27,7 +27,7 @@
             </div>
         </x-slot>
         <x-slot name="body">
-            <x-anilte-datatable
+            <x-anilte::datatable
                 url="{{ route('users.index') }}"
                 :thead="[['data'=>'name','title'=>'Name','sortable'=>true],
                         ['data'=>'email','title'=>'Email','sortable'=>true],
@@ -46,10 +46,10 @@
                 :per_page="$data->perPage()"
             />
         </x-slot>
-        <x-slot name="footer">
+        {{-- <x-slot name="footer">
             <div>This is a sample footer</div>
-        </x-slot>
-    </x-anilte-card>
+        </x-slot> --}}
+    </x-anilte::card>
         {{-- Compressed with style options / fill data using the plugin config --}}
         {{-- <x-adminlte-datatable id="table1" :heads="$heads" head-theme="light" :config="$config" striped hoverable bordered compressed/> --}}
 

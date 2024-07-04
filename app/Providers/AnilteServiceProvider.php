@@ -27,8 +27,8 @@ class AnilteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Blade::component('anilte-datatable', AnilteDatatable::class);
-        Blade::component('anilte-card', Card::class);
+        Blade::component('anilte::datatable', AnilteDatatable::class);
+        Blade::component('anilte::card', Card::class);
         Blade::component('anilte::tab-nav-item', TabNavItem::class);
     }
 }
