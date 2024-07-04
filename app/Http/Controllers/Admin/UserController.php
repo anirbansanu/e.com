@@ -27,7 +27,7 @@ class UserController extends Controller
         ->paginate($entries);
         // dd($data);
         $data->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order, 'entries'=>$entries]);
-        return view('admin.users-anilte',compact('data',"search","sort_by","sort_order",'entries'));
+        return view('admin.users.index',compact('data',"search","sort_by","sort_order",'entries'));
     }
 
     public function create()
