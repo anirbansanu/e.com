@@ -85,6 +85,7 @@
             let me = $(this);
             let url = me.attr('href');
             console.log("btn-sweetalert");
+            console.log(url);
             Swal.fire({
                 title: me.data('alert-title'),
                 text: me.data('text'),
@@ -96,9 +97,12 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         url: url,
-                        method: 'DELETE',
+                        method: 'POST',
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        },
+                        data: {
+                            _method: 'DELETE', // Method spoofing for DELETE request
                         },
                         success: function (response) {
                             let data = response;
