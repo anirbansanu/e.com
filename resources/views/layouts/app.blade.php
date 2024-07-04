@@ -47,10 +47,78 @@
 {{-- Add common Javascript/Jquery code --}}
 
 @push('js')
+
+
+@if(session('success'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    </script>
+@endif
 <script>
 
     $(document).ready(function() {
-        // Add your common script logic here...
+
+        $(document).on('click', ".btn-sw", function (e) {
+            e.preventDefault();
+            let me = $(this);
+            let url = me.attr('href');
+            console.log("btn-sweetalert");
+            Swal.fire({
+                title: me.data('alert-title'),
+                text: me.data('text'),
+                icon: me.data('icon'),
+                showCancelButton: me.data('cancel-btn'),
+                confirmButtonText: me.data('confirm-text'),
+                cancelButtonText: me.data('cancel-text'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        },
+                        success: function (response) {
+                            let data = response;
+                            console.log(data);
+                            if (data.error) {
+                                Swal.fire(data.message, '', 'warning');
+                            } else {
+                                Swal.fire(data.message, '', 'success').then(function() {
+                                    window.location.reload(); // Reload window after success
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            Swal.fire(error.responseJSON.message, '', "warning");
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+        });
     });
 
 </script>
