@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
@@ -20,7 +20,9 @@ class UserController extends Controller
         $entries = $request->input('entries', config('app.pagination_limit'));
 
         $data = User::where(function ($query) use ($search) {
-            $query->where('name', 'like', '%' . $search . '%')
+            $query->where('first_name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%');
         })
         ->orderBy($sort_by, $sort_order)
@@ -32,68 +34,71 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::pluck('name','name')->all();
-        return view('users.create',compact('roles'));
+        $roles = Role::all();
+        return view('admin.users.create',compact('roles'));
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'roles' => 'required|array',
+            'roles.*' => 'required|string|exists:roles,name',
         ]);
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
+        $username = Str::slug($request->first_name) . rand(1000, 9999);
+        $password = Str::random(12);
 
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'username' => $username,
+            'password' => Hash::make($password),
+        ]);
 
-        return redirect()->route('users.index')
-                        ->with('success','User created successfully');
+        $user->assignRole($request->roles);
+
+        return redirect()->route('users.index')->with('success', 'User created successfully. Username: ' . $username);
     }
 
     public function show($id)
     {
         $user = User::find($id);
-        return view('admin.users.index',compact('user'));
+        return view('admin.users.show',compact('user'));
     }
 
     public function edit($id)
     {
         $user = User::find($id);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
+        $roles = Role::all();
+        $userRoles = $user->roles->pluck('name','name')->all();
 
-        return view('admin.users.index',compact('user','roles','userRole'));
+        return view('admin.users.edit',compact('user','roles','userRoles'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'same:confirm-password',
-            'roles' => 'required'
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'roles' => 'required|array',
+            'roles.*' => 'required|string|exists:roles,name',
         ]);
 
-        $input = $request->all();
-        if(!empty($input['password'])){
-            $input['password'] = Hash::make($input['password']);
-        }else{
-            $input = Arr::except($input,array('password'));
-        }
+        $user->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'username' => $request->username,
+        ]);
 
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
+        $user->syncRoles($request->roles);
 
-        $user->assignRole($request->input('roles'));
-
-        return redirect()->route('users.index')
-                        ->with('success','User updated successfully');
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)
