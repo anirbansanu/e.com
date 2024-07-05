@@ -52,3 +52,10 @@ if (!function_exists('active_link')) {
         return '';
     }
 }
+
+if (!function_exists('url_with_query')) {
+    function url_with_query($url, $params = [])
+    {
+        return url($url) . '?' . http_build_query($params);
+    }
+}
