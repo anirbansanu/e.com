@@ -18,7 +18,7 @@
         @if($showentries)
             <form class="form-group m-2 d-flex" action="{{ $url }}" method="GET" id="show-entries-form">
                 <label for="exampleSelectRounded0" class="text-primary p-1">Show</label>
-                <select class="form-control mt-1 p-0" id="show-entries" name="entries" style="height:30px" onchange="document.getElementById('show-entries-form').submit();">
+                <select class="btn-sm btn-outline-primary bg-light p-0 mt-1" id="show-entries" name="entries" style="height:30px" onchange="document.getElementById('show-entries-form').submit();">
                     <option @if($entries == 5) selected @endif>5</option>
                     <option @if($entries == 10) selected @endif>10</option>
                     <option @if($entries == 30) selected @endif>30</option>
@@ -85,7 +85,7 @@
                 <tr data-index="{{$tbody_index}}">
                     <td>{{ ($current_page - 1) * $per_page + $loop->iteration }}</td>
                     @foreach($thead as $_index=>$th)
-                        <td data-th="{{$th['title']??""}}">{{$_item[$th['data']]??""}}</td>
+                        <td data-th="{{$th['title']??""}}">{{$_item[$th['data']]??""}} </td>
                     @endforeach
 
                     <td data-th="{{$th['title']??""}}">
@@ -98,7 +98,7 @@
                                         :routeParams="[$_item['id']]"
                                         :icon="$action['icon'] ?? 'fas fa-trash'"
                                         :label="$action['title'] ?? 'Delete'"
-                                        :alertTitle="isset($action['alertTitle']) && isset($_item['name']) ? $action['alertTitle'].' '.$_item['name'] : 'Are you sure?'"
+                                        :alertTitle="isset($action['alertTitle']) && isset($_item[$thead[0]['data']]) ? $action['alertTitle'].' '.$_item[$thead[0]['data']] : 'Are you sure?'"
                                         :text="$action['text'] ?? 'You won\'t be able to revert this!'"
                                         :iconType="$action['iconType'] ?? 'warning'"
                                         :cancelBtn="$action['cancelBtn'] ?? true"
