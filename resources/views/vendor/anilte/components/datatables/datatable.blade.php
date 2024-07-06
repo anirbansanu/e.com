@@ -18,7 +18,7 @@
         @if($showentries)
             <form class="form-group m-2 d-flex" action="{{ $url }}" method="GET" id="show-entries-form">
                 <label for="exampleSelectRounded0" class="text-primary p-1">Show</label>
-                <select class="btn-sm btn-outline-primary bg-light p-0 mt-1" id="show-entries" name="entries" style="height:30px" onchange="document.getElementById('show-entries-form').submit();">
+                <select class="custom-select w-auto form-control-border bg-light" id="show-entries" name="entries" style="height:33px" onchange="document.getElementById('show-entries-form').submit();">
                     <option @if($entries == 5) selected @endif>5</option>
                     <option @if($entries == 10) selected @endif>10</option>
                     <option @if($entries == 30) selected @endif>30</option>
