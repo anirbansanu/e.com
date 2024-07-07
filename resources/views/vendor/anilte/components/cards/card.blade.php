@@ -2,7 +2,9 @@
     @if (isset($header))
         <div class="card-header {{ $headerClass }}">
             <div class="d-flex justify-content-between align-items-center">
-                {{ $header }}
+                <div class="nav nav-tabs mt-1" id="custom-tabs-one-tab " role="tablist">
+                    {{ $header }}
+                </div>
                 <div class="card-tools">
                     @isset($minimize)
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\RoleController;
+namespace App\Http\Controllers\Admin\Settings;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,18 +26,23 @@ class RoleController extends Controller
     function __construct()
     {
 
-         $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
+        //  $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
 
-         $this->middleware('permission:role-create', ['only' => ['create','store']]);
+        //  $this->middleware('permission:role-create', ['only' => ['create','store']]);
 
-         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+        //  $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
 
-         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        //  $this->middleware('permission:role-delete', ['only' => ['destroy']]);
 
     }
 
 
-
+    private function permissions()
+    {
+        return Permission::orderBy('group_order')
+            ->orderBy('group_name')
+            ->get()->groupBy('group_name');
+    }
     /**
 
      * Display a listing of the resource.
@@ -49,14 +54,19 @@ class RoleController extends Controller
      */
 
     public function index(Request $request)
-
     {
+        $search = $request->input('search');
+        $sort_by = $request->input('sort_by', 'updated_at');
+        $sort_order = $request->input('sort_order', 'desc');
+        $entries = $request->input('entries', config('app.pagination_limit'));
 
-        $roles = Role::orderBy('id','DESC')->paginate(5);
-
-        return view('roles.index',compact('roles'))
-
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+        $roles = Role::where(function ($query) use ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        })
+        ->orderBy($sort_by, $sort_order)
+        ->paginate($entries);
+        $roles->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order, 'entries' => $entries]);
+        return view('admin.settings.roles.index', compact('roles', 'search', 'sort_by', 'sort_order', 'entries'));
 
     }
 
@@ -73,12 +83,10 @@ class RoleController extends Controller
      */
 
     public function create()
-
     {
 
-        $permission = Permission::get();
-
-        return view('roles.create',compact('permission'));
+        $permissions = $this->permissions();
+        return view('admin.settings.roles.create',compact('permissions'));
 
     }
 

@@ -34,12 +34,12 @@
 
 @section('footer')
     <div class="float-right">
-        Version: {{ config('app.version', '0.0.1') }}
+        Version: {{ config('settings.website_version') }}
     </div>
 
     <strong>
         <a href="{{ config('app.company_url', '#') }}">
-            {{ config('app.company_name', 'E.Com') }}
+            {{ config('settings.app_name') }}
         </a>
     </strong>
 @stop
@@ -123,7 +123,7 @@
                 }
             });
         });
-        
+
 
     });
 

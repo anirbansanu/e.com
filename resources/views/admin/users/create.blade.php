@@ -7,15 +7,15 @@
 @section('content_header_subtitle', 'Users Management')
 
 @section('content_body')
-    <x-anilte::card headerClass="p-0 pt-1 border-bottom-0" bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+    <x-anilte::card headerClass="p-0 border-bottom-0" bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-            <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+
                 <x-anilte::tab-nav-item route="users.index" icon="fas fa-list-alt ">Users</x-anilte::tab-nav-item>
 
                 <x-anilte::tab-nav-item route="users.create" icon="fas fa-plus-square">Create User</x-anilte::tab-nav-item>
 
                 <x-anilte::tab-nav-item route="users.trash" icon="fas fa-trash-alt">Trash</x-anilte::tab-nav-item>
-            </div>
+
         </x-slot>
 
         <x-slot name="body">
@@ -89,8 +89,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
-                        <x-adminlte-button type="submit" label="Create User" theme="primary" class="btn-block mt-3" icon="fas fa-save"/>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <x-adminlte-button type="submit" label="Create User" theme="primary" class="btn-md mt-3" icon="fas fa-save"/>
                     </div>
                 </div>
             </form>

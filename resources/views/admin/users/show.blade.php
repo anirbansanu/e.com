@@ -1,16 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Create User')
+@section('title', 'User Details')
 
 @section('subtitle', 'Welcome')
 @section('content_header_title', 'Home')
 @section('content_header_subtitle', 'Users Management')
 
-
 @section('content_body')
-    <x-anilte::card headerClass="p-0 pt-1 border-bottom-0" bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+    <x-anilte::card headerClass="p-0 border-bottom-0 border-primary" bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-            <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                 <x-anilte::tab-nav-item route="users.index" icon="fas fa-list-alt ">Users</x-anilte::tab-nav-item>
 
                 <x-anilte::tab-nav-item route="users.create" icon="fas fa-plus-square">Create User</x-anilte::tab-nav-item>
@@ -18,24 +16,37 @@
                 <x-anilte::tab-nav-item route="users.show" :routeParams="['user'=>$user->id]" icon="fas fa-info">User Details</x-anilte::tab-nav-item>
 
                 <x-anilte::tab-nav-item route="users.trash" icon="fas fa-trash-alt">Trash</x-anilte::tab-nav-item>
-            </div>
         </x-slot>
 
         <x-slot name="body">
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>First Name:</strong> {{ $user->first_name }}</p>
-                    <p><strong>Last Name:</strong> {{ $user->last_name }}</p>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Username:</strong> {{ $user->username }}</p>
+                    <div class="mb-3">
+                        <strong>First Name:</strong>
+                        <p>{{ $user->first_name }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Last Name:</strong>
+                        <p>{{ $user->last_name }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Email:</strong>
+                        <p>{{ $user->email }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Username:</strong>
+                        <p>{{ $user->username }}</p>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Roles:</strong></p>
-                    <ul>
-                        @foreach ($user->roles as $role)
-                            <li>{{ $role->name }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="mb-3">
+                        <strong>Roles:</strong>
+                        <ul class="list-unstyled">
+                            @foreach ($user->roles as $role)
+                                <li class="badge badge-info">{{ $role->name }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
         </x-slot>
@@ -48,21 +59,6 @@
 
 @push('js')
     <script>
-        $(document).ready(function() {
-            // Clear roles select
-            $('#clearRoles').click(function() {
-                $('#roles').val(null).trigger('change');
-            });
-
-            // Generate username based on first name
-            $('input[name="first_name"]').on('input', function() {
-                var firstName = $(this).val().toLowerCase().replace(/\s+/g, '');
-                if (firstName.length > 0) {
-                    $('#username').val(firstName + Math.floor(Math.random() * 10000));
-                } else {
-                    $('#username').val('');
-                }
-            });
-        });
+        console.log("");
     </script>
 @endpush

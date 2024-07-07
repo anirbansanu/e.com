@@ -331,26 +331,26 @@ return [
         ],
         [
             'text' => 'Settings',
-            'url' => 'admin/pages',
+            'url' => '',
             'icon' => 'fas fa-cog',
             'label' => '',
             'label_color' => '',
             'submenu' => [
                 [
                     'text' => 'App',
-                    'url' => '#',
+                    'url' => 'admin/settings/app',
                 ],
                 [
                     'text' => 'Website',
-                    'url' => '#',
+                    'url' => 'admin/settings/website',
                 ],
                 [
                     'text' => 'Roles',
-                    'url' => '#',
+                    'url' => 'admin/settings/roles',
                 ],
                 [
                     'text' => 'Permission',
-                    'url' => '#',
+                    'url' => 'admin/settings/permissions',
                 ],
             ],
         ],

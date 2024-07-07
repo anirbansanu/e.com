@@ -9,18 +9,20 @@
 @section('content_body')
 
     {{-- Setup data for datatables using anilte --}}
-    <x-anilte::card headerClass="p-0 pt-1 border-bottom-0" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
+    <x-anilte::card headerClass="p-0 border-bottom-0" bodyClass="p-0" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-            <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+
                 <x-anilte::tab-nav-item route="users.index" icon="fas fa-list-alt">Users</x-anilte::tab-nav-item>
                 <x-anilte::tab-nav-item route="users.create" icon="fas fa-plus-square">Create User</x-anilte::tab-nav-item>
                 <x-anilte::tab-nav-item route="users.trash" icon="fas fa-trash-alt">Trash</x-anilte::tab-nav-item>
-            </div>
+
         </x-slot>
         <x-slot name="body">
             <x-anilte::datatable
                 url="{{ route('users.trash') }}"
-                :thead="[['data'=>'name','title'=>'Name','sortable'=>true],
+                :thead="[['data'=>'first_name','title'=>'First Name','sortable'=>true],
+                        ['data'=>'last_name','title'=>'Last Name','sortable'=>true],
+                        ['data'=>'username','title'=>'Username','sortable'=>true],
                         ['data'=>'email','title'=>'Email','sortable'=>true],
                         ['data'=>'deleted_at','title'=>'Deleted At']]"
                 :tbody="$data"
