@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
+
 if (!function_exists('convertToCamelCase')) {
     /**
      * Convert key name to camel case words.
@@ -57,5 +60,12 @@ if (!function_exists('url_with_query')) {
     function url_with_query($url, $params = [])
     {
         return url($url) . '?' . http_build_query($params);
+    }
+}
+
+if (!function_exists('get_setting')) {
+    function get_setting($key, $default = null)
+    {
+        return config('settings.' . $key, $default);
     }
 }

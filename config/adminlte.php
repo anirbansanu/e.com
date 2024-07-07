@@ -346,11 +346,11 @@ return [
                 ],
                 [
                     'text' => 'Roles',
-                    'url' => '#',
+                    'url' => 'admin/settings/roles',
                 ],
                 [
                     'text' => 'Permission',
-                    'url' => '#',
+                    'url' => 'admin/settings/permissions',
                 ],
             ],
         ],

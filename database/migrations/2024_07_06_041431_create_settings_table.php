@@ -12,6 +12,7 @@ class CreateSettingsTable extends Migration
             $table->id();
             $table->string('key')->unique();
             $table->text('value')->nullable();
+            $table->enum('type', ['app', 'website'])->default('website');
             $table->timestamps();
         });
     }

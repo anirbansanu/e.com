@@ -11,25 +11,11 @@
         <x-slot name="header">
             <x-anilte::tab-nav-item route="admin.settings.app" icon="fas fa-cogs">App Settings</x-anilte::tab-nav-item>
             <x-anilte::tab-nav-item route="admin.settings.website" icon="fas fa-cogs">Website Settings</x-anilte::tab-nav-item>
-                {{-- <x-anilte::tab-nav-item route="admin.settings.index" icon="fas fa-cogs">Roles</x-anilte::tab-nav-item>
-                <x-anilte::tab-nav-item route="admin.settings.index" icon="fas fa-cogs">Permission</x-anilte::tab-nav-item> --}}
+
         </x-slot>
         <x-slot name="body">
             <div class="row">
-                <div class="col-sm-12 col-md-4">
-                {{-- Layout Classic / Theme --}}
-                    <x-adminlte-profile-widget name="{{auth()->user()->first_name}} {{auth()->user()->last_name}}" desc="{{auth()->user()->roles->pluck('name')->join(', ')}}" theme="lightblue bg-gradient-blue"
-                    img="https://picsum.photos/id/1/100" layout-type="classic">
-                        <x-adminlte-profile-row-item icon="fas fa-fw fa-mobile-alt" title="App" text=""
-                            url="#" badge=""/>
-                        <x-adminlte-profile-row-item icon="fas fa-fw fa-cogs fa-flip-horizontal" title="Website"
-                            text="" url="#" badge=""/>
-                        <x-adminlte-profile-row-item icon="fas fa-fw fa-users-cog" title="Roles" text=""
-                            url="#" badge=""/>
-                        <x-adminlte-profile-row-item icon="fas fa-fw fa-tags" title="Permission" text=""
-                            url="#" badge=""/>
-                    </x-adminlte-profile-widget>
-                </div>
+
                 <div class="col-sm-12 col-md-8 px-4 pb-4 ">
                     <form action="{{ route('admin.settings.app.update') }}" method="POST" id="settings-form" >
                         @csrf

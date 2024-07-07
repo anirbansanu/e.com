@@ -44,5 +44,6 @@ class BladeServiceProvider extends ServiceProvider
 
             return "<?php echo active_link($routeNames, $msg); ?>";
         });
+        
     }
 }

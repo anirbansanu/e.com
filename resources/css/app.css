@@ -1,2 +1,6 @@
 
 @import 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css';
+.nav-link.active {
+    background-color: #f8f9fa; /* Change this to your desired background color */
+    color: #472be4; /* Optional: Change the text color if needed */
+}
