@@ -28,8 +28,8 @@
                         <x-anilte::input-group
                             id="name"
                             name="name"
-                            value=""
-                            placeholder="Enter name"
+                            value="{{ isset($role->exists) && $role->exists ? $role->name : old('name') }}"
+                            placeholder="Enter Name"
                             :required="true"
                             label="Name"
                             icon="fas fa-user-tag"
@@ -38,8 +38,8 @@
                         <x-anilte::input-group
                             id="guard_name"
                             name="guard_name"
-                            value=""
-                            placeholder="Enter guard_name"
+                            value="{{ isset($role->exists) && $role->exists ? $role->guard_name : old('guard_name') }}"
+                            placeholder="Enter Guard Name"
                             :required="true"
                             label="Guard Name"
                             icon="fas fa-user-shield"
@@ -63,14 +63,14 @@
                                         <div class="col-md-3">
                                             <div class="checkbox">
                                                 <label>
-                                                    <?php
-                                                    $checked = false;
-                                                    if (isset($rolePermissions)) {
-                                                        if (in_array($g['name'] , $rolePermissions)) $checked = true;
-                                                    }
-                                                    ?>
+
                                                     <div class="form-check">
-                                                        <input type="checkbox" name="perm[]" class="form-check-input {{ $key }}" id="p-{{ $g->id }}" value="{{ $g->id }}" @if($checked) checked @endif>
+                                                        <input type="checkbox"
+                                                                name="perm[]"
+                                                                class="form-check-input {{ $key }}"
+                                                                id="p-{{ $g->id }}"
+                                                                value="{{ $g->name }}"
+                                                                @if(isset($rolePermissions) && in_array($g->id, $rolePermissions)) checked @endif>
                                                         <label class="form-check-label" for="p-{{ $g->id }}">{{ __($g->name) }}</label>
                                                     </div>
                                                 </label>

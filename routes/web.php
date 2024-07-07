@@ -39,12 +39,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin', 'as' 
         Route::get('website', [SettingController::class, 'websiteIndex'])->name('website');
         Route::post('website', [SettingController::class, 'websiteUpdate'])->name('website.update');
 
-        Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
-        Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');
-        Route::post('roles/store', [RoleController::class, 'store'])->name('roles.store');
-        Route::put('roles', [RoleController::class, 'index'])->name('roles.edit');
-        Route::delete('roles', [RoleController::class, 'index'])->name('roles.destroy');
 
+        Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
     });
 });
