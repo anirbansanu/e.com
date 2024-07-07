@@ -9,8 +9,11 @@
 @section('content_body')
     <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-                <x-anilte::tab-nav-item route="admin.settings.permissions.index" icon="fas fa-cogs">Permissions</x-anilte::tab-nav-item>
-                <x-anilte::tab-nav-item route="admin.settings.permissions.create" icon="fas fa-cogs">Create Permission</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.settings.permissions.index" icon="fas fa-shield-alt">Permissions</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.settings.permissions.create" icon="fas fa-plus-square">Create Permission</x-anilte::tab-nav-item>
+                @if(isset($permission->exists) && $permission->exists)
+                    <x-anilte::tab-nav-item route="admin.settings.permissions.edit" routeParams="{{$permission->id}}" icon="fas fa-edit">Edit Permission</x-anilte::tab-nav-item>
+                @endif
         </x-slot>
         <x-slot name="body">
             <form method="POST" action="{{ isset($permission->exists) && $permission->exists ? route('admin.settings.permissions.update', $permission->id) : route('admin.settings.permissions.store') }}">
@@ -39,7 +42,7 @@
                                 placeholder="Enter Guard Name"
                                 :required="true"
                                 label="Guard Name"
-                                icon="fas fa-user-tag"
+                                icon="fas fa-user-shield"
                             />
 
 
@@ -65,30 +68,32 @@
                             />
                             <div class="form-group d-flex justify-content-between">
                                 <x-adminlte-button type="back" label="Back" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-arrow-left"/>
-                                <x-adminlte-button type="submit" label="Create Permission" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
+                                <x-adminlte-button type="submit" :label="isset($permission->exists) && $permission->exists ? 'Update Permission' : 'Create Permission'" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
                             </div>
                         </div>
                         <div class="col-lg-8">
                             @foreach($roles as $key => $value)
                                 <div class="form-group">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input check-all" id="{{ $key }}" value="{{ $key }}">
-                                        <label class="form-check-label text-primary" for="{{ $key }}">{{ __(ucfirst($key)) }}</label>
+                                    <div class="pl-1 pb-2 mb-2 border-bottom border-primary font-weight-bold">
+                                        <div class="form-check ml-1">
+                                            <input type="checkbox" class="form-check-input check-all" id="{{ $key }}" value="{{ $key }}">
+                                            <label class="form-check-label text-primary" for="{{ $key }}">{{ __(ucfirst($key)) }}</label>
+                                        </div>
                                     </div>
-                                    <hr class="mt-1">
-                                    <div class="row">
+                                    <div class="row ml-2">
                                         @foreach($value as $g)
-                                            <div class="col-md-3">
+                                            <div class="col-md-3 ">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <?php
-                                                        $checked = false;
-                                                        // if (isset($rolePermissions)) {
-                                                        //     if (in_array($g['name'] , $rolePermissions)) $checked = true;
-                                                        // }
-                                                        ?>
                                                         <div class="form-check">
-                                                            <input type="checkbox" name="perm[]" class="form-check-input {{ $key }}" id="p-{{ $g->id }}" value="{{ $g->id }}" @if($checked) checked @endif>
+                                                            <input
+                                                                type="checkbox"
+                                                                name="roles[]"
+                                                                class="form-check-input {{ $key }}"
+                                                                id="p-{{ $g->id }}"
+                                                                value="{{ $g->id }}"
+                                                                @if(isset($rolesByPermission) && in_array($g->id, $rolesByPermission)) checked @endif
+                                                            />
                                                             <label class="form-check-label" for="p-{{ $g->id }}">{{ __($g->name) }}</label>
                                                         </div>
                                                     </label>

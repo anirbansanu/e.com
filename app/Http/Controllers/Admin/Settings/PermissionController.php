@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Permissions\PermissionRequest;
+use App\Services\Permissions\PermissionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
@@ -11,9 +14,15 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
+    protected $permissionService;
+
+    public function __construct(PermissionService $permissionService)
+    {
+        $this->permissionService = $permissionService;
+    }
+
     public function index(Request $request)
     {
-
         $search = $request->input('search');
         $sort_by = $request->input('sort_by', 'updated_at');
         $sort_order = $request->input('sort_order', 'desc');
@@ -31,7 +40,6 @@ class PermissionController extends Controller
 
         $permissions->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order, 'entries' => $entries]);
         return view('admin.settings.permissions.index', compact('permissions','permissions_array', 'search', 'sort_by', 'sort_order', 'entries'));
-
     }
 
     public function create()
@@ -42,51 +50,37 @@ class PermissionController extends Controller
         return view('admin.settings.permissions.create',compact('roles'));
     }
 
-    public function store(Request $request)
+    public function store(PermissionRequest $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:permissions,name',
-            ]);
+        $data = $request->validated();
+        $permission = $this->permissionService->createPermission($data);
 
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
-
-            Permission::create(['name' => $request->name,'guard_name'=>$request->guard_name,'group_name'=>$request->group_name,'group_order'=>$request->group_order]);
-            return redirect()->route('permissions.index')->with('success', 'Permission created successfully');
-        } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->validator)->withInput();
-        }
+        return redirect()->back()->with('success', "Permission '{$permission->name}' created successfully");
     }
 
     public function edit(Permission $permission)
     {
-        return view('admin.permissions.create', compact('permission'));
+        $roles = Role::orderBy('guard_name')
+        ->orderBy('guard_name')
+        ->get()->groupBy('guard_name');
+
+        $rolesByPermission = DB::table("role_has_permissions")->where("role_has_permissions.permission_id", $permission->id)
+            ->pluck('role_has_permissions.role_id', 'role_has_permissions.role_id')
+            ->all();
+
+        return view('admin.settings.permissions.create', compact('permission','roles','rolesByPermission'));
     }
 
-    public function update(Request $request, Permission $permission)
+    public function update(PermissionRequest $request, Permission $permission)
     {
-        try
-        {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
-            ]);
-
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
-
-            $permission->update(['name' => $request->name,'group_name'=>$request->group_name,'group_order'=>$request->group_order]);
-            return redirect()->route('permissions.index')->with('success', 'Permission updated successfully');
-        } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->validator)->withInput();
-        }
+        $data = $request->validated();
+        $this->permissionService->updatePermission($permission, $data);
+        return redirect()->back()->with('success', "Permission '{$permission->name}' updated successfully");
     }
 
     public function destroy(Permission $permission)
     {
-        $permission->delete();
-        return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully');
+        $this->permissionService->deletePermission($permission);
+        return redirect()->back()->with('success', 'Permission deleted successfully');
     }
 }

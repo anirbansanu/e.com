@@ -9,8 +9,8 @@
 @section('content_body')
     <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-            <x-anilte::tab-nav-item route="admin.settings.permissions.index" icon="fas fa-cogs">Permissions</x-anilte::tab-nav-item>
-            <x-anilte::tab-nav-item route="admin.settings.permissions.create" icon="fas fa-cogs">Create Permission</x-anilte::tab-nav-item>
+            <x-anilte::tab-nav-item route="admin.settings.permissions.index" icon="fas fa-shield-alt">Permissions</x-anilte::tab-nav-item>
+            <x-anilte::tab-nav-item route="admin.settings.permissions.create" icon="fas fa-plus-square">Create Permission</x-anilte::tab-nav-item>
         </x-slot>
         <x-slot name="body">
 
