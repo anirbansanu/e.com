@@ -53,9 +53,11 @@
                     <div class="col-lg-8">
                         @foreach($permissions as $key => $value)
                             <div class="form-group">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input check-all" id="{{ $key }}" value="{{ $key }}">
-                                    <label class="form-check-label text-primary" for="{{ $key }}">{{ __(ucfirst($key)) }}</label>
+                                <div class="pl-1 pb-2 mb-2 border-bottom border-primary font-weight-bold">
+                                    <div class="form-check ml-1">
+                                        <input type="checkbox" class="form-check-input check-all" id="{{ $key }}" value="{{ $key }}">
+                                        <label class="form-check-label text-primary" for="{{ $key }}">{{ __(ucfirst($key)) }}</label>
+                                    </div>
                                 </div>
                                 <hr class="mt-1">
                                 <div class="row">
