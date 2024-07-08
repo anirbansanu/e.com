@@ -31,7 +31,7 @@ Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete']
 Route::resource('users',UserController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::get('app', [SettingController::class, 'appIndex'])->name('app');
         Route::post('app', [SettingController::class, 'appUpdate'])->name('app.update');
