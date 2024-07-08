@@ -330,6 +330,31 @@ return [
             'label_color' => '',
         ],
         [
+            'text' => 'Products',
+            'active' => ['admin/products/*'],
+            'icon' => 'fas fa-cog',
+            'label' => '',
+            'label_color' => '',
+            'submenu' => [
+                [
+                    'text' => 'Brands',
+                    'url' => 'admin/products/brands',
+                    'active' => ['admin/products/brands/*'],
+                ],
+                [
+                    'text' => 'Categories',
+                    'url' => 'admin/products/categories',
+                    'active' => ['admin/products/categories/*'],
+                ],
+                [
+                    'text' => 'Products',
+                    'url' => 'admin/products',
+                    'active' => ['admin/products/*'],
+                ],
+                
+            ],
+        ],
+        [
             'text' => 'Settings',
             'active' => ['admin/settings/*'],
             'icon' => 'fas fa-cog',

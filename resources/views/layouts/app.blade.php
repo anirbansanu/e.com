@@ -6,7 +6,9 @@
     {{ config('adminlte.title') }}
     @hasSection('subtitle') | @yield('subtitle') @endif
 @stop
-
+@section('adminlte_css')
+    @hasSection('css')  @yield('css') @endif
+@stop
 {{-- Extend and customize the page content header --}}
 
 @section('content_header')
@@ -142,20 +144,5 @@
 </script>
 @endpush
 
-{{-- Add common CSS customizations --}}
 
-@push('css')
-<style type="text/css">
 
-    {{-- You can add AdminLTE customizations here --}}
-    /*
-    .card-header {
-        border-bottom: none;
-    }
-    .card-title {
-        font-weight: 600;
-    }
-    */
-
-</style>
-@endpush
