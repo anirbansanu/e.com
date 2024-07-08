@@ -331,7 +331,7 @@ return [
         ],
         [
             'text' => 'Settings',
-            'url' => '',
+            'active' => ['admin/settings/*'],
             'icon' => 'fas fa-cog',
             'label' => '',
             'label_color' => '',
@@ -339,18 +339,22 @@ return [
                 [
                     'text' => 'App',
                     'url' => 'admin/settings/app',
+                    'active' => ['admin/settings/app/*'],
                 ],
                 [
                     'text' => 'Website',
                     'url' => 'admin/settings/website',
+                    'active' => ['admin/settings/website/*'],
                 ],
                 [
                     'text' => 'Roles',
                     'url' => 'admin/settings/roles',
+                    'active' => ['admin/settings/roles/*'],
                 ],
                 [
                     'text' => 'Permission',
                     'url' => 'admin/settings/permissions',
+                    'active' => ['admin/settings/permissions/*'],
                 ],
             ],
         ],
