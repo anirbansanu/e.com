@@ -330,8 +330,33 @@ return [
             'label_color' => '',
         ],
         [
+            'text' => 'Products',
+            'active' => ['admin/products/*'],
+            'icon' => 'fas fa-cog',
+            'label' => '',
+            'label_color' => '',
+            'submenu' => [
+                [
+                    'text' => 'Brands',
+                    'url' => 'admin/products/brands',
+                    'active' => ['admin/products/brands/*'],
+                ],
+                [
+                    'text' => 'Categories',
+                    'url' => 'admin/products/categories',
+                    'active' => ['admin/products/categories/*'],
+                ],
+                [
+                    'text' => 'Products',
+                    'url' => 'admin/products',
+                    'active' => ['admin/products/*'],
+                ],
+                
+            ],
+        ],
+        [
             'text' => 'Settings',
-            'url' => '',
+            'active' => ['admin/settings/*'],
             'icon' => 'fas fa-cog',
             'label' => '',
             'label_color' => '',
@@ -339,18 +364,22 @@ return [
                 [
                     'text' => 'App',
                     'url' => 'admin/settings/app',
+                    'active' => ['admin/settings/app/*'],
                 ],
                 [
                     'text' => 'Website',
                     'url' => 'admin/settings/website',
+                    'active' => ['admin/settings/website/*'],
                 ],
                 [
                     'text' => 'Roles',
                     'url' => 'admin/settings/roles',
+                    'active' => ['admin/settings/roles/*'],
                 ],
                 [
                     'text' => 'Permission',
                     'url' => 'admin/settings/permissions',
+                    'active' => ['admin/settings/permissions/*'],
                 ],
             ],
         ],

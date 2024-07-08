@@ -85,7 +85,15 @@
                 <tr data-index="{{$tbody_index}}">
                     <td>{{ ($current_page - 1) * $per_page + $loop->iteration }}</td>
                     @foreach($thead as $_index=>$th)
-                        <td data-th="{{$th['title']??""}}">{{$_item[$th['data']]??""}} </td>
+
+                        <td data-th="{{ $th['title'] ?? '' }}" class="{{ $th['class'] ?? '' }}" style="{{ $th['style'] ?? '' }}">
+                            @isset($th['html'])
+                                {!! $th['html']($_item) !!}
+                            @else
+                                {{ $_item[$th['data']] ?? '' }}
+                            @endisset
+                        </td>
+
                     @endforeach
 
                     <td data-th="{{$th['title']??""}}">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Products\BrandController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
@@ -31,7 +32,7 @@ Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete']
 Route::resource('users',UserController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::get('app', [SettingController::class, 'appIndex'])->name('app');
         Route::post('app', [SettingController::class, 'appUpdate'])->name('app.update');
@@ -42,5 +43,9 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin', 'as' 
 
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
+    });
+    Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
+        Route::resource('brands', BrandController::class)->except('show');
+        Route::post('/brands/{brand}/change-status', [BrandController::class,'changeStatus'])->name('brands.change-status');
     });
 });
