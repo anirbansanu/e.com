@@ -53,23 +53,22 @@
                     <div class="col-lg-8">
                         @foreach($permissions as $key => $value)
                             <div class="form-group">
-                                <div class="pl-1 pb-2 mb-2 border-bottom border-primary font-weight-bold">
+                                <div class="pl-3 pb-2 mb-2 border-bottom border-primary font-weight-bold rounded-pill">
                                     <div class="form-check ml-1">
-                                        <input type="checkbox" class="form-check-input check-all" id="{{ $key }}" value="{{ $key }}">
+                                        <input type="checkbox" class="form-check-input check-all border border-primary shadow-sm" id="{{ $key }}" value="{{ $key }}">
                                         <label class="form-check-label text-primary" for="{{ $key }}">{{ __(ucfirst($key)) }}</label>
                                     </div>
                                 </div>
-                                <hr class="mt-1">
-                                <div class="row">
-                                    @foreach($value as $g)
-                                        <div class="col-md-3">
-                                            <div class="checkbox">
-                                                <label>
 
-                                                    <div class="form-check">
+                                <div class="row ml-4">
+                                    @foreach($value as $g)
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="checkbox ">
+                                                <label>
+                                                    <div class="form-check ">
                                                         <input type="checkbox"
                                                                 name="perm[]"
-                                                                class="form-check-input {{ $key }}"
+                                                                class="form-check-input {{ $key }} border border-primary shadow-sm"
                                                                 id="p-{{ $g->id }}"
                                                                 value="{{ $g->name }}"
                                                                 @if(isset($rolePermissions) && in_array($g->id, $rolePermissions)) checked @endif>
