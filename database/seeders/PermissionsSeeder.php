@@ -29,49 +29,73 @@ class PermissionsSeeder extends Seeder
                 'users.update' => ['name' => 'users.update','guard_name' => 'web','group_name' => 'users','group_order' => 22],
                 'users.destroy' => ['name' => 'users.destroy','guard_name' => 'web','group_name' => 'users','group_order' => 22],
 
-            'roles.index' => ['name' => 'roles.index','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.create' => ['name' => 'roles.create','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.store' => ['name' => 'roles.store','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.edit' => ['name' => 'roles.edit','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.update' => ['name' => 'roles.update','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.destroy' => ['name' => 'roles.destroy','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
-                'roles.syncPermission'=> ['name' => 'roles.syncPermission','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+            'admin.settings.roles.index' => ['name' => 'admin.settings.roles.index','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.create' => ['name' => 'admin.settings.roles.create','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.store' => ['name' => 'admin.settings.roles.store','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.edit' => ['name' => 'admin.settings.roles.edit','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.update' => ['name' => 'admin.settings.roles.update','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.destroy' => ['name' => 'admin.settings.roles.destroy','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
+                'admin.settings.roles.syncPermission'=> ['name' => 'admin.settings.roles.syncPermission','guard_name' => 'web','group_name' => 'roles','group_order' => 22],
 
                 // Permission permissions
-                'permissions.index' => [
-                    'name' => 'permissions.index',
+                'admin.settings.permissions.index' => [
+                    'name' => 'admin.settings.permissions.index',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
                     'group_order' => 23
                 ],
-                'permissions.create' => [
-                    'name' => 'permissions.create',
+                'admin.settings.permissions.create' => [
+                    'name' => 'admin.settings.permissions.create',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
                     'group_order' => 23
                 ],
-                'permissions.store' => [
-                    'name' => 'permissions.store',
+                'admin.settings.permissions.store' => [
+                    'name' => 'admin.settings.permissions.store',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
                     'group_order' => 23
                 ],
-                'permissions.edit' => [
-                    'name' => 'permissions.edit',
+                'admin.settings.permissions.edit' => [
+                    'name' => 'admin.settings.permissions.edit',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
                     'group_order' => 23
                 ],
-                'permissions.update' => [
-                    'name' => 'permissions.update',
+                'admin.settings.permissions.update' => [
+                    'name' => 'admin.settings.permissions.update',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
                     'group_order' => 23
                 ],
-                'permissions.destroy' => [
-                    'name' => 'permissions.destroy',
+                'admin.settings.permissions.destroy' => [
+                    'name' => 'admin.settings.permissions.destroy',
                     'guard_name' => 'web',
                     'group_name' => 'permissions',
+                    'group_order' => 23
+                ],
+                'admin.settings.website' => [
+                    'name' => 'admin.settings.website',
+                    'guard_name' => 'web',
+                    'group_name' => 'settings',
+                    'group_order' => 23
+                ],
+                'admin.settings.website.update' => [
+                    'name' => 'admin.settings.website.update',
+                    'guard_name' => 'web',
+                    'group_name' => 'settings',
+                    'group_order' => 23
+                ],
+                'admin.settings.app' => [
+                    'name' => 'admin.settings.app',
+                    'guard_name' => 'web',
+                    'group_name' => 'settings',
+                    'group_order' => 23
+                ],
+                'admin.settings.app.update' => [
+                    'name' => 'admin.settings.app.update',
+                    'guard_name' => 'web',
+                    'group_name' => 'settings',
                     'group_order' => 23
                 ],
         ];
@@ -93,10 +117,10 @@ class PermissionsSeeder extends Seeder
 
         // Create admin user
         $adminUser = User::create([
-            'first_name' => 'Admin',
+            'first_name' => 'Sahil',
             'last_name' => 'User',
-            'username' => 'admin1998',
-            'email' => 'admin@admin1998.com',
+            'username' => 'sahil',
+            'email' => 'sahil@admin.com',
             'password' => Hash::make('12345678'),
         ]);
 
@@ -105,9 +129,9 @@ class PermissionsSeeder extends Seeder
         // Create a regular user
         $regularUser = User::create([
             'first_name' => 'Regular',
-            'last_name' => 'User',
-            'username' => '1998user',
-            'email' => 'user@1998user.com',
+            'last_name' => 'Sahil',
+            'username' => 'Sahiluser',
+            'email' => 'sahil@user.com',
             'password' => Hash::make('12345678'),
         ]);
 
