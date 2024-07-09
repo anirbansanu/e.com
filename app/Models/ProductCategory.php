@@ -13,7 +13,6 @@ class ProductCategory extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'parent_id',
         'name',
         'slug',
         'description',
@@ -22,10 +21,7 @@ class ProductCategory extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-    public function parent()
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
+
     public function children()
     {
         return $this->hasMany(self::class, 'parent_id');

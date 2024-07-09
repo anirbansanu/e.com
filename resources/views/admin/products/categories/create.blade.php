@@ -1,147 +1,82 @@
-@extends('admin.layouts.app')
-@section('title')
-    Add Category
-@endsection
+@extends('layouts.app')
+@section('title', 'Categories')
+
+@section('subtitle', 'Categories')
+@section('content_header_title', 'Categories')
+@section('content_header_subtitle', 'Manage Categories')
 @section('css')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<link rel="stylesheet" href="{{asset('admin/plugins/select2/css/select2.min.css')}}">
-<link rel="stylesheet" href="{{asset('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
-
 @endsection
-@section('content')
-    <div class="content-wrapper pt-3">
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card card-primary card-tabs">
-                            <div class="card-header  p-0 pt-1">
-                                <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                    <x-tabs.nav-item route="categories.index" icon="fas fa-list-alt ">Category List</x-tabs.nav-item>
-                                    <x-tabs.nav-item route="categories.create" icon="fas fa-plus-square">Add Category</x-tabs.nav-item>
-                                </div>
-                            </div>
-                            <form action="{{route('categories.store')}}" method="POST">
-                                @csrf
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name') }}"
-                                            name="name" id="name" placeholder="Enter name" >
-                                            @error('name')
-                                                <span class="error text-danger">{{ $message }}</span>
-                                            @enderror
+@section('content_body')
+    <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+        <x-slot name="header">
+                <x-anilte::tab-nav-item route="admin.products.categories.index" icon="fas fa-shield-alt">Categories</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.categories.create" icon="fas fa-plus-square">Create Categories</x-anilte::tab-nav-item>
+        </x-slot>
+        <x-slot name="body">
+            <form action="{{route('admin.products.categories.store')}}" method="POST">
+                @csrf
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Slug</label>
-                                        <input type="text" class="form-control" value="{{ old('slug') }}"
-                                            name="slug" id="slug" placeholder="Auto generated" readonly >
-                                            @error('slug')
-                                                <span class="error text-danger">{{ $message }}</span>
-                                            @enderror
+                <x-anilte::input-group
+                    id="name"
+                    name="name"
+                    value=""
+                    placeholder="Enter Name"
+                    :required="true"
+                    label="Name"
+                    icon="fas fa-user-tag"
+                />
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Description</label>
-                                        <textarea name="description" class="form-control" id="description" >{{ old('description') }}</textarea>
-                                        @error('description')
-                                            <span class="error text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="parent_id">Parent Category</label>
-                                        <select class="form-control" name="parent_id" id="parent_id">
-                                            <option value="">Select Parent Category</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="is_active">Status </label><br>
-                                        <input type="checkbox" name="is_active" checked=""
-                                                data-bootstrap-switch=""
-                                                data-size="large"
-                                                data-on-text="Active"
-                                                data-off-text="Inactive"
-                                                data-handle-width="80px"
-                                                data-label-width="25px"
-                                                />
-                                    @error('is_active')
-                                        <span class="error text-danger">{{ $message }}</span>
-                                    @enderror
-                                    </div>
-                                </div>
-                                <div class="card-footer w-100 d-flex justify-content-end">
-                                    <button type="submit" id="settingUpdate" class="btn btn-primary">Save Category</button>
-                                </div>
-                            </form>
-                        </div>
+                <x-adminlte-input-switch name="is_active"
+                    label="Status"
+                    class="d-flex justify-content-end"
+                    data-on-text="Active"
+                    data-off-text="Inactive"
+                    data-on-color="primary bg-gradient-blue"
+                    data-handle-width='51px'
+                    data-label-width='15px'
+                    igroup-size="sm"
+                />
+
+
+               @php
+               $config = [
+                   "height" => "100",
+                   "toolbar" => [
+                       // [groupName, [list of button]]
+                       ['style', ['bold', 'italic', 'underline', 'clear']],
+                       ['font', ['strikethrough', 'superscript', 'subscript']],
+                       ['fontsize', ['fontsize']],
+                       ['color', ['color']],
+                       ['para', ['ul', 'ol', 'paragraph']],
+                       ['height', ['height']],
+                        //    ['table', ['table']],
+                        //    ['insert', ['link', 'picture', 'video']],
+                        //    ['view', ['fullscreen', 'codeview', 'help']],
+                        ['view', ['fullscreen', ]]
+                   ],
+               ]
+               @endphp
+               <x-adminlte-text-editor name="description" label="Description" label-class=""
+                   igroup-size="sm" placeholder="Write some text..." :config="$config"/>
+
+
+                    <div class="form-group d-flex justify-content-between">
+                        <x-adminlte-button type="back" label="Back" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-arrow-left"/>
+                        <x-adminlte-button type="submit" :label="isset($role->exists) && $role->exists ? 'Update Role' : 'Create Role'" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
                     </div>
-                    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-                </div>
-            </div>
-        </section>
-    </div>
+            </form>
+        </x-slot>
+
+    </x-anilte::card>
+
 @endsection
-@section('js')
+{{-- @section('js')
 <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
 <script src="{{asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
-
-<script src="{{asset('admin/plugins/select2/js/select2.min.js')}}"></script>
-
 <script >
     $(document).ready(function(){
 
-        $('#parent_id').select2({
-            width: '100%',
-            theme: 'bootstrap4',
-            ajax: {
-                url: "{{route('categories.json')}}",
-                type: "POST",
-                dataType: 'json',
-                delay: 250,
-
-                data: function(params) {
-                    console.log(params);
-                    return {
-                        q: params.term,
-                        page: params.page || 1
-                    };
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.data.map(function(category) {
-                            return {
-                                id: category.id,
-                                text: category.name
-                            };
-                        }),
-                        pagination: {
-                            more: data.current_page < data.last_page
-                        }
-                    };
-                },
-                cache: true
-            },
-            placeholder : 'Select a parent category',
-
-        });
-        $(document).on('keyup', '#name', (ev) => {
-            let nameValue = $('#name').val();
-            let slug = slugify(nameValue);
-            $('#slug').val(slug);
-        });
         $("input[data-bootstrap-switch]").each(function(){
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
             $(this).on('switchChange.bootstrapSwitch', function(event, state) {
@@ -158,13 +93,5 @@
             }
         }
     });
-    function slugify(text) {
-    return text.toString().toLowerCase()
-        .replace(/\s+/g, '_')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-    }
 </script>
-@endsection
+@endsection --}}

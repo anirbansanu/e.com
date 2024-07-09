@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductCategoryRequest;
+use App\Http\Requests\Products\ProductCategoryRequest;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
@@ -12,21 +12,22 @@ class ProductCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = $request->input('query');
+            $search = $request->input('search');
             $sort_by = $request->input('sort_by', 'updated_at');
             $sort_order = $request->input('sort_order', 'desc');
-            $categories = ProductCategory::where(function ($q) use ($query) {
-                $q->where('name', 'like', '%' . $query . '%')
-                    ->orWhere('description', 'like', '%' . $query . '%');
+            $entries = $request->input('entries', config('app.pagination_limit'));
+
+            $categories = ProductCategory::where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
             })
             ->orderBy($sort_by, $sort_order)
-            ->paginate(config('app.pagination_limit'));
+            ->paginate($entries);
 
-            $categories->appends(['query' => $query, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            $categories->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
 
-            return view("admin.products.categories.index", compact("categories", "query", "sort_by", "sort_order"));
+            return view("admin.products.categories.index", compact("categories",  'search', 'sort_by', 'sort_order', 'entries'));
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
             return redirect()->back();
         }
     }
@@ -37,7 +38,7 @@ class ProductCategoryController extends Controller
             $categories = ProductCategory::all();
             return view('admin.products.categories.create', compact("categories"));
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -57,10 +58,10 @@ class ProductCategoryController extends Controller
             $data['is_active'] = $request->has('is_active') ? "1" : "0";
             ProductCategory::create($data);
 
-            toast('Product category created successfully', 'success');
+
             return redirect()->route('categories.index');
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -71,7 +72,7 @@ class ProductCategoryController extends Controller
             $categories = ProductCategory::all();
             return view('admin.products.categories.edit', compact('category','categories'));
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -83,10 +84,10 @@ class ProductCategoryController extends Controller
             $data['parent_id'] = $request->input('parent_id');
             $data['is_active'] = $request->has('is_active') ? "1" : "0";
             $category->update($data);
-            toast('Product category updated successfully', 'success');
+
             return redirect()->route('categories.index');
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -95,10 +96,10 @@ class ProductCategoryController extends Controller
     {
         try {
             $category->delete();
-            toast('Product category deleted successfully', 'success');
+
             return redirect()->route('categories.index');
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
