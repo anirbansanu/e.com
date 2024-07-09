@@ -59,7 +59,10 @@
                ]
                @endphp
                <x-adminlte-text-editor name="description" label="Description" label-class=""
-                   igroup-size="sm" placeholder="Write some text..." :config="$config"/>
+                igroup-size="sm" placeholder="Write some text..." :config="$config" >
+
+                    {!! $brand->description !!}
+                </x-adminlte-text-editor>
 
 
                     <div class="form-group d-flex justify-content-between">
