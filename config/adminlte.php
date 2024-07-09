@@ -16,7 +16,7 @@ return [
 
     'title' => 'E.COM',
     'title_prefix' => '',
-    'title_postfix' => 'Home',
+    'title_postfix' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -351,7 +351,7 @@ return [
                     'url' => 'admin/products',
                     'active' => ['admin/products/*'],
                 ],
-                
+
             ],
         ],
         [
@@ -564,6 +564,36 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'BootstrapSwitch' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bootstrap-switch/js/bootstrap-switch.min.js',
+                ],
+            ],
+        ],
+        'Summernote' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/summernote/summernote-bs4.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/summernote/summernote-bs4.min.css',
                 ],
             ],
         ],

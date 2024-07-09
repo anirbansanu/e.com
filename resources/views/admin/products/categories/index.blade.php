@@ -1,143 +1,71 @@
-@extends('admin.layouts.app')
-@section('title')
-     Category List
-@endsection
-@section('css')
-<style>
-    .sortable-link{
-        cursor: pointer !important;
-        color: black;
-    }
-</style>
-@endsection
-@section('content')
-<div class="content-wrapper pt-3">
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-primary card-tabs">
-                        <div class="card-header p-0 pt-1">
-                            <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                <x-tabs.nav-item route="categories.index" icon="fas fa-list-alt ">Category List</x-tabs.nav-item>
-                                <x-tabs.nav-item route="categories.create" icon="fas fa-plus-square">Add Category</x-tabs.nav-item>
+@extends('layouts.app')
 
-                            </div>
+@section('title', 'Categories')
 
-                        </div>
-                        <div class="card-body table-responsive p-0">
-                            <div class="row m-0 p-2">
+@section('subtitle', 'Categories')
+@section('content_header_title', 'Categories')
+@section('content_header_subtitle', 'Manage Categories')
 
-                                <div class="col-sm-12 col-md-6">
+@section('content_body')
 
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="d-flex justify-content-end">
-                                        <form action="{{ route('categories.index') }}" method="GET">
-                                            <div class="input-group input-group-sm" style="width: 250px;">
-                                                <input type="text" name="query"
-                                                    class="form-control float-right" placeholder="Search by Name, Description" value="{{$query??""}}">
-                                                <input type="hidden" class="d-none" name="sort_by" value="{{$sort_by}}">
-                                                <input type="hidden" class="d-none" name="sort_order" value="{{$sort_order}}">
-                                                <div class="input-group-append">
-                                                    <button type="submit" class="btn btn-default">
-                                                        <i class="fas fa-search"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
+    <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+        <x-slot name="header">
+                <x-anilte::tab-nav-item route="admin.products.categories.index" icon="fas fa-shield-alt">Categories</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.categories.create" icon="fas fa-plus-square">Create Categories</x-anilte::tab-nav-item>
+        </x-slot>
+        <x-slot name="body">
+            @php
+                $checkboxHtml = function($item) {
 
-                            </div>
-                            <!-- This HTML and Blade code for displaying category list here -->
-                            <table class="table table-hover text-nowrap border-top">
-                                <thead class="border-top">
-                                    <tr>
-                                        <th>
-                                            SL No.
-                                        </th>
-                                        <th>
-                                            <a class="sortable-link" href="{{ route('categories.index', ['query' => $query, 'sort_by' => 'name', 'sort_order' => ($sort_by == 'name' && $sort_order == 'asc') ? 'desc' : 'asc']) }}">
-                                                Name {!! ($sort_by == 'name') ? ($sort_order == 'asc' ? '<i class="fas fa-sort-up"></i>' : '<i class="fas fa-sort-down"></i>') : '<i class="fas fa-sort"></i>' !!}
-                                            </a>
-                                        </th>
-                                        <th>
+                    return "<input type='checkbox' name='is_active' " . ($item->is_active ? 'checked' : '') . "
+                                                                data-bootstrap-switch=''
+                                                                data-size='small'
+                                                                data-on-text='Active'
+                                                                data-off-text='Inactive'
+                                                                data-on-color='primary bg-gradient-blue'
+                                                                data-handle-width='48px'
+                                                                data-label-width='8px'
+                                                                />";
 
-                                                Parent
+                };
+            @endphp
+            <x-anilte::datatable url="{{ route('admin.products.categories.index') }}" :thead="[
+                        ['data' => 'name', 'title' => 'Name', 'sortable' => true],
+                        ['data' => 'description', 'title' => 'Description', 'class'=> ' text-truncate', 'style'=>'max-width: 150px;', 'sortable' => true ],
+                        ['data' => 'is_active', 'title' => 'Status', 'html'=>$checkboxHtml],
+                        ['data' => 'updated_at', 'title' => 'Updated At', 'sortable' => true],
+                    ]"
+                    :tbody="$categories"
+                    :actions="[
+                        [
+                            'route' => 'admin.products.categories.edit',
+                            'data' => 'edit',
+                            'title' => 'Edit',
+                            'icon' => 'fas fa-pencil-alt',
+                        ],
+                        [
+                            'route' => 'admin.products.categories.destroy',
+                            'data' => 'delete',
+                            'title' => 'Delete',
+                            'alertTitle' => 'Delete',
+                            'icon' => 'fas fa-trash',
+                        ],
+                    ]"
+                    :entries="$entries" :search="$search" :sort_by="$sort_by" :sort_order="$sort_order"
+                    :searchable="true" :showentries="true" :current_page="$categories->currentPage()" :total="$categories->total()" :per_page="$categories->perPage()"
+                />
 
-                                        </th>
-                                        <th>Description</th>
-                                        <th>Status</th>
-                                        <th>
-                                            <a class="sortable-link" href="{{ route('categories.index', ['query' => $query, 'sort_by' => 'updated_at', 'sort_order' => ($sort_by == 'updated_at' && $sort_order == 'asc') ? 'desc' : 'asc']) }}">
-                                                Updated At {!! ($sort_by == 'updated_at') ? ($sort_order == 'asc' ? '<i class="fas fa-sort-up"></i>' : '<i class="fas fa-sort-down"></i>') : '<i class="fas fa-sort"></i>' !!}
-                                            </a>
-                                        </th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($categories as $category)
-                                        <tr>
-                                            <td>{{$categories->firstItem() + $loop->index}}</td>
-                                            <td>{{ $category->name }}</td>
-                                            <td>{{ $category->parent->name ?? "" }}</td>
-                                            <td>{{ $category->description }}</td>
-                                            <td>
-                                                <select name="status" data-id="{{ $category['id'] }}" data-route="{{route('categories.change-status',$category)}}" id="status"
-                                                    class="onChangeStatus">
-                                                    <option value="1" data-id="{{ $category['id'] }}"
-                                                        data-type="status"
-                                                        {{ $category['is_active'] == '1' ? 'selected' : '' }}>Active
-                                                    </option>
-                                                    <option value="0" data-id="{{ $category['id'] }}"
-                                                        data-type="status"
-                                                        {{ $category['is_active'] == '0' ? 'selected' : '' }}>Inactive
-                                                    </option>
-                                                </select>
-                                            </td>
-                                            <td>{{ $category->updated_at }}</td>
-                                            <td>
-                                                <x-actions.edit-btn route="categories.edit" label="Edit" :route-params="[$category->id]" />
-                                                <x-actions.delete-btn route="categories.destroy" label="Delete" :route-params="[$category->id]" alertTitle="Delete {{$category->name}}"/>
 
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table><!-- End table -->
-                        </div> <!-- End div.Card Body -->
-                        {{$categories->links()}}
-                    </div><!-- End div.Card -->
-                </div><!-- End div.col -->
-            </div><!-- End div.row -->
-        </div><!-- End div.container-fluid -->
-    </section><!-- End section -->
-</div><!-- End div.content-wrapper -->
-@endsection
-@section('js')
-<script src="{{asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
-<script >
-    $(document).ready(function(){
-        $(document).on('change', '.onChangeStatus', function() {
-            var id = $(this).attr("data-id");
-            var route = $(this).attr("data-route");
-            $.ajax({
-                type: "POST",
-                url: route,
-                data: {
-                    "_token": '{{ csrf_token() }}',
-                    "is_active": $(this).val(),
-                },
-                success: function(data) {
-                    toastr.success(data.msg);
-                },
-                error:function(data){
-                    toastr.error(data.msg);
-                }
-            })
-        });
+        </x-slot>
+
+    </x-anilte::card>
+@stop
+ @push('js')
+    <script src="{{asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
+<script>
+     $("input[data-bootstrap-switch]").each(function(){
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
     });
 </script>
-@endsection
+@endpush
+

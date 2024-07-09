@@ -21,7 +21,7 @@
 
         @error($name)
             <span class="invalid-feedback" role="alert">
-                {{ $error }}
+                {{ $message }}
             </span>
         @enderror
 
