@@ -6,17 +6,12 @@
 @section('content_header_title', 'Brands')
 @section('content_header_subtitle', 'Manage Brands')
 
-@section('css')
-<link rel="stylesheet" href="{{asset('vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css')}}">
-
-@endsection
-
 @section('content_body')
 
     <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-                <x-anilte::tab-nav-item route="admin.products.brands.index" icon="fas fa-shield-alt">brands</x-anilte::tab-nav-item>
-                <x-anilte::tab-nav-item route="admin.products.brands.create" icon="fas fa-plus-square">Create Permission</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.brands.index" icon="fas fa-shield-alt">Brands</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.brands.create" icon="fas fa-plus-square">Create Brands</x-anilte::tab-nav-item>
         </x-slot>
         <x-slot name="body">
             @php
@@ -27,9 +22,11 @@
                                                                 data-size='small'
                                                                 data-on-text='Active'
                                                                 data-off-text='Inactive'
-                                                                data-handle-width='15px'
-                                                                data-label-width='3px'
+                                                                data-on-color='primary bg-gradient-blue'
+                                                                data-handle-width='48px'
+                                                                data-label-width='8px'
                                                                 />";
+
                 };
             @endphp
             <x-anilte::datatable url="{{ route('admin.products.brands.index') }}" :thead="[
@@ -63,7 +60,7 @@
 
     </x-anilte::card>
 @stop
-@push('js')
+ @push('js')
     <script src="{{asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
 <script>
      $("input[data-bootstrap-switch]").each(function(){

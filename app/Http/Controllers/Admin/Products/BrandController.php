@@ -30,8 +30,6 @@ class BrandController extends Controller
 
 
         } catch (\Exception $e) {
-
-            return $e;
             return redirect()->back();
         }
     }

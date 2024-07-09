@@ -1,104 +1,81 @@
-@extends('admin.layouts.app')
-@section('title')
-     Brand List
+@extends('layouts.app')
+@section('title', 'Brands')
 
-@endsection
+@section('subtitle', 'Brands')
+@section('content_header_title', 'Brands')
+@section('content_header_subtitle', 'Manage Brands')
 @section('css')
-<style>
-    .my-dropzone {
-        position: relative;
-        width: 100%;
-        height: 200px; /* Set an appropriate height */
-        border: 2px dashed #ddd;
-        background: white;
-        padding: 20px;
-        box-sizing: border-box;
-        color: #eae9e9;
-    }
-
-</style>
 @endsection
-@section('content')
-<div class="content-wrapper pt-3">
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-primary card-tabs">
-                        <div class="card-header p-0 pt-1">
+@section('content_body')
+    <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+        <x-slot name="header">
+                <x-anilte::tab-nav-item route="admin.products.brands.index" icon="fas fa-shield-alt">Brands</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.brands.create" icon="fas fa-plus-square">Create Brands</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.brands.edit" routeParams="{{ $brand->id }}" icon="fas fa-plus-square">Edit Brand ( {{$brand->name }})</x-anilte::tab-nav-item>
+        </x-slot>
+        <x-slot name="body">
+            <form action="{{route('admin.products.brands.store')}}" method="POST">
+                @csrf
 
-                            <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                <x-tabs.nav-item route="brands.index" icon="fas fa-list-alt ">Brand List</x-tabs.nav-item>
-                                <x-tabs.nav-item route="brands.create" icon="fas fa-plus-square">Add Brand</x-tabs.nav-item>
-                                <x-tabs.nav-item route="brands.edit" route-params="{{$brand->id}}" icon="fas fa-list-alt ">Edit Brand</x-tabs.nav-item>
+                <x-anilte::input-group
+                    id="name"
+                    name="name"
+                    value="{{ $brand->name ?? old('name') }}"
+                    placeholder="Enter Name"
+                    :required="true"
+                    label="Name"
+                    icon="fas fa-user-tag"
+                />
+
+                <x-adminlte-input-switch name="is_active"
+                    label="Status"
+                    class="d-flex justify-content-end"
+                    data-on-text="Active"
+                    data-off-text="Inactive"
+                    data-on-color="primary bg-gradient-blue"
+                    data-handle-width='51px'
+                    data-label-width='15px'
+                    igroup-size="sm"
+                    :checked="$brand->is_active"
+                />
 
 
-                            </ul>
-                        </div>
-                        <div class="card-body ">
-                            <!-- This HTML and Blade code for brand edit form here -->
-                            <form action="{{ route('brands.update', $brand) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <!-- Form fields for name, description, etc. -->
-                                <div class="form-group">
-                                    <label for="name">Name :</label>
-                                    <input type="text" name="name" class="form-control" value="{{ old("name",$brand->name) }}" required>
-                                    @error('name')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Description :</label>
-                                    <textarea name="description" class="form-control" required>{{ old("description",$brand->description) }}</textarea>
-                                    @error('description')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                {{-- <div class="form-group">
-                                    <div class="my-dropzone border " >
-                                        <DIV class="dz-message needsclick">
-                                            Drop files here or click to upload.<BR>
-                                            <SPAN class="note needsclick">(This is just a demo dropzone. Selected
-                                            files are <STRONG>not</STRONG> actually uploaded.)</SPAN>
-                                          </DIV>
-                                    </div>
-                                    @error('description')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div> --}}
+               @php
+               $config = [
+                   "height" => "100",
+                   "toolbar" => [
+                       // [groupName, [list of button]]
+                       ['style', ['bold', 'italic', 'underline', 'clear']],
+                       ['font', ['strikethrough', 'superscript', 'subscript']],
+                       ['fontsize', ['fontsize']],
+                       ['color', ['color']],
+                       ['para', ['ul', 'ol', 'paragraph']],
+                       ['height', ['height']],
+                        //    ['table', ['table']],
+                        //    ['insert', ['link', 'picture', 'video']],
+                        //    ['view', ['fullscreen', 'codeview', 'help']],
+                        ['view', ['fullscreen', ]]
+                   ],
+               ]
+               @endphp
+               <x-adminlte-text-editor name="description" label="Description" label-class=""
+                   igroup-size="sm" placeholder="Write some text..." :config="$config"/>
 
-                                <div class="form-group">
-                                    <label for="is_active">Status :</label><br>
-                                    <input type="checkbox" name="is_active" {{ $brand->is_active ? "checked":'' }}
-                                            data-bootstrap-switch=""
-                                            data-on-text="Active"
-                                            data-off-text="Inactive"
-                                            data-handle-width="55px"
-                                            data-label-width="15px"
-                                    />
-                                    @error('is_active')
-                                        <span class="error text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="w-100 d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary ">Update Brand</button>
-                                </div>
-                            </form>
-                        </div> <!-- End div.Card Body -->
-                    </div><!-- End div.Card -->
-                </div><!-- End div.col -->
-            </div><!-- End div.row -->
 
-        </div><!-- End div.container-fluid -->
-    </section><!-- End section -->
-</div><!-- End div.content-wrapper -->
+                    <div class="form-group d-flex justify-content-between">
+                        <x-adminlte-button type="back" label="Back" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-arrow-left"/>
+                        <x-adminlte-button type="submit" :label="isset($role->exists) && $role->exists ? 'Update Role' : 'Create Role'" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
+                    </div>
+            </form>
+        </x-slot>
+
+    </x-anilte::card>
+
 @endsection
-@section('js')
+{{-- @section('js')
 <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
 <script src="{{asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
-
 <script >
     $(document).ready(function(){
 
@@ -110,57 +87,13 @@
         });
         function onSwitchChange(state) {
             if (state) {
-                console.log("Switch is ON",state);
+            console.log("Switch is ON",state);
+            // Perform actions when switch is ON
             } else {
-                console.log("Switch is OFF",state);
+            console.log("Switch is OFF",state);
+            // Perform actions when switch is OFF
             }
         }
     });
 </script>
-<script src="{{asset("admin\plugins\dropzone\dropzone.js")}}"></script>
-
-<script>
-    // Dropzone has been added as a global variable.
-    const dropzone = new Dropzone("div.my-dropzone", {
-            url: 'files',
-            maxFilesize: 12,
-            renameFile: function(file) {
-                var dt = new Date();
-                var time = dt.getTime();
-               return time+file.name;
-            },
-            acceptedFiles: ".jpeg,.jpg,.png,.gif",
-            addRemoveLinks: true,
-            timeout: 50000,
-            success: function(file, response)
-            {
-                console.log(response);
-            },
-            error: function(file, response)
-            {
-               return false;
-            }
-        });
-
-</script>
-@endsection
-{{-- removedfile: function(file)
-            {
-                var name = file.upload.filename;
-                $.ajax({
-                    headers: {
-                                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                            },
-                    type: 'POST',
-                    url: '{{ url("image/delete") }}',
-                    data: {filename: name},
-                    success: function (data){
-                        console.log("File has been successfully removed!!");
-                    },
-                    error: function(e) {
-                        console.log(e);
-                    }});
-                    var fileRef;
-                    return (fileRef = file.previewElement) != null ?
-                    fileRef.parentNode.removeChild(file.previewElement) : void 0;
-            }, --}}
+@endsection --}}
