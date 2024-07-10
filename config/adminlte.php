@@ -347,9 +347,14 @@ return [
                     'active' => ['admin/products/categories/*'],
                 ],
                 [
+                    'text' => 'Attributes',
+                    'url' => 'admin/products/attributes',
+                    'active' => ['admin/products/attributes/*'],
+                ],
+                [
                     'text' => 'Products',
                     'url' => 'admin/products',
-                    'active' => ['admin/products/*'],
+                    'active' => ['admin/products/index','admin/products/create/steps/*','admin/products/edit/steps/*'],
                 ],
 
             ],
