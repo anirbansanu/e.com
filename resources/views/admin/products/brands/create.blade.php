@@ -62,7 +62,7 @@
 
                     <div class="form-group d-flex justify-content-between">
                         <x-adminlte-button type="back" label="Back" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-arrow-left"/>
-                        <x-adminlte-button type="submit" :label="isset($role->exists) && $role->exists ? 'Update Role' : 'Create Role'" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
+                        <x-adminlte-button type="submit" label='Create Brand' theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
                     </div>
             </form>
         </x-slot>
