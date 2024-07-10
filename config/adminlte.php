@@ -352,6 +352,11 @@ return [
                     'active' => ['admin/products/attributes/*'],
                 ],
                 [
+                    'text' => 'Units',
+                    'url' => 'admin/products/units',
+                    'active' => ['admin/products/units/*'],
+                ],
+                [
                     'text' => 'Products',
                     'url' => 'admin/products',
                     'active' => ['admin/products/index','admin/products/create/steps/*','admin/products/edit/steps/*'],

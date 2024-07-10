@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Products\BrandController;
 use App\Http\Controllers\Admin\Products\ProductAttributeController;
 use App\Http\Controllers\Admin\Products\ProductCategoryController;
+use App\Http\Controllers\Admin\Products\ProductUnitController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
@@ -55,5 +56,8 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
 
         Route::resource('attributes', ProductAttributeController::class)->except('show');
         Route::post('/attributes/{attribute}/change-status', [ProductAttributeController::class,'changeStatus'])->name('attributes.change-status');
+
+        Route::resource('units', ProductUnitController::class)->except('show');
+
     });
 });

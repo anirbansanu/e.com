@@ -28,6 +28,6 @@ class CreateProductUnitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_size_units');
+        Schema::dropIfExists('product_units');
     }
 }

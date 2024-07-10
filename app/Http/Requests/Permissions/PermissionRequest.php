@@ -19,7 +19,8 @@ class PermissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:permissions,name,' . ($this->permission ? $this->permission->id : ''),
+            'name' => 'required_if:enable_bulk_update,false|max:255|unique:permissions,name,' . ($this->permission ? $this->permission->id : ''),
+            'permission_names' => 'required_if:enable_bulk_update,true',
             'roles' => 'array',
             'guard_name' => 'required|string|max:255',
             'group_name' => 'required|string|max:255',
