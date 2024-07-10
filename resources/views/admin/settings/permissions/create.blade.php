@@ -25,16 +25,44 @@
                     <div class="row">
                         <div class="col-lg-4">
 
-                            <x-anilte::input-group
-                                id="name"
-                                name="name"
-                                value="{{ isset($permission->exists) && $permission->exists ? $permission->name : old('name') }}"
-                                placeholder="Enter name"
-                                :required="true"
-                                label="Name"
-                                icon="fas fa-user-tag"
-                            />
 
+
+                            <div id="single-name-input">
+                                <x-anilte::input-group
+                                    id="name"
+                                    name="name"
+                                    value="{{ isset($permission->exists) && $permission->exists ? $permission->name : old('name') }}"
+                                    placeholder="Enter name"
+                                    label="Name"
+                                    icon="fas fa-user-tag"
+                                />
+                            </div>
+
+                            <div id="bulk-names-input" style="display: none;">
+                                <x-anilte::input-group
+                                    id="permission_names"
+                                    name="permission_names"
+                                    placeholder="Enter permission names separated by comma (,)"
+                                    label="Permission Names"
+                                    icon="fas fa-user-tag"
+                                    value="{{ old('permission_names') }}"
+                                />
+                            </div>
+
+                            <x-adminlte-input-switch
+                                id="enable_bulk_update"
+                                name="enable_bulk_update"
+                                label="Enable Bluk Update"
+                                class="d-flex justify-content-end"
+                                data-on-text="Yes"
+                                data-off-text="No"
+                                data-on-color="primary bg-gradient-blue"
+                                data-handle-width='51px'
+                                data-label-width='15px'
+                                igroup-size="sm"
+                                :checked="old('enable_bulk_update')"
+                                
+                            />
                             <x-anilte::input-group
                                 id="guard_name"
                                 name="guard_name"
@@ -127,24 +155,22 @@
         });
 
 
-        $(document).on('keyup', '#name', (ev) => {
-            let nameValue = $('#name').val();
-            let slug = slugify(nameValue);
-            $('#slug').val(slug);
-        });
-        $("input[data-bootstrap-switch]").each(function(){
-            $(this).bootstrapSwitch('state', $(this).prop('checked'));
-            $(this).on('switchChange.bootstrapSwitch', function(event, state) {
+
+
+
+
+        $('#enable_bulk_update').on('switchChange.bootstrapSwitch', function(event, state) {
                 onSwitchChange(state);
-            });
         });
         function onSwitchChange(state) {
             if (state) {
-            console.log("Switch is ON",state);
-            // Perform actions when switch is ON
+                console.log("Switch is ON", state);
+                $('#single-name-input').hide();
+                $('#bulk-names-input').show();
             } else {
-            console.log("Switch is OFF",state);
-            // Perform actions when switch is OFF
+                console.log("Switch is OFF", state);
+                $('#single-name-input').show();
+                $('#bulk-names-input').hide();
             }
         }
     });

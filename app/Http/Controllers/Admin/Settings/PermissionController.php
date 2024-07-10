@@ -54,8 +54,10 @@ class PermissionController extends Controller
     {
         $data = $request->validated();
         $permission = $this->permissionService->createPermission($data);
-
+        if(is_array($permission))
         return redirect()->back()->with('success', "Permission '{$permission->name}' created successfully");
+        else
+        return redirect()->back()->with('success', "Permissions created successfully");
     }
 
     public function edit(Permission $permission)
