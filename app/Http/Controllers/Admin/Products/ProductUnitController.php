@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductUnitRequest;
+use App\Http\Requests\Products\ProductUnitRequest;
 use App\Models\ProductUnit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -14,30 +14,32 @@ class ProductUnitController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = $request->input('query');
+            $search = $request->input('search');
             $sort_by = $request->input('sort_by', 'updated_at');
             $sort_order = $request->input('sort_order', 'desc');
-            $product_units = ProductUnit::where(function ($q) use ($query) {
-                $q->where('unit_name', 'like', '%' . $query . '%');
+            $entries = $request->input('entries', config('app.pagination_limit'));
+
+            $units = ProductUnit::where(function ($q) use ($search) {
+                $q->where('unit_name', 'like', '%' . $search . '%');
             })
             ->orderBy($sort_by, $sort_order)
-            ->paginate(config('app.pagination_limit'));
+            ->paginate($entries);
 
-            $product_units->appends(['query' => $query, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            $units->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order,'entries'=>$entries]);
 
-            return view('admin.products.product_units.index', compact('product_units', 'query', 'sort_by', 'sort_order'));
+            return view('admin.products.units.index', compact('units', 'search', 'sort_by', 'sort_order', 'entries'));
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
-            return redirect()->back()->with('error', 'An error occurred.');
+
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
     public function create()
     {
         try {
-            return view('admin.products.product_units.create');
+            return view('admin.products.units.create');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -46,14 +48,14 @@ class ProductUnitController extends Controller
         try {
             $validatedData = $request->validated();
             ProductUnit::create($validatedData);
-            toast('Product unit created successfully','success');
-            return redirect()->route('admin.product_units.index')->with('success', 'Product unit created successfully.');
+
+            return redirect()->route('admin.units.index')->with('success', 'Product unit created successfully.');
         } catch (ValidationException $e) {
 
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
-            return redirect()->back()->with('error', 'An error occurred.');
+
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -61,12 +63,12 @@ class ProductUnitController extends Controller
     {
         try {
             $productUnit = ProductUnit::findOrFail($id);
-            return view('admin.products.product_units.show', compact('productUnit'));
+            return view('admin.products.units.show', compact('productUnit'));
         } catch (ModelNotFoundException $e) {
-            toast('Product unit not found','error');
-            return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+
+            return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -74,11 +76,11 @@ class ProductUnitController extends Controller
     public function edit($id)
     {
         try {
-            $productUnit = ProductUnit::findOrFail($id);
-            return view('admin.products.product_units.edit', compact('productUnit'));
+            $unit = ProductUnit::findOrFail($id);
+            return view('admin.products.units.edit', compact('unit'));
         } catch (ModelNotFoundException $e) {
-            toast('Product unit not found','error');
-            return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+
+            return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred.');
         }
@@ -90,15 +92,15 @@ class ProductUnitController extends Controller
             $validatedData = $request->validated();
             $productUnit = ProductUnit::findOrFail($id);
             $productUnit->update($validatedData);
-            toast('Product unit updated successfully','success');
-            return redirect()->route('admin.product_units.index')->with('success', 'Product unit updated successfully.');
+
+            return redirect()->route('admin.units.index')->with('success', 'Product unit updated successfully.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (ModelNotFoundException $e) {
-            toast('Product unit not found','error');
-            return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+
+            return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -108,12 +110,12 @@ class ProductUnitController extends Controller
         try {
             $productUnit = ProductUnit::findOrFail($id);
             $productUnit->delete();
-            return redirect()->route('admin.product_units.index')->with('success', 'Product unit deleted successfully.');
+            return redirect()->route('admin.units.index')->with('success', 'Product unit deleted successfully.');
         } catch (ModelNotFoundException $e) {
-            toast('Product unit not found','error');
-            return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+
+            return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -121,20 +123,20 @@ class ProductUnitController extends Controller
     public function trash(Request $request)
     {
         try {
-            $query = $request->input('query');
+            $search = $request->input('search');
             $sort_by = $request->input('sort_by', 'updated_at');
             $sort_order = $request->input('sort_order', 'desc');
-            $product_units = ProductUnit::onlyTrashed()
-                                ->where(function ($q) use ($query) {
-                                    $q->where('unit_name', 'like', '%' . $query . '%');
+            $units = ProductUnit::onlyTrashed()
+                                ->where(function ($q) use ($search) {
+                                    $q->where('unit_name', 'like', '%' . $search . '%');
                                 })
                                 ->orderBy($sort_by, $sort_order)
                                 ->paginate(config('app.pagination_limit'));
 
-            $product_units->appends(['query' => $query, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
-            return view('admin.products.product_units.trash', compact('product_units', 'query', 'sort_by', 'sort_order'));
+            $units->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            return view('admin.products.units.trash', compact('units', 'search', 'sort_by', 'sort_order'));
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -144,22 +146,22 @@ class ProductUnitController extends Controller
         try {
             $productUnit = ProductUnit::withTrashed()->findOrFail($id);
             $productUnit->restore();
-            return redirect()->route('admin.product_units.index')->with('success', 'Product unit restored successfully.');
+            return redirect()->route('admin.units.index')->with('success', 'Product unit restored successfully.');
         } catch (ModelNotFoundException $e) {
-            toast('Product unit not found','error');
-            return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+
+            return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
         } catch (\Exception $e) {
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
     function getJson(Request $request){
         try {
-            $query = $request->input('q');
+            $search = $request->input('q');
             $page = $request->input('page', 1);
             $perPage = config('app.pagination_limit');
 
-            $productUnits = ProductUnit::where('unit_name', 'like', "%$query%")
+            $productUnits = ProductUnit::where('unit_name', 'like', "%$search%")
                 ->paginate($perPage, ['*'], 'page', $page);
             return response()->json($productUnits);
         } catch (\Exception $e) {
@@ -167,19 +169,19 @@ class ProductUnitController extends Controller
             return response('',404)->json(['status' => true, 'msg' => $msg]);
         }
     }
-    
+
     // public function toggleStatus($id)
     // {
     //     try {
     //         $productUnit = ProductUnit::findOrFail($id);
     //         $productUnit->is_active = !$productUnit->is_active;
     //         $productUnit->save();
-    //         return redirect()->route('admin.product_units.index')->with('success', 'Product unit status toggled successfully.');
+    //         return redirect()->route('admin.units.index')->with('success', 'Product unit status toggled successfully.');
     //     } catch (ModelNotFoundException $e) {
-    //         toast('Product unit not found','error');
-    //         return redirect()->route('admin.product_units.index')->with('error', 'Product unit not found.');
+    //
+    //         return redirect()->route('admin.units.index')->with('error', 'Product unit not found.');
     //     } catch (\Exception $e) {
-    //         toast($e->getMessage(),'error');
+    //
     //         return redirect()->back()->with('error', 'An error occurred.');
     //     }
     // }
