@@ -1,19 +1,19 @@
 @extends('layouts.app')
-@section('title', 'Categories')
+@section('title', 'Attributes')
 
-@section('subtitle', 'Categories')
-@section('content_header_title', 'Categories')
-@section('content_header_subtitle', 'Manage Categories')
+@section('subtitle', 'Attributes')
+@section('content_header_title', 'Attributes')
+@section('content_header_subtitle', 'Manage Attributes')
 @section('css')
 @endsection
 @section('content_body')
     <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
         <x-slot name="header">
-                <x-anilte::tab-nav-item route="admin.products.categories.index" icon="fas fa-shield-alt">Categories</x-anilte::tab-nav-item>
-                <x-anilte::tab-nav-item route="admin.products.categories.create" icon="fas fa-plus-square">Create Categories</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.attributes.index" icon="fas fa-shield-alt">Attributes</x-anilte::tab-nav-item>
+                <x-anilte::tab-nav-item route="admin.products.attributes.create" icon="fas fa-plus-square">Create Attributes</x-anilte::tab-nav-item>
         </x-slot>
         <x-slot name="body">
-            <form action="{{route('admin.products.categories.store')}}" method="POST">
+            <form action="{{route('admin.products.attributes.store')}}" method="POST">
                 @csrf
 
                 <x-anilte::input-group
@@ -26,7 +26,7 @@
                     icon="fas fa-user-tag"
                 />
 
-                <x-adminlte-input-switch name="is_active"
+                <x-adminlte-input-switch name="has_unit"
                     label="Status"
                     class="d-flex justify-content-end"
                     data-on-text="Active"
@@ -38,31 +38,13 @@
                 />
 
 
-               @php
-               $config = [
-                   "height" => "100",
-                   "toolbar" => [
-                       // [groupName, [list of button]]
-                       ['style', ['bold', 'italic', 'underline', 'clear']],
-                       ['font', ['strikethrough', 'superscript', 'subscript']],
-                       ['fontsize', ['fontsize']],
-                       ['color', ['color']],
-                       ['para', ['ul', 'ol', 'paragraph']],
-                       ['height', ['height']],
-                        //    ['table', ['table']],
-                        //    ['insert', ['link', 'picture', 'video']],
-                        //    ['view', ['fullscreen', 'codeview', 'help']],
-                        ['view', ['fullscreen', ]]
-                   ],
-               ]
-               @endphp
-               <x-adminlte-text-editor name="description" label="Description" label-class=""
-                   igroup-size="sm" placeholder="Write some text..." :config="$config"/>
+               
+
 
 
                     <div class="form-group d-flex justify-content-between">
                         <x-adminlte-button type="back" label="Back" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-arrow-left"/>
-                        <x-adminlte-button type="submit" label='Create Category' theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
+                        <x-adminlte-button type="submit" label="Create Attribute" theme="primary bg-gradient-blue" class="btn-md mt-3" icon="fas fa-save"/>
                     </div>
             </form>
         </x-slot>

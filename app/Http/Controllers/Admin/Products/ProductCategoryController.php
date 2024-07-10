@@ -24,7 +24,7 @@ class ProductCategoryController extends Controller
             ->orderBy($sort_by, $sort_order)
             ->paginate($entries);
 
-            $categories->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            $categories->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order,'entries'=>$entries]);
 
             return view("admin.products.categories.index", compact("categories",  'search', 'sort_by', 'sort_order', 'entries'));
         } catch (\Exception $e) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Products\BrandController;
+use App\Http\Controllers\Admin\Products\ProductAttributeController;
 use App\Http\Controllers\Admin\Products\ProductCategoryController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
@@ -51,5 +52,8 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
 
         Route::resource('categories', ProductCategoryController::class)->except('show');
         Route::post('/categories/{category}/change-status', [ProductCategoryController::class,'changeStatus'])->name('categories.change-status');
+
+        Route::resource('attributes', ProductAttributeController::class)->except('show');
+        Route::post('/attributes/{attribute}/change-status', [ProductAttributeController::class,'changeStatus'])->name('attributes.change-status');
     });
 });
