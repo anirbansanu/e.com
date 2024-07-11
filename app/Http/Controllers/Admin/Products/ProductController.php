@@ -7,8 +7,8 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductToVariation;
 use App\Models\Upload;
-use App\Services\ProductService;
-use App\Services\UploadService;
+use App\Services\Products\ProductService;
+use App\Services\Medias\UploadService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,23 +32,27 @@ class ProductController extends Controller
     {
         try {
 
-            $query = $request->input('query');
+            $search = $request->input('search');
             $sort_by = $request->input('sort_by', 'updated_at');
             $sort_order = $request->input('sort_order', 'desc');
-            $products = Product::with(['productToVariations','defaultStock.productPrice'])
-            ->where(function ($q) use ($query) {
-                $q->where('name', 'like', '%' . $query . '%')
-                    ->orWhere('description', 'like', '%' . $query . '%');
+            $entries = $request->input('entries', config('app.pagination_limit'));
+
+
+            $products = Product::
+            // with(['productToVariations','defaultStock.productPrice'])
+            where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
             })
             ->orderBy($sort_by, $sort_order)
             ->paginate(config('app.pagination_limit'));
 
-            $products->appends(['query' => $query, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            $products->appends(['search' => $search,'entries' => $entries, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
 
-            return view('admin.products.index', compact('products',"query","sort_by","sort_order"));
+            return view('admin.products.product_listing.index', compact('products',"search","entries","sort_by","sort_order"));
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -91,14 +95,14 @@ class ProductController extends Controller
                         }
                         else
                         {
-                            toast("Please add variations before proceeding.", 'warning');
+
                             return redirect()->route('products.create',["step"=>2,"product_id"=>$product->id]);
                         }
 
                     }
                     else
                     {
-                        toast("Please add basic details before proceeding.", 'warning');
+
                         return redirect()->route('products.create',["step"=>1]);
                     }
                     break;
@@ -109,7 +113,7 @@ class ProductController extends Controller
             return view('admin.products.product_listing.create.step_1');
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(), 'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -118,23 +122,23 @@ class ProductController extends Controller
 
         try {
             $product = $this->productService->stepOne($request->all());
-            toast('Basic details saved successfully. Now, please add variants.', 'success');
+
             return redirect()->route('products.create',["step"=>2,"product_id"=>$product->id])->with('success', 'Product created successfully.');
 
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
     public function storeStepTwo(Request $request){
         try {
-            
+
             $product = $this->productService->stepTwo($request->all());
-            toast('Variations saved successfully. Now, please complete step 3.', 'success');
+
             return redirect()->route('products.create',["step"=>3,"product_id"=>$product->id]);
 
         } catch (\Exception $e) {
-            toast('Failed to save step 2: ' . $e->getMessage(), 'error');
+
             return redirect()->route('products.create',["step"=>1])->with('error', 'An error occurred.');
         }
     }
@@ -153,19 +157,19 @@ class ProductController extends Controller
             ]);
             $product = $this->productService->stepThree($request->all());
             if($product->has_stocks){
-                toast('Product created successfully.', 'success');
+
                 return redirect()->route('products.index');
             }
             else {
-                toast("Please add stocks before proceeding.", 'warning');
+
                 return redirect()->back();
             }
 
         }  catch (\Illuminate\Validation\ValidationException $e) {
-            toast($e->validator->errors()->first());
+
             return redirect()->back();
         } catch (\Exception $e) {
-            toast('Failed to create product: ' . $e->getMessage(), 'error');
+
             return redirect()->route('products.create',["step"=>2,'product_id'=>$request->get('product_id')])->with('error', 'An error occurred.');
         }
     }
@@ -178,11 +182,11 @@ class ProductController extends Controller
             return view('admin.products.show', compact('product'));
         } catch (ModelNotFoundException $e) {
             // Handle model not found exception
-            toast('Product not found','error');
+
             return redirect()->route('products.index')->with('error', 'Product not found');
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -210,7 +214,7 @@ class ProductController extends Controller
                     }
                     else
                     {
-                        toast("Please add variations before proceeding.", 'warning');
+
                         return redirect()->route('products.edit',["id"=>$product->id,"step"=>2]);
                     }
                     break;
@@ -221,13 +225,13 @@ class ProductController extends Controller
             return view('admin.products.product_listing.edit.step_1');
         }
         catch (ModelNotFoundException $e) {
-            toast('Product not found','error');
+
             // Handle model not found exception
             return redirect()->route('products.index')->with('error', 'Product not found');
         }
         catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(), 'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
 
@@ -235,11 +239,11 @@ class ProductController extends Controller
     public function editStepOne(ProductRequest $request){
         try {
             $product = $this->productService->stepOne($request->all());
-            toast('Basic details updated successfully. Now, please add variants.', 'success');
+
             return redirect()->route('products.edit',["id"=>$product->id,"step"=>2])->with('success', 'Product created successfully.');
 
         } catch (\Exception $e) {
-            toast($e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -247,11 +251,11 @@ class ProductController extends Controller
         try {
 
             $product = $this->productService->stepTwo($request->all());
-            toast('Variations updated successfully. Now, please complete step 3.', 'success');
+
             return redirect()->route('products.edit',["id"=>$product->id,"step"=>3]);
 
         } catch (\Exception $e) {
-            toast('Failed to update step 2: ' . $e->getMessage(), 'error');
+
             return redirect()->back();
         }
     }
@@ -270,19 +274,19 @@ class ProductController extends Controller
             ]);
             $product = $this->productService->stepThree($request->all());
             if($product->has_stocks){
-                toast('Product updated successfully.', 'success');
+
                 return redirect()->route('products.index');
             }
             else {
-                toast("Please add stocks before proceeding.", 'warning');
+
                 return redirect()->back();
             }
 
         }  catch (\Illuminate\Validation\ValidationException $e) {
-            toast($e->validator->errors()->first());
+
             return redirect()->back();
         } catch (\Exception $e) {
-            toast('Failed to update product: ' . $e->getMessage(), 'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -349,23 +353,23 @@ class ProductController extends Controller
             // Commit the database transaction
             DB::commit();
 
-            toast('Product updated successfully', 'success');
+
             return redirect()->route('products.index')->with('success', 'Product updated successfully.');
         } catch (ValidationException $e) {
             // Handle validation errors
             DB::rollBack();
-            toast($e->getMessage(), 'error');
+
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
         catch (ModelNotFoundException $e) {
-            toast('Product not found','error');
+
             // Handle model not found exception
             return redirect()->route('products.index')->with('error', 'Product not found.');
         }
         catch (\Exception $e) {
             // Handle general exceptions
             DB::rollBack();
-            toast($e->getMessage(), 'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -379,11 +383,11 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
         } catch (ModelNotFoundException $e) {
             // Handle model not found exception
-            toast('Product not found','error');
+
             return redirect()->route('products.index')->with('error', 'Product not found.');
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -391,22 +395,22 @@ class ProductController extends Controller
     public function trash(Request $request)
     {
         try {
-            $query = $request->input('query');
+            $search = $request->input('search');
             $sort_by = $request->input('sort_by', 'updated_at');
             $sort_order = $request->input('sort_order', 'desc');
             $products = Product::onlyTrashed()
-                                ->where(function ($q) use ($query) {
-                                    $q->where('name', 'like', '%' . $query . '%')
-                                        ->orWhere('description', 'like', '%' . $query . '%');
+                                ->where(function ($q) use ($search) {
+                                    $q->where('name', 'like', '%' . $search . '%')
+                                        ->orWhere('description', 'like', '%' . $search . '%');
                                 })
                                 ->orderBy($sort_by, $sort_order)
                                 ->paginate(config('app.pagination_limit'));
 
-            $products->appends(['query' => $query, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
-            return view('admin.products.trash', compact('products',"query","sort_by","sort_order"));
+            $products->appends(['search' => $search, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
+            return view('admin.products.trash', compact('products',"search","sort_by","sort_order"));
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -419,12 +423,12 @@ class ProductController extends Controller
 
             return redirect()->route('products.index')->with('success', 'Product restored successfully.');
         } catch (ModelNotFoundException $e) {
-            toast('Product not found','error');
+
             // Handle model not found exception
             return redirect()->route('products.index')->with('error', 'Product not found.');
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }
@@ -439,11 +443,11 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('success', 'Product status toggled successfully.');
         } catch (ModelNotFoundException $e) {
             // Handle model not found exception
-            toast('Product not found','error');
+
             return redirect()->route('products.index')->with('error', 'Product not found.');
         } catch (\Exception $e) {
             // Handle general exceptions
-            toast($e->getMessage(),'error');
+
             return redirect()->back()->with('error', 'An error occurred.');
         }
     }

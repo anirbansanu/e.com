@@ -357,9 +357,9 @@ return [
                     'active' => ['admin/products/units/*'],
                 ],
                 [
-                    'text' => 'Products',
-                    'url' => 'admin/products',
-                    'active' => ['admin/products/index','admin/products/create/steps/*','admin/products/edit/steps/*'],
+                    'text' => 'Listing',
+                    'url' => 'admin/products/listing',
+                    'active' => ['admin/products/listing/*'],
                 ],
 
             ],

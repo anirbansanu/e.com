@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Gender;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,13 +21,10 @@ class CreateProductsTable extends Migration
             $table->string('description')->nullable();
             $table->foreignId('category_id');
             $table->foreignId('brand_id');
-            $table->foreignId('added_by')->nullable();
-            $table->decimal('price',10,2);
-            $table->string('color')->nullable();
-            $table->string('weight')->nullable();
-            $table->string('gender')->nullable();
-            $table->string('feature')->nullable();
+            $table->foreignId('added_by');
+            $table->enum('gender', array_column(Gender::cases(), 'value'));
             $table->boolean('is_active')->default(1)->comment('0 = Inactive, 1 = Active');
+            $table->integer('step')->default(0);
             $table->softDeletes();
             $table->timestamps();
 
