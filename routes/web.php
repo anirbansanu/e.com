@@ -3,12 +3,14 @@
 use App\Http\Controllers\Admin\Products\BrandController;
 use App\Http\Controllers\Admin\Products\ProductAttributeController;
 use App\Http\Controllers\Admin\Products\ProductCategoryController;
+use App\Http\Controllers\Admin\Products\ProductController;
 use App\Http\Controllers\Admin\Products\ProductUnitController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\HomeController;
+use App\Models\ProductAttribute;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +60,8 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
         Route::post('/attributes/{attribute}/change-status', [ProductAttributeController::class,'changeStatus'])->name('attributes.change-status');
 
         Route::resource('units', ProductUnitController::class)->except('show');
+
+        Route::resource('listing', ProductController::class)->except('store');
 
     });
 });

@@ -11,10 +11,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasSlug, SoftDeletes;
     use InteractsWithMedia {
         getFirstMediaUrl as protected getFirstMediaUrlTrait;
     }
@@ -33,8 +35,27 @@ class Product extends Model implements HasMedia
     ];
     protected $casts = [
         'is_active' => 'boolean',
+        'updated_at' => 'datetime:Y-m-d',
     ];
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug')
+            ->slugsShouldBeNoLongerThan(50)
+            ->usingSeparator('_')
+            ->preventOverwrite();
+    }
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -45,7 +66,7 @@ class Product extends Model implements HasMedia
             ->fit(Manipulations::FIT_CROP, 100, 100)
             ->sharpen(10);
     }
-    
+
     /**
      * to generate media url in case of fallback will
      * return the file type icon
@@ -99,48 +120,48 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class, 'added_by');
     }
 
-    public function productToVariations()
-    {
-        return $this->hasMany(ProductToVariation::class);
-    }
+    // public function productToVariations()
+    // {
+    //     return $this->hasMany(ProductToVariation::class);
+    // }
 
-    public function groupByVariation()
-    {
-        return $this->productToVariations->groupBy('variation.name');
-    }
+    // public function groupByVariation()
+    // {
+    //     return $this->productToVariations->groupBy('variation.name');
+    // }
 
-    public function stocks()
-    {
-        return $this->hasMany(Stock::class);
-    }
+    // public function stocks()
+    // {
+    //     return $this->hasMany(Stock::class);
+    // }
 
-    public function defaultStock()
-    {
-        return $this->hasOne(Stock::class)->where('is_default',1);
-    }
+    // public function defaultStock()
+    // {
+    //     return $this->hasOne(Stock::class)->where('is_default',1);
+    // }
 
-    public function getHasVariationsAttribute()
-    {
-        return $this->productToVariations()->exists();
-    }
+    // public function getHasVariationsAttribute()
+    // {
+    //     return $this->productToVariations()->exists();
+    // }
 
-    public function getHasStocksAttribute()
-    {
-        return $this->stocks()->exists();
-    }
+    // public function getHasStocksAttribute()
+    // {
+    //     return $this->stocks()->exists();
+    // }
 
-    public function reviews()
-    {
-        return $this->hasMany(ProductReview::class);
-    }
+    // public function reviews()
+    // {
+    //     return $this->hasMany(ProductReview::class);
+    // }
 
-    public function getRatingAttribute()
-    {
-        return $this->reviews->avg('rating');
-    }
+    // public function getRatingAttribute()
+    // {
+    //     return $this->reviews->avg('rating');
+    // }
 
-    public function orderDetails()
-    {
-        return $this->hasMany(OrderDetails::class, 'product_id', 'id');
-    }
+    // public function orderDetails()
+    // {
+    //     return $this->hasMany(OrderDetails::class, 'product_id', 'id');
+    // }
 }
