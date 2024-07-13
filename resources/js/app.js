@@ -9,6 +9,8 @@ import { createApp } from 'vue';
 import Root from './vue_js/root.vue';
 import router from './vue_js/providers/routes';
 import store from './vue_js/providers/store';
+import Swal from 'sweetalert2';
+window.Swal = Swal;
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
  * registering components with the application instance so they are ready
