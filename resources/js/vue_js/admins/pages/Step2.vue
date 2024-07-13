@@ -5,7 +5,7 @@
         <form @submit.prevent="submitData" class="card-body p-4">
             <div class="form-group mb-2">
                 <label for="field2">Field 2</label>
-                <input type="text" id="field2" v-model="formData.field2" class="form-control"
+                <input type="text" id="field2" v-model="step2.field2" class="form-control"
                     placeholder="Enter Field 2">
             </div>
             <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
@@ -15,26 +15,28 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { fetchProductData, submitProductData } from '../services/api';
+import { mapActions,mapState } from 'vuex';
+import { fetchProductData, submitProductData } from '../services/api.js';
 
 export default {
     name: 'Step2',
     data() {
         return {
-            formData: {
+            step2: {
                 field2: '',
-                // Add other fields as needed
             },
         };
     },
+    computed: {
+        ...mapState(['formData']), // Access formData from Vuex store
+    },
     methods: {
-        ...mapActions(['nextStep', 'prevStep']),
+        ...mapActions(['nextStep', 'prevStep', 'saveFormData']),
         async loadData() {
             try {
                 const response = await fetchProductData(2);
                 if (response && response.data) {
-                    this.formData.field2 = response.data.field2; // Update formData with fetched data
+                    this.step2.field2 = response.data.field2; // Update formData with fetched data
                 } else {
                     console.error('Invalid response or data format:', response);
                 }
@@ -44,9 +46,14 @@ export default {
         },
         async submitData() {
             try {
-                await submitProductData(2, this.formData);
-                this.$store.dispatch('nextStep');
-                this.$router.push({ name: 'step3' });
+                const response = await submitProductData(2, this.step2);
+                if (response && response.success) {
+                    this.saveFormData({ step: 2, data: this.step2 });
+                    this.$store.dispatch('nextStep');
+                    this.$router.push({ name: 'step3' });
+                } else {
+                    console.error('Invalid response or data format:', response);
+                }
             } catch (error) {
                 console.error('Failed to submit data', error);
             }

@@ -6,7 +6,7 @@
         <form @submit.prevent="submitData" class="card-body p-4">
             <div class="form-group mb-2">
                 <label for="field3">Field 3</label>
-                <input type="text" id="field3" v-model="formData.field3" class="form-control"
+                <input type="text" id="field3" v-model="step3.field3" class="form-control"
                     placeholder="Enter Field 3">
             </div>
             <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
@@ -16,26 +16,28 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions,mapState } from 'vuex';
 import { fetchProductData, submitProductData } from '../services/api';
 
 export default {
     name: 'Step3',
     data() {
         return {
-            formData: {
+            step3: {
                 field3: '',
-                // Add other fields as needed
             },
         };
     },
+    computed: {
+        ...mapState(['formData']), // Access formData from Vuex store
+    },
     methods: {
-        ...mapActions(['prevStep']),
+        ...mapActions(['prevStep','saveFormData']),
         async loadData() {
             try {
                 const response = await fetchProductData(3);
                 if (response && response.data) {
-                    this.formData.field3 = response.data.field3; // Update formData with fetched data
+                    this.step3.field3 = response.data.field3; // Update step3 with fetched data
                 } else {
                     console.error('Invalid response or data format:', response);
                 }
@@ -45,7 +47,13 @@ export default {
         },
         async submitData() {
             try {
-                await submitProductData(3, this.formData);
+                const response = await submitProductData(3, this.step3);
+                if (response && response.success) {
+                    this.saveFormData({ step: 3, data: this.step3 });
+                    this.$router.push({ name: 'step3' });
+                } else {
+                    console.error('Invalid response or data format:', response);
+                }
                 console.log('Form submitted');
                 // Add any additional actions on form submission
             } catch (error) {
