@@ -18,6 +18,8 @@ const api = axios.create({
 // };
 const sampleData = {
     field1: 'Sample Field 1 Data',
+    field2: 'Sample Field 2 Data',
+    field3: 'Sample Field 3 Data',
 };
 
 export const fetchProductData = (step) => {
