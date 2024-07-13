@@ -60,6 +60,8 @@ The e.com repository is a Laravel-based eCommerce web application. It includes v
 **Admin UI:**
 The admin UI is built using the `jeroennoten/laravel-adminlte` package. To install and configure it, follow these steps:
 
+*Not needed Required for setup project, it's just for information*
+
 1. **Install the Package:**
    ```sh
    composer require jeroennoten/laravel-adminlte
