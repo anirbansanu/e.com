@@ -3,20 +3,25 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
+// PATH = resources/js/app.js
 import './bootstrap';
 import { createApp } from 'vue';
-
+import Root from './vue_js/root.vue';
+import router from './vue_js/providers/routes';
+import store from './vue_js/providers/store';
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
  * registering components with the application instance so they are ready
  * to use in your application's views. An example is included for you.
  */
 
-const app = createApp({});
 
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
+
+
+createApp(Root)
+  .use(router)
+  .use(store)
+  .mount('#app');
 
 /**
  * The following block of code may be used to automatically register your
@@ -36,4 +41,4 @@ app.component('example-component', ExampleComponent);
  * scaffolding. Otherwise, you will need to add an element yourself.
  */
 
-app.mount('#app');
+
