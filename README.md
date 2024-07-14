@@ -14,6 +14,11 @@ The e.com repository is a Laravel-based eCommerce web application. It includes v
    composer install
    npm install
    ```
+
+    *if any error occur on `composer install` command. please view
+    [db_templates/Dump20240714.sql](db_templates/Dump20240714.sql) import it on your MySql or
+    MariaDB DBMS and then again run `composer install` command.*
+
 3. **Environment Configuration:**
    Copy `.env.example` to `.env` and configure your environment variables.
    ```sh
