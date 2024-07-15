@@ -1,15 +1,21 @@
 <!-- PATH = resources/js/vue_js/admins/pages/Step2.vue -->
 <template>
     <div class="container">
-        <h1>Step 2</h1>
-        <form @submit.prevent="submitData" class="card-body p-4">
-            <div class="form-group mb-2">
-                <label for="field2">Field 2</label>
-                <input type="text" id="field2" v-model="step2.field2" class="form-control"
-                    placeholder="Enter Field 2">
+        <form @submit.prevent="submitData" class="card">
+            <div class="card-header">
+                <h2 class="card-title">Step 2</h2>
             </div>
-            <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
-            <button type="submit" class="btn btn-primary">Next</button>
+            <div class="card-body">
+                <div class="form-group mb-2">
+                    <label for="field2">Field 2</label>
+                    <input type="text" id="field2" v-model="step2.field2" class="form-control"
+                        placeholder="Enter Field 2">
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </div>
         </form>
     </div>
 </template>

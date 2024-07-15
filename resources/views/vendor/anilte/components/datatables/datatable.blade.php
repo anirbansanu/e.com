@@ -88,7 +88,11 @@
 
                         <td data-th="{{ $th['title'] ?? '' }}" class="{{ $th['class'] ?? '' }}" style="{{ $th['style'] ?? '' }}">
                             @isset($th['html'])
-                                {!! $th['html']($_item) !!}
+                                @if(is_callable($th['html']))
+                                    {!! Blade::render($th['html']($_item)) !!}
+                                @else
+                                    {!! $th['html'] !!}
+                                @endif
                             @else
                                 {{ $_item[$th['data']] ?? '' }}
                             @endisset

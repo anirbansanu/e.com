@@ -17,7 +17,7 @@
             @php
                 $checkboxHtml = function($item) {
 
-                    return "<input type='checkbox' name='has_unit' " . ($item->has_unit ? 'checked' : '') . "
+                    return "<input type='checkbox' name='has_unit' " . ($item->is_active ? 'checked' : '') . "
                                                                 data-bootstrap-switch=''
                                                                 data-size='small'
                                                                 data-on-text='Active'

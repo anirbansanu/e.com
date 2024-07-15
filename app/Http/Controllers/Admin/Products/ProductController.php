@@ -38,9 +38,9 @@ class ProductController extends Controller
             $entries = $request->input('entries', config('app.pagination_limit'));
 
 
-            $products = Product::
+            $products = Product::with(['brand','category','addedBy'])
             // with(['productToVariations','defaultStock.productPrice'])
-            where(function ($q) use ($search) {
+            ->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                     ->orWhere('description', 'like', '%' . $search . '%');
             })

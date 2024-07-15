@@ -2,15 +2,22 @@
 
 <template>
     <div class="container">
-        <h1>Step 3</h1>
-        <form @submit.prevent="submitData" class="card-body p-4">
-            <div class="form-group mb-2">
-                <label for="field3">Field 3</label>
-                <input type="text" id="field3" v-model="step3.field3" class="form-control"
-                    placeholder="Enter Field 3">
+
+        <form @submit.prevent="submitData" class="card">
+            <div class="card-header">
+                <h2 class="card-title">Step 3</h2>
             </div>
-            <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
-            <button type="submit" class="btn btn-success">Submit</button>
+            <div class="card-body">
+                <div class="form-group mb-2">
+                    <label for="field3">Field 3</label>
+                    <input type="text" id="field3" v-model="step3.field3" class="form-control"
+                        placeholder="Enter Field 3">
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
         </form>
     </div>
 </template>
