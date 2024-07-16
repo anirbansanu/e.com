@@ -17,33 +17,33 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <form action="{{route('products.store.stepTwo')}}" method="post">
+                        <form action="{{route('admin.products.listing.store.stepTwo')}}" method="post">
                             @csrf
                             @method("post")
                             <input type="hidden" name="product_id" value="{{$product->id}}">
                             <div class="card card-primary card-tabs">
                                 <div class="card-header  p-0 pt-1">
                                     <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                        <x-tabs.nav-item route="products.index" icon="fas fa-list-alt ">Product List</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="products.create" icon="fas fa-plus-square">Add Product</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="products.trash" icon="fas fa-trash">Trash List</x-tabs.nav-item>
+                                        <x-tabs.nav-item route="admin.products.listing.index" icon="fas fa-list-alt ">Product List</x-tabs.nav-item>
+                                        <x-tabs.nav-item route="admin.products.listing.create" icon="fas fa-plus-square">Add Product</x-tabs.nav-item>
+                                        <x-tabs.nav-item route="admin.products.listing.trash" icon="fas fa-trash">Trash List</x-tabs.nav-item>
                                     </div>
                                 </div>
                                 <div class="card-body mt-4">
 
                                     <ul class="nav nav-tabs" id="tablist" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link {{$step==1?"active":""}} {{isset($step)?"":"active"}}" id="product-details-tab" @if(isset($product)) href="{{route('products.create',["step"=>1,"product_id"=>$product])}}" @else href="{{route('products.create',["step"=>1])}}" @endif aria-selected="true">
+                                            <a class="nav-link {{$step==1?"active":""}} {{isset($step)?"":"active"}}" id="product-details-tab" @if(isset($product)) href="{{route('admin.products.listing.create',["step"=>1,"product_id"=>$product])}}" @else href="{{route('admin.products.listing.create',["step"=>1])}}" @endif aria-selected="true">
                                                 Product Details
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link {{$step==2?"active":""}}" id="variants_tab-tab"  @if(isset($product)) href="{{route('products.create',["step"=>2,"product_id"=>$product])}}" @else href="#variants_tab" @endif >
+                                            <a class="nav-link {{$step==2?"active":""}}" id="variants_tab-tab"  @if(isset($product)) href="{{route('admin.products.listing.create',["step"=>2,"product_id"=>$product])}}" @else href="#variants_tab" @endif >
                                                 Variants
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link {{$step==3?"active":""}}" id="stock-tab" @if(isset($product)) href="{{route('products.create',["step"=>3,"product_id"=>$product])}}" @else href="#stock-tab-block" @endif >
+                                            <a class="nav-link {{$step==3?"active":""}}" id="stock-tab" @if(isset($product)) href="{{route('admin.products.listing.create',["step"=>3,"product_id"=>$product])}}" @else href="#stock-tab-block" @endif >
                                                 Stock
                                             </a>
                                         </li>
