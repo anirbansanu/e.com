@@ -1,7 +1,7 @@
 <!-- PATH = resources/js/vue_js/admins/pages/Step3.vue -->
 
 <template>
-    <div class="container">
+    <div class="container p-2">
 
         <form @submit.prevent="submitData" class="card">
             <div class="card-header">
@@ -11,7 +11,7 @@
                 <div class="form-group mb-2">
                     <label for="field3">Field 3</label>
                     <input type="text" id="field3" v-model="step3.field3" class="form-control"
-                        placeholder="Enter Field 3">
+                        placeholder="Enter Field 3" autofocus>
                 </div>
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary" @click="prevStep">Back</button>
@@ -44,7 +44,12 @@ export default {
             try {
                 const response = await fetchProductData(3);
                 if (response && response.data) {
-                    this.step3.field3 = response.data.field3; // Update step3 with fetched data
+                    if(this.formData.step3.field3){
+                        this.step3.field3 = this.formData.step3.field3;
+                    }
+                    else{
+                        this.step3.field3 = response.data.field3;
+                    }// Update step3 with fetched data
                 } else {
                     console.error('Invalid response or data format:', response);
                 }
