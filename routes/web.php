@@ -60,9 +60,11 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
     Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
         Route::resource('brands', BrandController::class)->except('show');
         Route::post('/brands/{brand}/change-status', [BrandController::class,'changeStatus'])->name('brands.change-status');
+        Route::post('/brands/json', [BrandController::class,'getJsonBrands'])->name('brands.json');
 
         Route::resource('categories', ProductCategoryController::class)->except('show');
-        Route::post('/categories/{category}/change-status', [ProductCategoryController::class,'changeStatus'])->name('categories.change-status');
+        Route::post('/categories/{category}/change-status', [ProductCategoryController::class,'toggleStatus'])->name('categories.change-status');
+        Route::post('/categories/json', [ProductCategoryController::class,'getJsonCategories'])->name('categories.json');
 
         Route::resource('attributes', ProductAttributeController::class)->except('show');
         Route::post('/attributes/{attribute}/change-status', [ProductAttributeController::class,'changeStatus'])->name('attributes.change-status');
@@ -70,6 +72,10 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
         Route::resource('units', ProductUnitController::class)->except('show');
 
         Route::resource('listing', ProductController::class)->except('store');
+
+        Route::post('store/stepOne', [ProductController::class,'storeStepOne'])->name('store.stepOne');
+        Route::post('store/stepTwo', [ProductController::class,'storeStepTwo'])->name('store.stepTwo');
+        Route::post('store/stepThree', [ProductController::class,'storeStepThree'])->name('store.stepThree');
 
     });
 });

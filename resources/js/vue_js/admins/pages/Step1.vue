@@ -14,6 +14,17 @@
                         class="form-control"
                         placeholder="Enter Field 1"
                         @input="handleFieldChange"
+                        autofocus
+                    />
+                </div>
+                <div class="form-group mb-2">
+                    <label for="name">Field 2 Name</label>
+                    <input type="text" id="name"
+                        v-model="step1.name"
+                        class="form-control"
+                        placeholder="Enter Field 2 Name"
+                        @input="handleFieldChange"
+
                     />
                 </div>
                 <div class="d-flex justify-content-end mt-2">
@@ -35,6 +46,7 @@ export default {
         return {
             step1: {
                 field1: '',
+                name:''
             },
         };
     },
@@ -46,8 +58,14 @@ export default {
         async loadData() {
             try {
                 const response = await fetchProductData(1);
-                if (response && response.data) {
-                    this.step1.field1 = response.data.field1; // Update formData with fetched data
+                if (response && response.data ) {
+                    if(this.formData.step1.field1){
+                        this.step1 = this.formData.step1;
+                    }
+                    else{
+                        this.step1.field1 = response.data.field1;
+                    }
+                    // Update formData with fetched data
                 } else {
                     console.error('Invalid response or data format:', response);
                 }
@@ -56,6 +74,7 @@ export default {
             }
         },
         async submitData() {
+            console.log("formData.step1 : " ,this.formData.step1);
             try {
                 const response = await submitProductData(1, this.step1);
                 if (response && response.success) {
@@ -77,6 +96,7 @@ export default {
     },
     created() {
         this.loadData(); // Load data when component is created
+        console.log('Step1 created called.');
     },
     mounted() {
         console.log('Step1 component mounted.');

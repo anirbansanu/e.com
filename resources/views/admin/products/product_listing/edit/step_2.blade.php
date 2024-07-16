@@ -26,9 +26,9 @@
                                     <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                                         <x-tabs.nav-item route="products.index" icon="fas fa-list-alt ">Product List</x-tabs.nav-item>
                                         <x-tabs.nav-item route="products.create" icon="fas fa-plus-square">Add Product</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="products.edit" :route-params="['id'=>$product,'step'=>1]" icon="fas fa-list-alt ">Edit Product</x-tabs.nav-item>
+                                        <x-anilte::tab-nav-item route="admin.products.listing.edit" :routeParams="['listing'=>$product,'step'=>1]" icon="fas fa-list-alt ">Edit Product</x-anilte::tab-nav-item>
                                         <x-tabs.nav-item route="products.trash" icon="fas fa-trash">Trash List</x-tabs.nav-item>
-                                        
+
                                     </div>
                                 </div>
                                 <div class="card-body mt-4">

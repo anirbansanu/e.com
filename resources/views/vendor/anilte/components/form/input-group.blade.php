@@ -11,7 +11,7 @@
         <input
             id="{{ $id }}"
             name="{{ $name }}"
-            value="{{ $value }}"
+            value="{{ old($name,$value??"") }}"
             class="form-control"
             placeholder="{{ $placeholder }}"
             @if (isset($required) && $required)
