@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\Settings\SettingsService;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(SettingsService::class, function ($app) {
+            return new SettingsService();
+        });
     }
 
     /**
@@ -22,14 +26,13 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(SettingsService $settingsService)
     {
         //
-        $settings = cache()->remember('settings', 3600, function () {
-            return \App\Models\Setting::all(['key', 'value'])->pluck('value', 'key')->toArray();
-        });
-
-        config()->set('settings', $settings);
+        if (Schema::hasTable('settings')) {
+            $settings = $settingsService->getSettings();
+            config()->set('settings', $settings);
+        }
 
         // Register custom Blade directive
         Blade::directive('setting', function ($key) {
