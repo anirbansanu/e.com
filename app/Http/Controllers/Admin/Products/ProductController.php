@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Products;
 
+use App\Enums\Gender;
+use App\Enums\PurchaseType;
+use App\Helpers\EnumHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
@@ -53,7 +56,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -63,12 +66,14 @@ class ProductController extends Controller
             $step = $request->get('step',1);
             switch ($step) {
                 case 1:
+                    $genderOptions = EnumHelper::getOptions(Gender::class);
+                    $purchaseTypeOptions = EnumHelper::getOptions(PurchaseType::class);
                     if($request->has("product_id"))
                     {
                         $product = $this->productService->getById($request->get("product_id"));
-                        return view('admin.products.product_listing.create.step_1',compact('product','step'));
+                        return view('admin.products.product_listing.create.step_1',compact('product','step','genderOptions','purchaseTypeOptions'));
                     }
-                    return view('admin.products.product_listing.create.step_1',compact('step'));
+                    return view('admin.products.product_listing.create.step_1',compact('step','genderOptions','purchaseTypeOptions'));
                     break;
                 case 2:
                     if($request->has("product_id"))
@@ -114,7 +119,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -139,7 +144,7 @@ class ProductController extends Controller
 
         } catch (\Exception $e) {
 
-            return redirect()->route('products.create',["step"=>1])->with('error', 'An error occurred.');
+            return redirect()->route('products.create',["step"=>1])->with('error', $e->getMessage());
         }
     }
     public function storeStepThree(Request $request){
@@ -170,7 +175,7 @@ class ProductController extends Controller
             return redirect()->back();
         } catch (\Exception $e) {
 
-            return redirect()->route('products.create',["step"=>2,'product_id'=>$request->get('product_id')])->with('error', 'An error occurred.');
+            return redirect()->route('products.create',["step"=>2,'product_id'=>$request->get('product_id')])->with('error', $e->getMessage());
         }
     }
 
@@ -187,7 +192,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -195,17 +200,20 @@ class ProductController extends Controller
     {
         try {
             $step = $request->get('step',1);
+            $genderOptions = EnumHelper::getOptions(Gender::class);
+            $purchaseTypeOptions = EnumHelper::getOptions(PurchaseType::class);
             switch ($step) {
                 case 1:
                     $product = $this->productService->getById($id);
-                    return view('admin.products.product_listing.edit.step_1',compact('product','step'));
+                    return view('admin.products.product_listing.edit.step_1',compact('product','step','genderOptions','purchaseTypeOptions'));
                     break;
                 case 2:
-                    $product = $this->productService->getById($id,["productToVariations"]);
+                    $product = $this->productService->getBySlug($id,[]);
+                    // $product = $this->productService->getBySlug($id,["productToVariations"]);
                     return view('admin.products.product_listing.edit.step_2',compact('product','step'));
                     break;
                 case 3:
-                    $product = $this->productService->getById($id,["productToVariations"]);
+                    $product = $this->productService->getBySlug($id,["productToVariations"]);
                     // Check if the product has any variations
 
                     if($product->has_variations)
@@ -222,7 +230,7 @@ class ProductController extends Controller
                     return view('admin.products.product_listing.edit.step_1');
                     break;
             }
-            return view('admin.products.product_listing.edit.step_1');
+            return view('admin.products.product_listing.edit.step_1',compact('step','genderOptions','purchaseTypeOptions'));
         }
         catch (ModelNotFoundException $e) {
 
@@ -232,7 +240,7 @@ class ProductController extends Controller
         catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
 
     }
@@ -287,7 +295,7 @@ class ProductController extends Controller
             return redirect()->back();
         } catch (\Exception $e) {
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -370,7 +378,7 @@ class ProductController extends Controller
             // Handle general exceptions
             DB::rollBack();
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -388,7 +396,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -411,7 +419,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -429,7 +437,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -448,7 +456,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             // Handle general exceptions
 
-            return redirect()->back()->with('error', 'An error occurred.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
     /**
