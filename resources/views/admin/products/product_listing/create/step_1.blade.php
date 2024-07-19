@@ -26,7 +26,7 @@
                                 name="product_id" />
                         @endisset
 
-                        <div class="mt-4">
+                        <div class="my-4">
 
                             <ul class="nav nav-tabs" id="tablist" role="tablist">
                                 <li class="nav-item">
@@ -58,31 +58,7 @@
 
                                     <x-anilte::input-group id="name" name="name" :value="$product->name ?? ''"
                                         placeholder="Enter Name" :required="true" label="Name" icon="fas fa-user-tag" />
-                                    @php
-                                        $description_config = [
-                                            'height' => '100',
-                                            'toolbar' => [
-                                                // [groupName, [list of button]]
-                                                ['style', ['bold', 'italic', 'underline', 'clear']],
-                                                ['font', ['strikethrough', 'superscript', 'subscript']],
-                                                ['fontsize', ['fontsize']],
-                                                ['color', ['color']],
-                                                ['para', ['ul', 'ol', 'paragraph']],
-                                                ['height', ['height']],
-                                                //    ['table', ['table']],
-                                                //    ['insert', ['link', 'picture', 'video']],
-                                                //    ['view', ['fullscreen', 'codeview', 'help']],
-                                                ['view', ['fullscreen']],
-                                            ],
-                                        ];
-                                    @endphp
-                                    <x-adminlte-text-editor name="description" label="Description" label-class=""
-                                        igroup-size="sm" placeholder="Write some text..." :config="$description_config">
-                                        @isset($product->description)
-                                            {!! $product->description !!}
-                                        @endisset
 
-                                    </x-adminlte-text-editor>
 
 
                                     <x-anilte::select2
@@ -125,12 +101,46 @@
                                         igroup-size="lg"
                                         placeholder="Select an option of gender..."
                                         :useAjax="false"
-                                        :options="[['id' => 'Female', 'text' => 'Female'], ['id' => 'Male', 'text' => 'Male'], ['id' => 'Male & Female', 'text' => 'Male & Female']]"
+                                        :options="$genderOptions"
                                     />
 
+                                    <x-anilte::select2
+                                        name="purchase_type"
+                                        id="purchase_type"
+                                        label="Purchase Type"
+                                        label-class=""
+                                        select-class="custom-class another-class"
+                                        igroup-size="lg"
+                                        placeholder="Select an option of gender..."
+                                        :useAjax="false"
+                                        :options="$purchaseTypeOptions"
+                                    />
 
+                                    @php
+                                        $description_config = [
+                                            'height' => '100',
+                                            'toolbar' => [
+                                                // [groupName, [list of button]]
+                                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                                ['font', ['strikethrough', 'superscript', 'subscript']],
+                                                ['fontsize', ['fontsize']],
+                                                ['color', ['color']],
+                                                ['para', ['ul', 'ol', 'paragraph']],
+                                                ['height', ['height']],
+                                                //    ['table', ['table']],
+                                                //    ['insert', ['link', 'picture', 'video']],
+                                                //    ['view', ['fullscreen', 'codeview', 'help']],
+                                                ['view', ['fullscreen']],
+                                            ],
+                                        ];
+                                    @endphp
+                                    <x-adminlte-text-editor name="description" label="Description" label-class=""
+                                        igroup-size="sm" placeholder="Write some text..." :config="$description_config">
+                                        @isset($product->description)
+                                            {!! $product->description !!}
+                                        @endisset
 
-
+                                    </x-adminlte-text-editor>
                                     <x-adminlte-input-switch name="is_active" label="Status"
                                         class="d-flex justify-content-end" data-on-text="Active" data-off-text="Inactive"
                                         data-on-color="primary bg-gradient-blue" data-handle-width='51px'
