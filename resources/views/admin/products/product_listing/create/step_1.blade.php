@@ -11,7 +11,8 @@
         close>
         <x-slot name="header">
             <x-anilte::tab-nav-item route="admin.products.listing.index" icon="fas fa-shield-alt">Product
-                Listing</x-anilte::tab-nav-item>
+                Listing
+            </x-anilte::tab-nav-item>
             <x-anilte::tab-nav-item route="admin.products.listing.create" icon="fas fa-plus-square">Create Product
             </x-anilte::tab-nav-item>
         </x-slot>
@@ -83,43 +84,49 @@
 
                                     </x-adminlte-text-editor>
 
-                                    <div class="form-group">
-                                        <label for="category">Category</label>
-                                        <select class="form-control select2bs4" name="category_id" id="category">
-                                            <option value="">Select Category</option>
-                                        </select>
-                                        @error('category_id')
-                                            <span class="error text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="brand">Brand</label>
-                                        <select class="form-control select" name="brand_id" id="brand">
-                                            <option value="">Select Brand</option>
-                                        </select>
-                                        @error('brand')
-                                            <span class="error text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
 
-                                    <x-adminlte-select2 name="gender" label="Gender" label-class="text-lightblue"
-                                        igroup-size="lg" data-placeholder="Select an option of gender...">
-                                        <x-slot name="prependSlot">
-                                            <div class="input-group-text bg-gradient-info">
-                                                <i class="fas fa-venus-mars"></i>
-                                            </div>
-                                        </x-slot>
-                                        <option value="">Select Gender</option>
-                                        <option value="Female" {{ old('gender', $product->gender ?? '') == 'Female' ? 'selected' : '' }}>
-                                            Female
-                                        </option>
-                                        <option value="Male" {{ old('gender', $product->gender ?? '') == 'Male' ? 'selected' : '' }}>
-                                            Male
-                                        </option>
-                                        <option value="Male & Female" {{ old('gender', $product->gender ?? '') == 'Male & Female' ? 'selected' : '' }}>
-                                            Male & Female
-                                        </option>
-                                    </x-adminlte-select2>
+                                    <x-anilte::select2
+                                        name="category_id"
+                                        id="category"
+                                        label="Category"
+                                        label-class=""
+                                        select-class="custom-class another-class"
+                                        igroup-size="lg"
+                                        placeholder="Select an option of category..."
+                                        ajaxRoute="{{ route('admin.products.categories.json') }}"
+                                        :useAjax="true"
+                                        :options="isset($product->category) ? [['id' => $product->category->id, 'text' => $product->category->name]] : []"
+
+                                    />
+
+                                    <x-anilte::select2
+                                        name="brand_id"
+                                        id="brand"
+                                        label="Brand"
+                                        label-class=""
+                                        select-class="custom-class another-class"
+                                        igroup-size="lg"
+                                        placeholder="Select an option of brand..."
+                                        ajaxRoute="{{ route('admin.products.brands.json') }}"
+                                        :useAjax="true"
+                                        :options="isset($product->brand) ? [['id' => $product->brand->id, 'text' => $product->brand->name]] : []"
+
+                                    />
+
+
+
+
+                                    <x-anilte::select2
+                                        name="gender"
+                                        id="gender"
+                                        label="Gender"
+                                        label-class=""
+                                        select-class="custom-class another-class"
+                                        igroup-size="lg"
+                                        placeholder="Select an option of gender..."
+                                        :useAjax="false"
+                                        :options="[['id' => 'Female', 'text' => 'Female'], ['id' => 'Male', 'text' => 'Male'], ['id' => 'Male & Female', 'text' => 'Male & Female']]"
+                                    />
 
 
 
@@ -149,158 +156,4 @@
 
 
 @endsection
-@section('js')
 
-
-
-    {{-- Color Picker , Select 2 , And Update Variants --}}
-    <script>
-        $(document).ready(function() {
-
-            $('#category').select2({
-                width: '100%',
-                theme: 'bootstrap4',
-                ajax: {
-                    url: "{{ route('admin.products.categories.json') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        console.log(params);
-                        return {
-                            q: params.term,
-                            page: params.page || 1
-                        };
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.data.map(function(category) {
-                                return {
-                                    id: category.id,
-                                    text: category.name
-                                };
-                            }),
-                            pagination: {
-                                more: data.current_page < data.last_page
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Select a category',
-
-
-            });
-            $('#brand').select2({
-                width: '100%',
-                theme: 'bootstrap4',
-                ajax: {
-                    url: "{{ route('admin.products.brands.json') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        console.log(params);
-                        return {
-                            q: params.term,
-                            page: params.page || 1
-                        };
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.data.map(function(brand) {
-                                return {
-                                    id: brand.id,
-                                    text: brand.name
-                                };
-                            }),
-                            pagination: {
-                                more: data.current_page < data.last_page
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Select a brand',
-
-
-            });
-            @isset($product)
-                var option = $('<option selected ></option>').val("{{ $product->category->id }}").text(
-                    "{{ $product->category->name }}");
-                $('#category').append(option).trigger('change');
-
-                var option1 = $('<option selected ></option>').val("{{ $product->brand->id }}").text(
-                    "{{ $product->brand->name }}");
-                $('#brand').append(option1).trigger('change');
-            @endisset
-
-
-            $('.select2-single').select2({
-                width: '100%',
-                theme: 'bootstrap4',
-
-                placeholder: $(this).data('placeholder'),
-
-
-            });
-            $(document).on('keyup', '#name', (ev) => {
-                let nameValue = $('#name').val();
-                let slug = slugify(nameValue);
-                $('#slug').val(slug);
-            });
-            $("input[data-bootstrap-switch]").each(function() {
-                $(this).bootstrapSwitch('state', $(this).prop('checked'));
-                $(this).on('switchChange.bootstrapSwitch', function(event, state) {
-                    onSwitchChange(state);
-                });
-            });
-            // Retrieve data from local storage
-            var storedData = [];
-
-            function updateTableContent() {
-                $('#product_variantions_input_table').html("");
-                storedData.forEach(function(data, index) {
-                    var newRow = $(`<tr data-index="${index}">`);
-                    newRow.append($('<td>').html(`${index + 1}`));
-                    newRow.append($('<td>').html(data.variant_name +
-                        '<input type="hidden" name="variantions[variation_id][]" value="' + data
-                        .variation_id + '"/>'));
-                    newRow.append($('<td>').html(data.variant_value +
-                        '<input type="hidden" name="variantions[variant_value][]" value="' + data
-                        .variant_value + '"/>'));
-                    newRow.append($('<td>').html(
-                        `${data.unit_name ?data.unit_name: ""} <input type="hidden" name="variantions[unit_id][]" value="${data.unit_id ?data.unit_id : ""}"/>`
-                        ));
-                    newRow.append($('<td>').html(
-                        ' <a href="#" class="btn btn-info btn-sm delete"><i class="fas fa-trash"></i></a>'
-                        ));
-
-                    // Append the new row
-                    $('#product_variantions_input_table').append(newRow);
-                });
-            }
-
-        });
-
-        function slugify(text) {
-            return text.toString().toLowerCase()
-                .replace(/\s+/g, '_') // Replace spaces with -
-                .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-                .replace(/\-\-+/g, '-') // Replace multiple - with single -
-                .replace(/^-+/, '') // Trim - from start of text
-                .replace(/-+$/, ''); // Trim - from end of text
-        }
-    </script>
-
-
-
-
-
-@endsection

@@ -8,6 +8,7 @@
     'placeholder' => 'Select an option...',
     'ajaxRoute' => '',
     'options' => [],
+    'selected' => null,
     'useAjax' => false
 ])
 
@@ -20,7 +21,7 @@
         <select id="{{ $id }}" name="{{ $name }}" class="form-control select2 {{ $selectClass }}">
             @unless($useAjax)
                 @foreach($options as $option)
-                    <option value="{{ $option['id'] }}" {{ (old($name)==$option['id']) ? 'selected' : '' }}>
+                    <option value="{{ $option['id'] }}" {{ (old($name,$selected ?? "")==$option['id']) ? 'selected' : '' }}>
                         {{ $option['text'] }}
                     </option>
                 @endforeach
