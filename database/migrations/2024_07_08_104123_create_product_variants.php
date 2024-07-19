@@ -13,15 +13,15 @@ class CreateProductToVariations extends Migration
      */
     public function up()
     {
-        Schema::create('product_to_variations', function (Blueprint $table) {
+        Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('variation_id');
-            $table->unsignedBigInteger('unit_id')->nullable(true);
-            $table->string('item')->nullable(true);
-            $table->foreign('unit_id')->references('id')->on('product_units')->onDelete('cascade');
+            $table->string('attribute_name');
+            $table->string('unit_name')->nullable(true);
+            $table->string('attribute_value');
+            $table->boolean('has_unit')->default(false);
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('variation_id')->references('id')->on('product_variations')->onDelete('cascade');
+
             $table->timestamps();
             $table->softDeletes();
         });
