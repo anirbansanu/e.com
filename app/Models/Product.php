@@ -12,6 +12,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\HasTranslatableSlug;
 use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model implements HasMedia
@@ -29,7 +30,7 @@ class Product extends Model implements HasMedia
         'brand_id',
         'added_by',
         'gender',
-        'feature',
+        'purchase_type',
         'is_active',
         'step',
     ];
@@ -95,7 +96,16 @@ class Product extends Model implements HasMedia
             return asset('images/avatar_default.png');
         }
     }
+    public function scopeFindBySlug($query, $slug, $columns = ['*'])
+    {
+        $field = $this->getSlugOptions()->slugField;
 
+        $field = in_array(HasTranslatableSlug::class, class_uses_recursive(static::class))
+            ? "{$field}->{$this->getLocale()}"
+            : $field;
+
+        return $query->where($field, $slug)->first($columns);
+    }
     /**
      * Add Media to api results
      * @return bool
