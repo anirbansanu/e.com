@@ -9,6 +9,7 @@ use App\View\Components\Anilte\Card;
 use App\View\Components\Anilte\TabNavItem;
 use App\View\Components\Anilte\DeleteButton;
 use App\View\Components\Anilte\EditButton;
+use App\View\Components\Anilte\Form\Select2;
 use App\View\Components\Anilte\InputGroup;
 use App\View\Components\Anilte\RestoreButton;
 use App\View\Components\Anilte\ViewButton;
@@ -41,6 +42,7 @@ class AnilteServiceProvider extends ServiceProvider
             'restore-btn' => RestoreButton::class,
             'view-btn' => ViewButton::class,
             'input-group' => InputGroup::class,
+            'select2' => Select2::class
         ];
 
         foreach ($components as $alias => $component) {

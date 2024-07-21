@@ -8,6 +8,7 @@ use App\Models\ProductCategory;
 use App\Models\Brand;
 use App\Models\User;
 use App\Enums\Gender;
+use App\Enums\PurchaseType;
 use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
@@ -43,6 +44,7 @@ class ProductSeeder extends Seeder
                 'brand_id' => $faker->randomElement($brands),
                 'added_by' => $faker->randomElement($users),
                 'gender' => $faker->randomElement(array_column(Gender::cases(), 'value')),
+                'purchase_type' => $faker->randomElement(array_column(PurchaseType::cases(), 'value')),
                 'is_active' => $faker->randomElement([true,false]),
                 'step' => 1,
             ]);

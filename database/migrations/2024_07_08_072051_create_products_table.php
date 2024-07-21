@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Gender;
+use App\Enums\PurchaseType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('brand_id');
             $table->foreignId('added_by');
             $table->enum('gender', array_column(Gender::cases(), 'value'));
+            $table->enum('purchase_type', array_column(PurchaseType::cases(), 'value'));
             $table->boolean('is_active')->default(1)->comment('0 = Inactive, 1 = Active');
             $table->integer('step')->default(0);
             $table->softDeletes();

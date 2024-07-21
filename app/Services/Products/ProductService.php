@@ -201,7 +201,25 @@ class ProductService
         $p = $p->findOrFail($id);
         return $p;
     }
+    public function getBySlug($slug,$relations=[]){
+        // Initialize the query builder for the Product model
+        $query = Product::query();
 
+        // Add relationships if specified
+        if (count($relations) > 0) {
+            $query->with($relations);
+        }
+
+        // Check if the authenticated user has the Vendor role and add a condition if true
+        if (auth()->user()->hasRole("Vendor")) {
+            $query->where("added_by", auth()->id());
+        }
+
+        // Use the findBySlug method provided by the HasSlug trait
+        $product = $query->findBySlug($slug);
+
+        return $product;
+    }
     public function productHasVariations($product_id){
 
         $product = $this->getById($product_id,['productToVariations']);
