@@ -21,9 +21,9 @@ class ProductVariantResource extends JsonResource
             'unit_name' => $this->unit_name,
             'attribute_value' => $this->attribute_value,
             'has_unit' => $this->has_unit,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->created_at?->diffForHumans(),
+            'updated_at' => $this->updated_at?->diffForHumans(),
+            'deleted_at' => $this->deleted_at?->diffForHumans(),
         ];
     }
 }
