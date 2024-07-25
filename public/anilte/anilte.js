@@ -67,7 +67,7 @@ class CustomDataTable {
                 console.log("CustomDataTable success response",response);
             },
             error: function(response) {
-                document.querySelector(`#${self.elementId} #loadingOverlay`).style.display = 'none';
+                document.querySelector(`#loadingOverlay`).style.display = 'none';
                 console.log("CustomDataTable error response",response);
             }
         });
