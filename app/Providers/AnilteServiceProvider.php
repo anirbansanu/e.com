@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\View\Components\Anilte\AnilteDatatable;
+use App\View\Components\Anilte\AjaxDataTable;
 use App\View\Components\Anilte\Card;
 use App\View\Components\Anilte\TabNavItem;
 use App\View\Components\Anilte\DeleteButton;
@@ -42,7 +44,8 @@ class AnilteServiceProvider extends ServiceProvider
             'restore-btn' => RestoreButton::class,
             'view-btn' => ViewButton::class,
             'input-group' => InputGroup::class,
-            'select2' => Select2::class
+            'select2' => Select2::class,
+            'ajax-datatable' => AjaxDataTable::class
         ];
 
         foreach ($components as $alias => $component) {

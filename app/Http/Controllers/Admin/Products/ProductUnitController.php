@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Products\ProductUnitRequest;
+use App\Http\Resources\Product\ProductUnitResource;
 use App\Models\ProductUnit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -163,10 +164,11 @@ class ProductUnitController extends Controller
 
             $productUnits = ProductUnit::where('unit_name', 'like', "%$search%")
                 ->paginate($perPage, ['*'], 'page', $page);
-            return response()->json($productUnits);
+
+            $productUnitsArray = ProductUnitResource::collection($productUnits);
+            return $this->response(200, 'All product to variation relationships retrieved successfully', $productUnitsArray, null);
         } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            return response('',404)->json(['status' => true, 'msg' => $msg]);
+            return $this->response(500, 'Failed to store product to variation relationship', [], $e->getMessage());
         }
     }
 

@@ -4,15 +4,15 @@ namespace App\Traits;
 
 trait ApiTrait
 {
-    public function response($status, $message, $data, $error, $meta = [], $info = [])
+    public function response($status, $message, $data, $errors, $meta = [], $info = [])
     {
-        return is_array($error) ?
+        return is_array($errors) ?
             response()->json([
                 'status'   => $status,
                 'message'  => __($message),
                 'data'     => $data,
                 'meta'     => $meta,
-                'error'    => [],
+                'errors'    => $errors,
                 'info'     => $info,
             ], $status) :
 
@@ -21,10 +21,10 @@ trait ApiTrait
                 'message'  => __($message),
                 'data'     => $data,
                 'meta'     => $meta,
-                'error'    => [
+                'errors'    => [
                     [
                         "field" => "genric",
-                        "errors" => [$error]
+                        "errors" => [$errors]
                     ],
                 ],
                 'info' => $info,

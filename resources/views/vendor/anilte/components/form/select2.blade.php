@@ -9,7 +9,8 @@
     'ajaxRoute' => '',
     'options' => [],
     'selected' => null,
-    'useAjax' => false
+    'useAjax' => false,
+    'template' => ['id' => 'id', 'text' => 'name'] // Adding template as prop
 ])
 
 <div class="form-group">
@@ -21,8 +22,8 @@
         <select id="{{ $id }}" name="{{ $name }}" class="form-control select2 {{ $selectClass }}">
             @unless($useAjax)
                 @foreach($options as $option)
-                    <option value="{{ $option['id'] }}" {{ (old($name,$selected ?? "")==$option['id']) ? 'selected' : '' }}>
-                        {{ $option['text'] }}
+                    <option value="{{ $option[$template['id']] }}" {{ (old($name, $selected ?? "") == $option[$template['id']]) ? 'selected' : '' }}>
+                        {{ $option[$template['text']] }}
                     </option>
                 @endforeach
             @endunless
@@ -56,8 +57,8 @@
                             return {
                                 results: data.data.map(function(item) {
                                     return {
-                                        id: item.id,
-                                        text: item.name
+                                        id: item['{{ $template['id'] }}'],
+                                        text: item['{{ $template['text'] }}']
                                     };
                                 }),
                                 pagination: {
