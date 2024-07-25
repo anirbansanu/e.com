@@ -94,116 +94,25 @@
     $(document).ready(function(){
 
 
-        $('.variant_id').select2({
-            width: '100%',
-            theme: 'bootstrap4',
-            ajax: {
-                url: "{{route('admin.variations.json')}}",
-                type: "POST",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    console.log(params);
-                    return {
-                        q: params.term,
-                        page: params.page || 1
-                    };
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.data.map(function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name,
-                                customData: item.has_unit
-                            };
-                        }),
-                        pagination: {
-                            more: data.current_page < data.last_page
-                        }
-                    };
-                },
 
-                cache: true
-            },
-
-            placeholder : 'Select a variant',
-            templateSelection: function (data, container) {
-                // Add custom attributes to the <option> tag for the selected option
-                $(data.element).attr('data-has-unit', data.customData?true:false);
-                return data.text;
-            },
-
-        });
-        $('.unit_id').select2({
-            width: '100%',
-            theme: 'bootstrap4',
-            ajax: {
-                url: "{{route('admin.product_units.json')}}",
-                type: "POST",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    console.log(params);
-                    return {
-                        q: params.term,
-                        page: params.page || 1
-                    };
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.data.map(function(unit) {
-                            return {
-                                id: unit.id,
-                                text: unit.unit_name
-                            };
-                        }),
-                        pagination: {
-                            more: data.current_page < data.last_page
-                        }
-                    };
-                },
-                cache: true
-            },
-            placeholder : 'Select a unit',
-
-
-        });
-        $('.select2-single').select2({
-            width: '100%',
-            theme: 'bootstrap4',
-
-            placeholder : $(this).data('placeholder'),
-
-
-        });
-
-
-
-        $('#product-to-variant-add-btn').on("click", function(ev) {
+        $('#product-variant-add-btn').on("click", function(ev) {
 
             if (!$("#product-to-variantions-modal form").valid()) {
                 return ;
             }
-            var variant_id = $('#product-to-variantions-modal #variant_id').val();
+            var attribute_name = $('#product-to-variantions-modal #attribute_name').val();
             var variant_value = $('#product-to-variantions-modal #variant_value').val();
-            var unit_id = $('#product-to-variantions-modal #unit_id').val();
+            var unit_name = $('#product-to-variantions-modal #unit_name').val();
 
-            var variant_name = $('#product-to-variantions-modal #variant_id').find(':selected').text();
-            var unit_name = $('#product-to-variantions-modal #unit_id').find(':selected').text();
+            var variant_name = $('#product-to-variantions-modal #attribute_name').find(':selected').text();
+            var unit_name = $('#product-to-variantions-modal #unit_name').find(':selected').text();
 
             $('#product-to-variantions-modal').modal('hide');
             // Push the new data to the array
             storedData.push({
-                variation_id: variant_id,
+                variation_id: attribute_name,
                 variant_value: variant_value,
-                unit_id: unit_id,
+                unit_name: unit_name,
                 variant_name: variant_name,
                 unit_name: unit_name
             });
@@ -227,24 +136,25 @@
 
 
 
-        $('#variant_id').on('change', function(ev) {
-            let value = $('#variant_id').find(':selected').text();
-            var data = $('#variant_id').find(':selected').data('has-unit');
+        $('#attribute_name').on('change', function(ev) {
+            let value = $('#attribute_name').find(':selected').text();
+            var data = $('#attribute_name').find(':selected').data('has-unit');
 
             if(data)
-            $('#unit_id').closest('.form-group').show();
+            $('#unit_name').closest('.form-group').show();
             else
-            $('#unit_id').closest('.form-group').hide();
+            $('#unit_name').closest('.form-group').hide();
 
         });
-        $('#update_variant_id').on('change', function(ev) {
-            let value = $('#update_variant_id').find(':selected').text();
-            var data = $('#update_variant_id').find(':selected').data('has-unit');
+
+        $('#update_attribute_name').on('change', function(ev) {
+            let value = $('#update_attribute_name').find(':selected').text();
+            var data = $('#update_attribute_name').find(':selected').data('has-unit');
 
             if(data)
-            $('#update_unit_id').closest('.form-group').show();
+            $('#update_unit_name').closest('.form-group').show();
             else
-            $('#update_unit_id').closest('.form-group').hide();
+            $('#update_unit_name').closest('.form-group').hide();
 
         });
 
@@ -259,7 +169,7 @@
         var form = $(formId);
         var formData = form.serialize();
         var route = form.attr('data-action')
-        
+
         window.toastr.clear();
         $.ajax({
             type: form.attr('data-method'),

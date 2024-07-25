@@ -4,7 +4,7 @@ namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductToVariationResource extends JsonResource
+class ProductVariantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,16 +17,13 @@ class ProductToVariationResource extends JsonResource
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'variation_id' => $this->variation_id,
-            'unit_id' => $this->unit_id,
-            'variant_value' => $this->variant_value,
-            'variant_name' => $this->whenLoaded('variation',$this->variation->name,null),
-            'unit_name' => $this->whenLoaded('unit',$this->unit?$this->unit->unit_name:null),
+            'attribute_name' => $this->attribute_name,
+            'unit_name' => $this->unit_name,
+            'attribute_value' => $this->attribute_value,
             'has_unit' => $this->has_unit,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'variation' => new VariationResource($this->whenLoaded('variation')),
-            'unit' => new ProductUnitResource($this->whenLoaded('unit')),
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

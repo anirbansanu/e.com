@@ -24,12 +24,12 @@
                             <div class="card card-primary card-tabs">
                                 <div class="card-header  p-0 pt-1">
                                     <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                        <x-tabs.nav-item route="admin.products.listing.index" icon="fas fa-list-alt ">Product List</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="admin.products.listing.create" icon="fas fa-plus-square">Add Product</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="admin.products.listing.trash" icon="fas fa-trash">Trash List</x-tabs.nav-item>
+                                        <x-anilte::tab-nav-item route="admin.products.listing.index" icon="fas fa-list-alt ">Product List</x-anilte::tab-nav-item>
+                                        <x-anilte::tab-nav-item route="admin.products.listing.create" icon="fas fa-plus-square">Add Product</x-anilte::tab-nav-item>
+                                        <x-anilte::tab-nav-item route="admin.products.listing.trash" icon="fas fa-trash">Trash List</x-anilte::tab-nav-item>
                                     </div>
                                 </div>
-                                <div class="card-body mt-4">
+                                <div class="card-body my-4">
 
                                     <ul class="nav nav-tabs" id="tablist" role="tablist">
                                         <li class="nav-item">
@@ -39,7 +39,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link {{$step==2?"active":""}}" id="variants_tab-tab"  @if(isset($product)) href="{{route('admin.products.listing.create',["step"=>2,"product_id"=>$product])}}" @else href="#variants_tab" @endif >
-                                                Variants
+                                                Attributes
                                             </a>
                                         </li>
                                         <li class="nav-item">
@@ -57,7 +57,7 @@
                                                 <div class="card-header">
                                                     <div class="d-flex justify-content-between">
                                                         <span class="card-title">
-                                                            <span class="w-100 h5">Product Variantions</span>
+                                                            <span class="w-100 h5">Product Attributeions</span>
                                                             <br/>
                                                             <span class="w-100 "><small>Add product variants like size, color, weight and others</small></span>
                                                         </span>
@@ -85,7 +85,7 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            </div> <!-- /add Product Variantions card -->
+                                            </div> <!-- /add Product Attributeions card -->
 
                                             <div class="d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary">Save & Next</button>
@@ -118,18 +118,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="">
-                            <label for="variant_id">Variant</label>
-                            <select class="form-control variant_id select2" name="variant_id" id="variant_id">
-                                <option value="">Select Variant</option>
+                            <label for="attribute_name">Attribute</label>
+                            <select class="form-control attribute_name select2" name="attribute_name" id="attribute_name">
+                                <option value="">Select Attribute</option>
                             </select>
-                            @error('variant_id')
+                            @error('attribute_name')
                                 <span class="error text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="form-group">
 
-                        <label for="variant_value">Variant Value</label>
+                        <label for="variant_value">Attribute Value</label>
                         <input type="text" class="form-control"
                                 name="variant_value" id="variant_value" placeholder="Enter variant value" >
                             @error('variant_value')
@@ -169,18 +169,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="">
-                            <label for="variant_id">Variant</label>
-                            <select class="form-control variant_id select2" name="variant_id" id="update_variant_id">
+                            <label for="attribute_name">Attribute</label>
+                            <select class="form-control attribute_name select2" name="attribute_name" id="update_attribute_name">
 
                             </select>
-                            @error('variant_id')
+                            @error('attribute_name')
                                 <span class="error text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="form-group">
 
-                        <label for="variant_value">Variant Value</label>
+                        <label for="variant_value">Attribute Value</label>
                         <input type="text" class="form-control"
                                 name="variant_value" id="update_variant_value" placeholder="Enter variant value" >
                             @error('variant_value')
@@ -211,10 +211,7 @@
 @section('js')
 <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
-<script src="{{asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
 
-<script src="{{asset('admin/plugins/select2/js/select2.min.js')}}"></script>
-<script src="{{asset('admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script>
 
 @include('admin.products.product_listing.create.step_2_js')
 
@@ -324,10 +321,10 @@
             $('#update_unit_id').val(null).trigger('change');
         }
         console.log("has_unit",item.has_unit);
-        $('#update_variant_id').html('');
+        $('#update_attribute_name').html('');
         var $option1 = $('<option selected ></option>').val(item.variation_id).text(item.variant_name);
         $option1.data('has-unit',item.has_unit);
-        $('#update_variant_id').append($option1).trigger('change');
+        $('#update_attribute_name').append($option1).trigger('change');
 
         $('#update_variant_value').val(item.variant_value);
 
@@ -343,7 +340,7 @@
     $(document).on('hidden.bs.modal','.modal', function () {
         $(this).find('form').trigger('reset');
 
-        $(this).find("select[name='variant_id']").val(null).trigger('change');
+        $(this).find("select[name='attribute_name']").val(null).trigger('change');
         $(this).find("select[name='unit_id']").val(null).trigger('change');
     });
     $(document).ready(function() {

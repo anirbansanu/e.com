@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'brand' => new BrandResource($this->whenLoaded('brand')),
             // 'variations' => $this->whenLoaded('productToVariations',$this->groupByVariation(),null),
             'variations' => $this->whenLoaded('productToVariations', function () {
-                return ProductToVariationResource::collection($this->productToVariations)
+                return ProductVariantResource::collection($this->productToVariations)
                     ->groupBy('variant_name');
             }),
             'stock' => StockResource::collection($this->whenLoaded('stocks')),

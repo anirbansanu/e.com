@@ -1,155 +1,132 @@
-@extends('admin.layouts.app')
-@section('title')
-    Add Product
-@endsection
+@extends('layouts.app')
+@section('title', 'Products')
+
+@section('subtitle', 'Products')
+@section('content_header_title', 'Products')
+@section('content_header_subtitle', 'Manage Products')
 @section('css')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<link rel="stylesheet" href="{{asset('admin/plugins/select2/css/select2.min.css')}}">
-<link rel="stylesheet" href="{{asset('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
-<link rel="stylesheet" href="{{asset('admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css')}}">
-<link rel="stylesheet" href="{{asset('admin/plugins/bs-stepper/css/bs-stepper.min.css')}}">
-{{-- DropZone css  --}}
-<link rel="stylesheet" href="{{asset('admin/plugins/dropzone/dropzone.css')}}" />
 @endsection
-@section('content')
-    <div class="content-wrapper pt-3">
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <form action="{{route('products.edit.stepTwo')}}" method="post">
-                            @csrf
-                            @method("post")
-                            <input type="hidden" name="product_id" value="{{$product->id}}">
-                            <div class="card card-primary card-tabs">
-                                <div class="card-header  p-0 pt-1">
-                                    <div class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                        <x-tabs.nav-item route="products.index" icon="fas fa-list-alt ">Product List</x-tabs.nav-item>
-                                        <x-tabs.nav-item route="products.create" icon="fas fa-plus-square">Add Product</x-tabs.nav-item>
-                                        <x-anilte::tab-nav-item route="admin.products.listing.edit" :routeParams="['listing'=>$product,'step'=>1]" icon="fas fa-list-alt ">Edit Product</x-anilte::tab-nav-item>
-                                        <x-tabs.nav-item route="products.trash" icon="fas fa-trash">Trash List</x-tabs.nav-item>
+@section('content_body')
+    <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
+        <x-slot name="header">
+            <x-anilte::tab-nav-item route="admin.products.listing.index" icon="fas fa-shield-alt">Product
+                Listing
+            </x-anilte::tab-nav-item>
+            <x-anilte::tab-nav-item route="admin.products.listing.create" icon="fas fa-plus-square">
+                Create Product
+            </x-anilte::tab-nav-item>
+            <x-anilte::tab-nav-item route="admin.products.listing.edit" routeParams="{{ $product->id }}" icon="fas fa-plus-square">
+                Edit Product
+            </x-anilte::tab-nav-item>
+        </x-slot>
+        <x-slot name="body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="{{ route('admin.products.listing.create') }}" method="post">
+                        @csrf
+                        @method('post')
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                                    </div>
-                                </div>
-                                <div class="card-body mt-4">
+                        <ul class="nav nav-tabs" id="tablist" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link {{ $step == 1 ? 'active' : '' }} {{ isset($step) ? '' : 'active' }}"
+                                    id="product-details-tab"
+                                    href="{{ route('admin.products.listing.edit', ['listing' => $product, 'step' => 1]) }}"
+                                    aria-selected="true">
+                                    Product Details
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $step == 2 ? 'active' : '' }}" id="variants_tab-tab"
+                                    href="{{ route('admin.products.listing.edit', ['listing' => $product, 'step' => 2]) }}">
+                                    Attributes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $step == 3 ? 'active' : '' }}" id="stock-tab"
+                                    href="{{ route('admin.products.listing.edit', ['listing' => $product, 'step' => 3]) }}">
+                                    Stock
+                                </a>
+                            </li>
 
-                                    <ul class="nav nav-tabs" id="tablist" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link {{$step==1?"active":""}} {{isset($step)?"":"active"}}" id="product-details-tab" href="{{route('products.edit',["id"=>$product,"step"=>1])}}" aria-selected="true">
-                                                Product Details
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link {{$step==2?"active":""}}" id="variants_tab-tab" href="{{route('products.edit',["id"=>$product,"step"=>2])}}" >
-                                                Variants
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link {{$step==3?"active":""}}" id="stock-tab"  href="{{route('products.edit',["id"=>$product,"step"=>3])}}" >
-                                                Stock
-                                            </a>
-                                        </li>
+                        </ul>
+                        <div class="tab-content p-sm-2 p-lg-3 border-right border-left border-bottom" id="tabListContent">
 
-                                    </ul>
-                                    <div class="tab-content p-sm-2 p-lg-3 border-right border-left border-bottom" id="tabListContent">
-
-                                        <div class="tab-pane fade active show" id="variants_tab" role="tabpanel"
-                                            aria-labelledby="custom-content-below-profile-tab">
-                                            <div class="card border-0 shadow-none">
-                                                <div class="card-header">
-                                                    <div class="d-flex justify-content-between">
-                                                        <span class="card-title">
-                                                            <span class="w-100 h5">Product Variantions</span>
-                                                            <br/>
-                                                            <span class="w-100 "><small>Add product variants like size, color, weight and others</small></span>
-                                                        </span>
-                                                        <div class="card-tools m-0">
-                                                            <button type="button" class="btn btn-sm btn-primary " data-toggle="modal" data-target="#product-to-variantions-modal" title="Add Variation">
-                                                            <i class="fas fa-plus"></i>
-                                                            ADD
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body" >
-                                                    <table class="table table-hover text-nowrap border">
-                                                        <thead class="border-top">
-                                                            <tr>
-                                                                <th>Sl no.</th>
-                                                                <th>Name </th>
-                                                                <th>Value</th>
-                                                                <th>Unit</th>
-                                                                <th style="width: 200px">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="productToVariationTableBody">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div> <!-- /add Product Variantions card -->
-
-                                            <div class="d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-primary">Update & Next</button>
+                            <div class="tab-pane fade active show" id="variants_tab" role="tabpanel"
+                                aria-labelledby="custom-content-below-profile-tab">
+                                <div class="card border-0 shadow-none">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="card-title">
+                                                <span class="w-100 h5">Product Attributeions</span>
+                                                <br />
+                                                <span class="w-100 "><small>Add product variants like size, color, weight
+                                                        and others</small></span>
+                                            </span>
+                                            <div class="card-tools m-0">
+                                                <button type="button" class="btn btn-sm btn-primary " data-toggle="modal" data-target="#products-variants-modal" title="Add Variant">
+                                                    <i class="fas fa-plus"></i>
+                                                    ADD
+                                                </button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="card-body" id="variant-table-container">
+                                        <x-anilte::ajax-datatable
+                                            :columns="[['data'=>'attribute_name','title'=>'Attribute Name'],['data'=>'attribute_value','title'=>'Attribute Value'], ['data'=>'unit_name','title'=>'Unit Name'], ['data'=>'updated_at','title'=>'Updated At']]"
+                                            fetch-url="{{ route('admin.products.variants.index') }}"
+                                            :action-buttons="
+                                                '<button class=\'btn btn-sm btn-primary\' onclick=\'editItem(:id)\'>Edit</button>
+                                                <button class=\'btn btn-sm btn-danger\' onclick=\'deleteItem(:id)\'>Delete</button>'"
+                                            :page-size="10"
+                                        />
 
                                     </div>
+                                </div> <!-- /add Product Attributeions card -->
 
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">Update & Next</button>
                                 </div>
-
                             </div>
 
-                        </form>
-                    </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
-        </section>
-    </div>
+        </x-slot>
+    </x-anilte::card>
 
-    <div class="modal fade" id="product-to-variantions-modal">
-        <form class="modal-dialog modal-lg" id="add_variant" data-action="{{route('admin.productVariations.ajax.store')}}" data-method="post">
-            <input type="hidden" name="product_id" value="{{$product->id}}">
+    <div class="modal fade" id="products-variants-modal">
+        <form class="modal-dialog modal-lg" id="add_variant" data-action="{{ route('admin.products.variants.store') }}"
+            data-method="post">
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Variation</h4>
+                    <h4 class="modal-title">Add Variant</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <div class="">
-                            <label for="variant_id">Variant</label>
-                            <select class="form-control variant_id select2" name="variant_id" id="variant_id">
-                                <option value="">Select Variant</option>
-                            </select>
-                            @error('variant_id')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form-group">
 
-                        <label for="variant_value">Variant Value</label>
-                        <input type="text" class="form-control"
-                                name="variant_value" id="variant_value" placeholder="Enter variant value" >
-                            @error('variant_value')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
+                    <x-anilte::select2 name="attribute_name" id="attribute_name" label="Attribute" label-class=""
+                        select-class="custom-class another-class" igroup-size="lg"
+                        placeholder="Select an option of attribute..."
+                        ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]"
+                        :template="['id' => 'name', 'text' => 'name']"
+                    />
+                    <x-anilte::input-group id="attribute_value" name="attribute_value" label="Attribute Value"
+                        value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
 
-                    </div>
-                    <div class="form-group" style="display: none">
-                        <div class="">
-                            <label for="unit_id">Unit</label>
-                            <select class="form-control unit_id select2 " name="unit_id" id="unit_id">
-
-                            </select>
-                            @error('unit_id')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                    <x-anilte::select2 name="unit_name" style="display: none;" id="unit_name" label="Units" label-class=""
+                        select-class="custom-class another-class" igroup-size="lg"
+                        placeholder="Select an option of unit name..."
+                        ajaxRoute="{{ route('admin.products.units.json') }}"
+                        :useAjax="true"
+                        :options="[]"
+                        :template="['id' => 'name', 'text' => 'name']"
+                    />
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -158,12 +135,13 @@
             </div>
         </form>
     </div>
-    <div class="modal fade" id="product-to-variantions-update-modal">
-        <form class="modal-dialog modal-lg" id="update_variant" data-method="post">
-            <input type="hidden" name="product_id" value="{{$product->id}}">
+    <div class="modal fade" id="products-variants-update-modal">
+        <form class="modal-dialog modal-lg" id="update_variant" data-method="post"
+            data-action="{{ route('admin.products.variants.store') }}">
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Update Variation</h4>
+                    <h4 class="modal-title">Update Variant</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -171,60 +149,52 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="">
-                            <label for="variant_id">Variant</label>
-                            <select class="form-control variant_id select2" name="variant_id" id="update_variant_id">
+                            <label for="attribute_name">Attribute</label>
+                            <select class="form-control attribute_name select2" name="attribute_name"
+                                id="update_attribute_name">
 
                             </select>
-                            @error('variant_id')
+                            @error('attribute_name')
                                 <span class="error text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
-                    <div class="form-group">
+                    <x-anilte::select2 name="attribute_name" id="update_attribute_name" label="Attribute" label-class=""
+                        select-class="custom-class another-class" igroup-size="lg"
+                        placeholder="Select an option of attribute..."
+                        ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]" />
 
-                        <label for="variant_value">Variant Value</label>
-                        <input type="text" class="form-control"
-                                name="variant_value" id="update_variant_value" placeholder="Enter variant value" >
-                            @error('variant_value')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
-
-                    </div>
-                    <div class="form-group" style="display: none">
-                        <div class="">
-                            <label for="unit_id">Unit</label>
-                            <select class="form-control unit_id select2 " name="unit_id" id="update_unit_id">
-
-                            </select>
-                            @error('unit_id')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                    <x-anilte::input-group id="update_attribute_value" name="attribute_value" label="Attribute Value"
+                        value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
+                    <x-anilte::select2 name="unit_name" id="update_unit_name" label="Units" label-class=""
+                        select-class="custom-class another-class" igroup-size="lg"
+                        placeholder="Select an option of unit name..."
+                        ajaxRoute="{{ route('admin.products.units.json') }}" :useAjax="true" :options="[]" />
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="updateBtn" data-form="#update_variant">Update</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn"
+                        data-form="#update_variant">Update</button>
                 </div>
             </div>
         </form>
     </div>
 @endsection
-@section('js')
-<script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+@push('js')
+    {{-- <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script> --}}
+    <script src="{{asset("anilte/ajax-form-handler.js")}}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            new AjaxFormHandler('#products-variants-modal', '#add_variant', '#submitBtn');
+        });
+    </script>
+    {{-- @include('admin.products.product_listing.create.step_2_js') --}}
 
-<script src="{{asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
-
-<script src="{{asset('admin/plugins/select2/js/select2.min.js')}}"></script>
-<script src="{{asset('admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script>
-
-@include('admin.products.product_listing.create.step_2_js')
-
-<script>
+{{-- <script>
     // Usage example:
-    const productToVariationDataTable = new AjaxDataTable(
-        '{{route("admin.productVariations.ajax.getByProductId")}}/?product_id={{$product->id}}',
-        '#productToVariationTableBody',
+    const productToVariantDataTable = new AjaxDataTable(
+        '{{route("admin.productVariants.ajax.getByProductId")}}/?product_id={{$product->id}}',
+        '#productToVariantTableBody',
         [
             { field: '#' },
             { field: 'variant_name' },
@@ -234,13 +204,13 @@
         ],
         {
             customActions: [
-                { label: `<i class="fas fa-pencil-alt "></i> Edit`, buttonClass: 'btn btn-info mr-2 edit', attributes: `href="{{url('admin/product-variations/ajax/edit')}}" data-modal="#product-to-variantions-update-modal"` },
+                { label: `<i class="fas fa-pencil-alt "></i> Edit`, buttonClass: 'btn btn-info mr-2 edit', attributes: `href="{{url('admin/product-variations/ajax/edit')}}" data-modal="#product-to-variants-update-modal"` },
                 { label: '<i class="fas fa-trash "></i> Delete', buttonClass: 'btn btn-danger mr-2 delete', attributes: `href="{{url('admin/product-variations/ajax/delete')}}"` }
             ]
         }
     );
     // Fetch data and render it in the table
-    productToVariationDataTable.fetchDataAndRender();
+    productToVariantDataTable.fetchDataAndRender();
 
     $(document).on('click','.edit',function (ev) {
         ev.preventDefault();
@@ -288,7 +258,7 @@
             success: function(response) {
                 if (response.success) {
                     // If the request is successful, populate the update modal with the retrieved stock data
-                    productToVariationDataTable.fetchDataAndRender();
+                    productToVariantDataTable.fetchDataAndRender();
                     toastr["success"](response.message);
 
                     // toastr["success"](response.message);
@@ -326,10 +296,10 @@
             $('#update_unit_id').val(null).trigger('change');
         }
         console.log("has_unit",item.has_unit);
-        $('#update_variant_id').html('');
+        $('#update_attribute_name').html('');
         var $option1 = $('<option selected ></option>').val(item.variation_id).text(item.variant_name);
         $option1.data('has-unit',item.has_unit);
-        $('#update_variant_id').append($option1).trigger('change');
+        $('#update_attribute_name').append($option1).trigger('change');
 
         $('#update_variant_value').val(item.variant_value);
 
@@ -345,7 +315,7 @@
     $(document).on('hidden.bs.modal','.modal', function () {
         $(this).find('form').trigger('reset');
 
-        $(this).find("select[name='variant_id']").val(null).trigger('change');
+        $(this).find("select[name='attribute_name']").val(null).trigger('change');
         $(this).find("select[name='unit_id']").val(null).trigger('change');
     });
     $(document).ready(function() {
@@ -354,8 +324,8 @@
             submitFormAjax($(this).data('form'), function(data) {
                 // Success callback function
 
-                $('#product-to-variantions-modal').modal('hide');
-                productToVariationDataTable.fetchDataAndRender();
+                $('#product-to-variants-modal').modal('hide');
+                productToVariantDataTable.fetchDataAndRender();
             }, function(data) {
                 // Error callback function
                 console.log("Form submission failed!");
@@ -367,8 +337,8 @@
             submitFormAjax($(this).data('form'), function(data) {
                 // Success callback function
 
-                $('#product-to-variantions-update-modal').modal('hide');
-                productToVariationDataTable.fetchDataAndRender();
+                $('#product-to-variants-update-modal').modal('hide');
+                productToVariantDataTable.fetchDataAndRender();
             }, function(data) {
                 // Error callback function
                 console.log("Form submission failed!");
@@ -377,7 +347,5 @@
         });
 
     });
-</script>
-
-
-@endsection
+</script> --}}
+@endpush

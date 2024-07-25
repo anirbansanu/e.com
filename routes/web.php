@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Products\ProductAttributeController;
 use App\Http\Controllers\Admin\Products\ProductCategoryController;
 use App\Http\Controllers\Admin\Products\ProductController;
 use App\Http\Controllers\Admin\Products\ProductUnitController;
+use App\Http\Controllers\Admin\Products\ProductVariantController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
@@ -68,14 +69,19 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
 
         Route::resource('attributes', ProductAttributeController::class)->except('show');
         Route::post('/attributes/{attribute}/change-status', [ProductAttributeController::class,'changeStatus'])->name('attributes.change-status');
+        Route::post('attributes/json', [ProductAttributeController::class, 'getJson'])->name('attributes.json');
 
         Route::resource('units', ProductUnitController::class)->except('show');
+        Route::post('units/json', [ProductUnitController::class, 'getJson'])->name('units.json');
 
         Route::resource('listing', ProductController::class)->except('store');
 
         Route::post('store/stepOne', [ProductController::class,'storeStepOne'])->name('store.stepOne');
         Route::post('store/stepTwo', [ProductController::class,'storeStepTwo'])->name('store.stepTwo');
         Route::post('store/stepThree', [ProductController::class,'storeStepThree'])->name('store.stepThree');
+
+        Route::apiResource('variants', ProductVariantController::class);
+        Route::get('variants/byproduct', [ProductVariantController::class, 'getByProductId'])->name('variants.byproduct');
 
     });
 });

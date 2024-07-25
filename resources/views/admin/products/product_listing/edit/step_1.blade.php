@@ -148,7 +148,7 @@
                                             :checked="$product->is_active"
                                         />
                                         <div class="d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary" >Save & Next</button>
+                                            <button type="submit" class="btn btn-primary" >Update & Next</button>
                                         </div>
                                     </div>
 

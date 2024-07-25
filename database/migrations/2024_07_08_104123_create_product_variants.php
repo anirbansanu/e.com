@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductToVariations extends Migration
+class CreateProductVariants extends Migration
 {
     /**
      * Run the migrations.
@@ -34,6 +34,6 @@ class CreateProductToVariations extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_to_variations');
+        Schema::dropIfExists('product_variants');
     }
 }
