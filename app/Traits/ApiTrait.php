@@ -12,7 +12,7 @@ trait ApiTrait
                 'message'  => __($message),
                 'data'     => $data,
                 'meta'     => $meta,
-                'errors'    => [],
+                'errors'    => $errors,
                 'info'     => $info,
             ], $status) :
 
