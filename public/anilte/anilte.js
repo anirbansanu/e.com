@@ -88,14 +88,26 @@ class CustomDataTable {
         tbody.innerHTML = '';
         data.forEach(row => {
             const tr = document.createElement('tr');
+
+            // Create table cells for each column
             this.columns.forEach(column => {
                 const td = document.createElement('td');
                 td.textContent = row[column.data];
                 tr.appendChild(td);
             });
+
+            // Create the action buttons cell
             if (this.actionButtons) {
                 const actionTd = document.createElement('td');
-                actionTd.innerHTML = this.actionButtons.replace(/:id/g, row.id); // Replace :id with actual row id
+                actionTd.setAttribute("data-id", row["id"]);
+                let dataAttrs = "";
+                this.columns.forEach(column => {
+                    actionTd.setAttribute(column.data, row[column.data]);
+                    dataAttrs += "data-"+column.data+"='"+row[column.data]+"'";
+                });
+                actionTd.setAttribute("data-id", row['id']);
+                dataAttrs += "data-id='"+row['id']+"'";
+                actionTd.innerHTML = this.actionButtons.replace(/:data/g, dataAttrs); // Replace :id with actual row id
                 tr.appendChild(actionTd);
             }
             tbody.appendChild(tr);
@@ -122,3 +134,129 @@ class CustomDataTable {
         }
     }
 }
+
+
+class ModalFormHandler {
+    constructor(modalSelector, formSelector, submitBtnSelector, closeModalBtnSelector) {
+        this.modal = document.querySelector(modalSelector);
+        this.form = document.querySelector(formSelector);
+        this.submitBtn = document.querySelector(submitBtnSelector);
+        this.closeModalBtn = document.querySelector(closeModalBtnSelector);
+        this.init();
+    }
+
+    init() {
+        this.addSubmitEvent();
+    }
+
+    addSubmitEvent() {
+        this.submitBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.submitForm();
+        });
+    }
+
+    populateFormData(data) {
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const input = this.form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = data[key];
+                }
+            }
+        }
+    }
+
+    showModal(data = null) {
+        if (data) {
+            this.populateFormData(data);
+        }
+        $(this.modal).modal('show');
+    }
+
+    hideModal() {
+        $(this.modal).modal('hide');
+    }
+
+    submitForm() {
+        const formData = new FormData(this.form);
+        const method = this.form.dataset.method || 'POST';
+        const action = this.form.dataset.action || '';
+
+        fetch(action, {
+            method: method,
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.errors) {
+                this.displayValidationErrors(data.errors);
+            } else {
+                this.hideModal();
+                this.displaySuccessMessage(data.message);
+            }
+        })
+        .catch(error => {
+            this.displayErrorMessage('An unexpected error occurred. Please try again.');
+        });
+    }
+
+    displayValidationErrors(errors) {
+        for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+                const errorElement = this.form.querySelector(`[name="${key}"]`).nextElementSibling;
+                if (errorElement) {
+                    errorElement.textContent = errors[key][0];
+                }
+            }
+        }
+    }
+
+    displaySuccessMessage(message) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    }
+
+    displayErrorMessage(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    }
+}
+
+// Initialize the modal form handler when the document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const modalFormHandler = new ModalFormHandler(
+        '#products-variants-update-modal',
+        '#update_variant',
+        '#updateBtn',
+        '.close'
+    );
+
+    // Assuming you have some logic to trigger the modal and populate data
+    // Example:
+    document.querySelector('#someTriggerButton').addEventListener('click', () => {
+        const data = {
+            attribute_name: 'Some Attribute',
+            attribute_value: 'Some Value',
+            unit_name: 'Some Unit'
+        };
+        modalFormHandler.showModal(data);
+    });
+});
