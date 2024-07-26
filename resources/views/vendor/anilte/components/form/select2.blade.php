@@ -10,7 +10,7 @@
     'options' => [],
     'selected' => null,
     'useAjax' => false,
-    'template' => ['id' => 'id', 'text' => 'name'] // Adding template as prop
+    'template' => ['id' => 'id', 'text' => 'text'] // Adding template as prop
 ])
 
 <div class="form-group">
@@ -23,7 +23,7 @@
             @unless($useAjax)
                 @foreach($options as $option)
                     <option value="{{ $option[$template['id']] }}" {{ (old($name, $selected ?? "") == $option[$template['id']]) ? 'selected' : '' }}>
-                        {{ $option[$template['text']] }}
+                        {{ $option[$template['text']] ?? ""}}
                     </option>
                 @endforeach
             @endunless
@@ -74,7 +74,9 @@
 
                 @if(!empty($options))
                     @foreach($options as $option)
-                        var option = new Option("{{ $option['text'] }}", "{{ $option['id'] }}", true, true);
+
+                        var option = new Option(" {!! $option[$template['text']] !!}","{!! $option[$template['id']] !!}", true, true);
+
                         $('#{{ $id }}').append(option).trigger('change');
                     @endforeach
                 @endif

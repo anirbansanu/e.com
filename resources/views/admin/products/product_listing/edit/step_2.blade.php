@@ -76,8 +76,8 @@
                                             :columns="[['data'=>'attribute_name','title'=>'Attribute Name'],['data'=>'attribute_value','title'=>'Attribute Value'], ['data'=>'unit_name','title'=>'Unit Name'], ['data'=>'updated_at','title'=>'Updated At']]"
                                             fetch-url="{{ route('admin.products.variants.index') }}"
                                             :action-buttons="
-                                                '<button class=\'btn btn-sm btn-primary\' onclick=\'editItem(:id)\'>Edit</button>
-                                                <button class=\'btn btn-sm btn-danger\' onclick=\'deleteItem(:id)\'>Delete</button>'"
+                                                '<button class=\'btn btn-sm btn-primary\' :data>Edit</button>
+                                                <button class=\'btn btn-sm btn-danger\' :data>Delete</button>'"
                                             :page-size="10"
                                         />
 

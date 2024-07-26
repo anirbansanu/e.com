@@ -66,8 +66,8 @@
                                             placeholder="Select an option of category..."
                                             ajaxRoute="{{ route('admin.products.categories.json') }}"
                                             :useAjax="true"
-                                            :options="isset($product->category) ? [['id' => $product->category->id, 'text' => $product->category->name]] : []"
-
+                                            :options="isset($product->category) ? [['id' => $product->category->id, 'name' => $product->category->name]] : []"
+                                            :template="['id' => 'id', 'text' => 'name']"
                                         />
 
                                         <x-anilte::select2
@@ -80,8 +80,8 @@
                                             placeholder="Select an option of brand..."
                                             ajaxRoute="{{ route('admin.products.brands.json') }}"
                                             :useAjax="true"
-                                            :options="isset($product->brand) ? [['id' => $product->brand->id, 'text' => $product->brand->name]] : []"
-
+                                            :options="isset($product->brand) ? [['id' => $product->brand->id, 'name' => $product->brand->name]] : []"
+                                            :template="['id' => 'id', 'text' => 'name']"
                                         />
 
 
