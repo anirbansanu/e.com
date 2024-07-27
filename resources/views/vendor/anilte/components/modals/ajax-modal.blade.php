@@ -24,7 +24,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize the ModalFormHandler for each modal instance
-        new ModalFormHandler('#products-variants-update-modal', 'form', '#updateBtn', '.close');
+        new ModalFormHandler('#{{ $id }}', `#{{ $formId }}`, `#{{ $buttonId }}`, '.close');
     });
 </script>
 @endPushOnce

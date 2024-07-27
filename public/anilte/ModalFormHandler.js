@@ -27,7 +27,8 @@ class ModalFormHandler {
             if (data.hasOwnProperty(key)) {
                 const input = this.form.querySelector(`[name="${key}"]`);
                 if ($(input).hasClass('select2')) {
-                    $(input).val(data[key]).trigger('change');
+                    let option = new Option(data[key],data[key], true, true);
+                    $(input).append(option).trigger('change');
                     console.log("select2 : ",input);
                     continue;
                 }

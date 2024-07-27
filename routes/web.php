@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
         Route::post('store/stepThree', [ProductController::class,'storeStepThree'])->name('store.stepThree');
 
         Route::apiResource('variants', ProductVariantController::class);
-        Route::get('variants/byproduct', [ProductVariantController::class, 'getByProductId'])->name('variants.byproduct');
+        Route::get('variants/byproduct/{slug}', [ProductVariantController::class, 'getByProductSlug'])->name('variants.byproduct');
 
     });
 });

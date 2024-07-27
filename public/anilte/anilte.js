@@ -15,8 +15,8 @@ class CustomDataTable {
 
     init() {
         this.renderHeader();
-        this.bindEvents();
         this.fetchData();
+        this.bindEvents();
         console.log("CustomDataTable init called");
     }
 
@@ -33,15 +33,29 @@ class CustomDataTable {
             self.fetchData();
         });
 
-        document.querySelector(`#${this.elementId}`).addEventListener('click', function(event) {
-            if (event.target.matches('#pagination button')) {
+        document.querySelector(`#${this.elementId} #pagination`).addEventListener('click', function(event) {
+            if (event.target.matches('button')) {
                 self.currentPage = event.target.dataset.page;
                 self.fetchData();
-            } else if (event.target.matches('.sortable')) {
-                self.sortColumn = event.target.dataset.column;
-                self.sortDirection = self.sortDirection === 'asc' ? 'desc' : 'asc';
-                self.fetchData();
             }
+        });
+        document.querySelector(`#${this.elementId} .sortable`).addEventListener('click', function(event) {
+            self.sortColumn = event.target.dataset.column;
+            self.sortDirection = self.sortDirection === 'asc' ? 'desc' : 'asc';
+            self.fetchData();
+        });
+
+        document.querySelector(`#${this.elementId} tbody`).addEventListener('click', function(event) {
+            event.preventDefault();
+            if (event.target && event.target.matches(`.edit-ajax`)) {
+                event.preventDefault();
+                console.log("edit-ajax called");
+            }
+            if (event.target && event.target.matches(`.delete-ajax`)) {
+                event.preventDefault();
+                console.log("delete-ajax called");
+            }
+
         });
     }
 

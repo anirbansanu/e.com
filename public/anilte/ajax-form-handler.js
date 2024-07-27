@@ -1,8 +1,8 @@
 class AjaxFormHandler {
     constructor(modalSelector, formSelector, submitBtnSelector) {
         this.modalSelector = modalSelector ? modalSelector : null;
-        this.form = document.querySelector(formSelector);
-        this.submitBtn = document.querySelector(submitBtnSelector);
+        this.form = document.querySelector(modalSelector+" "+formSelector);
+        this.submitBtn = document.querySelector(modalSelector+" "+submitBtnSelector);
         this.init();
     }
 

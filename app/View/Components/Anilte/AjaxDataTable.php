@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Anilte;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\Component;
 
 class AjaxDataTable extends Component

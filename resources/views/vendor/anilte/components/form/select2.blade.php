@@ -54,6 +54,7 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         processResults: function(data) {
+                            console.log("#{{$id}} select2 initiated");
                             return {
                                 results: data.data.map(function(item) {
                                     return {

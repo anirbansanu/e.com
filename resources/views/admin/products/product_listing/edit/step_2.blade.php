@@ -39,7 +39,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ $step == 2 ? 'active' : '' }}" id="variants_tab-tab"
                                     href="{{ route('admin.products.listing.edit', ['listing' => $product, 'step' => 2]) }}">
-                                    Attributes
+                                    Variants
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -58,7 +58,7 @@
                                     <div class="card-header">
                                         <div class="d-flex justify-content-between">
                                             <span class="card-title">
-                                                <span class="w-100 h5">Product Attributeions</span>
+                                                <span class="w-100 h5">Product Variants</span>
                                                 <br />
                                                 <span class="w-100 "><small>Add product variants like size, color, weight
                                                         and others</small></span>
@@ -74,10 +74,10 @@
                                     <div class="card-body" id="variant-table-container">
                                         <x-anilte::ajax-datatable
                                             :columns="[['data'=>'attribute_name','title'=>'Attribute Name'],['data'=>'attribute_value','title'=>'Attribute Value'], ['data'=>'unit_name','title'=>'Unit Name'], ['data'=>'updated_at','title'=>'Updated At']]"
-                                            fetch-url="{{ route('admin.products.variants.index') }}"
+                                            fetch-url="{{ route('admin.products.variants.byproduct',['slug'=>$product->slug]) }}"
                                             :action-buttons="
-                                                '<button class=\'btn btn-sm btn-primary\' data-toggle=\'modal\' data-target=\'#products-variants-update-modal\' :data>Edit</button>
-                                                <button class=\'btn btn-sm btn-danger\' :data>Delete</button>'"
+                                                '<button class=\'btn btn-sm edit-ajax btn-primary\' data-toggle=\'modal\' data-target=\'#products-variants-update-modal\' :data>Edit</button>
+                                                <button class=\'btn btn-sm delete-ajax btn-danger\' :data>Delete</button>'"
                                             :page-size="10"
                                         />
 
@@ -181,9 +181,41 @@
     </div> --}}
     <x-anilte::modals.ajax-modal id="products-variants-update-modal" form-id="update_variant" method="post" action="{{ route('admin.products.variants.store') }}" title="Update Variant" button-id="updateBtn">
         <input type="hidden" name="product_id" value="{{ $product->id }}">
-        <x-anilte::select2 name="attribute_name" id="update_attribute_name" label="Attribute" label-class="" select-class="" igroup-size="lg" placeholder="Select an option of attribute..." ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]" />
-        <x-anilte::input-group id="update_attribute_value" name="attribute_value" label="Attribute Value" value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
-        <x-anilte::select2 name="unit_name" id="update_unit_name" label="Units" label-class="" select-class="" igroup-size="lg" placeholder="Select an option of unit name..." ajaxRoute="{{ route('admin.products.units.json') }}" :useAjax="true" :options="[]" />
+        <x-anilte::select2
+            name="attribute_name"
+            id="update_attribute_name"
+            label="Attribute"
+            label-class=""
+            select-class=""
+            igroup-size="lg"
+            placeholder="Select an option of attribute..."
+            ajaxRoute="{{ route('admin.products.attributes.json') }}"
+            :useAjax="true"
+            :options="[]"
+            :template="['id' => 'id', 'text' => 'name']"
+        />
+        <x-anilte::input-group
+            id="update_attribute_value"
+            name="attribute_value"
+            label="Attribute Value"
+            value=""
+            placeholder="Enter Attribute Value"
+            :required="true"
+            icon="fas fa-keyboard"
+        />
+        <x-anilte::select2
+            name="unit_name"
+            id="update_unit_name"
+            label="Units"
+            label-class=""
+            select-class=""
+            igroup-size="lg"
+            placeholder="Select an option of unit name..."
+            ajaxRoute="{{ route('admin.products.units.json') }}"
+            :useAjax="true"
+            :options="[]"
+            :template="['id' => 'id', 'text' => 'name']"
+        />
     </x-anilte::modals.ajax-modal>
 @endsection
 @push('js')
