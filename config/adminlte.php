@@ -582,7 +582,7 @@ return [
             'files' => [
                 [
                     'type' => 'css',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => 'vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css',
                 ],
                 [
@@ -607,7 +607,7 @@ return [
                 ],
             ],
         ],
-        
+
     ],
 
     /*
