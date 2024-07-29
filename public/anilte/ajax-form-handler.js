@@ -69,7 +69,11 @@ class AjaxFormHandler {
         Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: data.message || 'The variant has been successfully added!',
+            text: message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
         });
     }
 
@@ -77,7 +81,11 @@ class AjaxFormHandler {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: error.message || 'An error occurred while processing your request.',
+            text: message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
         });
     }
 

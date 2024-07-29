@@ -1,5 +1,5 @@
 <!-- resources/views/vendor/anilte/components/modals/ajax-modal.blade.php -->
-<div class="modal fade" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true">
+<div class="modal" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true">
     <form class="modal-dialog {{ $size ?? 'modal-lg' }}" id="{{ $formId }}" data-method="{{ $method }}" data-action="{{ $action }}">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,10 +21,14 @@
 @pushOnce('js')
 <script src="{{asset("anilte/ModalFormHandler.js")}}"></script>
 
+
+@endPushOnce
+@push('js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize the ModalFormHandler for each modal instance
         new ModalFormHandler('#{{ $id }}', `#{{ $formId }}`, `#{{ $buttonId }}`, '.close');
     });
 </script>
-@endPushOnce
+@endpush
+

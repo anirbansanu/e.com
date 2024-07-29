@@ -97,89 +97,30 @@
         </x-slot>
     </x-anilte::card>
 
-    <div class="modal fade" id="products-variants-modal">
-        <form class="modal-dialog modal-lg" id="add_variant" data-action="{{ route('admin.products.variants.store') }}"
-            data-method="post">
+    <x-anilte::modals.ajax-modal id="products-variants-modal" form-id="add_variant" method="post" action="{{ route('admin.products.variants.store') }}" title="Add Variant" button-id="submitBtn">
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Variant</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
 
-                    <x-anilte::select2 name="attribute_name" id="attribute_name" label="Attribute" label-class=""
-                        select-class="custom-class another-class" igroup-size="lg"
-                        placeholder="Select an option of attribute..."
-                        ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]"
-                        :template="['id' => 'name', 'text' => 'name']"
-                    />
-                    <x-anilte::input-group id="attribute_value" name="attribute_value" label="Attribute Value"
-                        value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
+            <x-anilte::select2 name="attribute_name" id="attribute_name" label="Attribute" label-class=""
+                select-class="custom-class another-class" igroup-size="lg"
+                placeholder="Select an option of attribute..."
+                ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]"
+                :template="['id' => 'name', 'text' => 'name']"
+            />
+            <x-anilte::input-group id="attribute_value" name="attribute_value" label="Attribute Value"
+                value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
 
-                    <x-anilte::select2 name="unit_name" style="display: none;" id="unit_name" label="Units" label-class=""
-                        select-class="custom-class another-class" igroup-size="lg"
-                        placeholder="Select an option of unit name..."
-                        ajaxRoute="{{ route('admin.products.units.json') }}"
-                        :useAjax="true"
-                        :options="[]"
-                        :template="['id' => 'name', 'text' => 'name']"
-                    />
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="submitBtn" data-form="#add_variant">Add</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    {{-- <div class="modal fade" id="products-variants-update-modal">
-        <form class="modal-dialog modal-lg" id="update_variant" data-method="post"
-            data-action="{{ route('admin.products.variants.store') }}">
-            <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Update Variant</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div class="">
-                            <label for="attribute_name">Attribute</label>
-                            <select class="form-control attribute_name select2" name="attribute_name"
-                                id="update_attribute_name">
+            <x-anilte::select2 name="unit_name" style="display: none;" id="unit_name" label="Units" label-class=""
+                select-class="custom-class another-class" igroup-size="lg"
+                placeholder="Select an option of unit name..."
+                ajaxRoute="{{ route('admin.products.units.json') }}"
+                :useAjax="true"
+                :options="[]"
+                :template="['id' => 'name', 'text' => 'name']"
+            />
 
-                            </select>
-                            @error('attribute_name')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <x-anilte::select2 name="attribute_name" id="update_attribute_name" label="Attribute" label-class=""
-                        select-class="custom-class another-class" igroup-size="lg"
-                        placeholder="Select an option of attribute..."
-                        ajaxRoute="{{ route('admin.products.attributes.json') }}" :useAjax="true" :options="[]" />
-
-                    <x-anilte::input-group id="update_attribute_value" name="attribute_value" label="Attribute Value"
-                        value="" placeholder="Enter Attribute Value" :required="true" icon="fas fa-keyboard" />
-                    <x-anilte::select2 name="unit_name" id="update_unit_name" label="Units" label-class=""
-                        select-class="custom-class another-class" igroup-size="lg"
-                        placeholder="Select an option of unit name..."
-                        ajaxRoute="{{ route('admin.products.units.json') }}" :useAjax="true" :options="[]" />
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="updateBtn"
-                        data-form="#update_variant">Update</button>
-                </div>
-            </div>
-        </form>
-    </div> --}}
-    <x-anilte::modals.ajax-modal id="products-variants-update-modal" form-id="update_variant" method="post" action="{{ route('admin.products.variants.store') }}" title="Update Variant" button-id="updateBtn">
+    </x-anilte::modals.ajax-modal>
+   
+    <x-anilte::modals.ajax-modal id="products-variants-update-modal" form-id="update_variant" method="PUT" action="{{ url('admin/products/variants/{id}') }}" title="Update Variant" button-id="updateBtn">
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <x-anilte::select2
             name="attribute_name"
@@ -220,12 +161,12 @@
 @endsection
 @push('js')
     {{-- <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script> --}}
-    <script src="{{asset("anilte/ajax-form-handler.js")}}"></script>
+    {{-- <script src="{{asset("anilte/ajax-form-handler.js")}}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new AjaxFormHandler('#products-variants-modal', '#add_variant', '#submitBtn');
         });
-    </script>
+    </script> --}}
     {{-- @include('admin.products.product_listing.create.step_2_js') --}}
 
 {{-- <script>
