@@ -1,7 +1,8 @@
 class CustomDataTable {
-    constructor(elementId, fetchUrl, columns, actionButtons = null, showEntries = 10) {
+    constructor(elementId, fetchUrl, deleteUrl, columns, actionButtons = null, showEntries = 10) {
         this.elementId = elementId;
         this.fetchUrl = fetchUrl;
+        this.deleteUrl = deleteUrl;
         this.columns = columns;
         this.actionButtons = actionButtons;
         this.showEntries = showEntries;
@@ -14,53 +15,125 @@ class CustomDataTable {
     }
 
     init() {
+        this.cacheElements();
         this.renderHeader();
         this.fetchData();
         this.bindEvents();
-        console.log("CustomDataTable init called");
+        console.log(`${this.elementId} initiated`);
+    }
+
+    cacheElements() {
+        this.table = document.querySelector(`#${this.elementId}`);
+        this.searchInput = this.table.querySelector('#search');
+        this.entriesSelect = this.table.querySelector('#show-entries');
+        this.pagination = this.table.querySelector('#pagination');
+        this.tbody = this.table.querySelector('tbody');
+        this.loadingOverlay = document.querySelector('#loadingOverlay');
     }
 
     bindEvents() {
-        const self = this;
+        this.searchInput.addEventListener('keyup', () => this.handleSearch());
+        this.entriesSelect.addEventListener('change', () => this.handleEntriesChange());
+        this.pagination.addEventListener('click', event => this.handlePagination(event));
+        this.table.querySelector('thead').addEventListener('click', event => this.handleSort(event));
+        this.tbody.addEventListener('click', event => this.handleActions(event));
+    }
 
-        document.querySelector(`#${this.elementId} #search`).addEventListener('keyup', function() {
-            self.searchQuery = this.value;
-            self.fetchData();
-        });
+    handleSearch() {
+        this.searchQuery = this.searchInput.value;
+        this.fetchData();
+    }
 
-        document.querySelector(`#${this.elementId} #show-entries`).addEventListener('change', function() {
-            self.showEntries = this.value;
-            self.fetchData();
-        });
+    handleEntriesChange() {
+        this.showEntries = this.entriesSelect.value;
+        this.fetchData();
+    }
 
-        document.querySelector(`#${this.elementId} #pagination`).addEventListener('click', function(event) {
-            if (event.target.matches('button')) {
-                self.currentPage = event.target.dataset.page;
-                self.fetchData();
+    handlePagination(event) {
+        if (event.target.matches('button')) {
+            this.currentPage = event.target.dataset.page;
+            this.fetchData();
+        }
+    }
+
+    handleSort(event) {
+        if (event.target.matches('.sortable')) {
+            this.sortColumn = event.target.dataset.column;
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            this.fetchData();
+        }
+    }
+
+    handleActions(event) {
+        event.preventDefault();
+        if (event.target.matches('.edit-ajax')) {
+            this.editEvent(event);
+        }
+        if (event.target.matches('.delete-ajax')) {
+            this.deleteEvent(event);
+        }
+    }
+
+    editEvent(event) {
+        console.log("edit-ajax called");
+        // Implement the edit functionality
+    }
+
+    deleteEvent(event) {
+        const button = event.target;
+        const deleteUrl = this.replacePlaceholders(this.deleteUrl, button.dataset);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You won't be able to revert this!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(result => {
+            if (result.isConfirmed) {
+                this.makeDeleteRequest(deleteUrl);
             }
-        });
-        document.querySelector(`#${this.elementId} .sortable`).addEventListener('click', function(event) {
-            self.sortColumn = event.target.dataset.column;
-            self.sortDirection = self.sortDirection === 'asc' ? 'desc' : 'asc';
-            self.fetchData();
-        });
-
-        document.querySelector(`#${this.elementId} tbody`).addEventListener('click', function(event) {
-            event.preventDefault();
-            if (event.target && event.target.matches(`.edit-ajax`)) {
-                event.preventDefault();
-                console.log("edit-ajax called");
-            }
-            if (event.target && event.target.matches(`.delete-ajax`)) {
-                event.preventDefault();
-                console.log("delete-ajax called");
-            }
-
         });
     }
 
+    replacePlaceholders(url, params) {
+        return url.replace(/{(\w+)}/g, (_, key) => {
+            if (params.hasOwnProperty(key)) {
+                return params[key];
+            } else {
+                throw new Error(`Key "${key}" not found in parameters.`);
+            }
+        });
+    }
+
+    makeDeleteRequest(url) {
+        $.ajax({
+            url: url,
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: response => this.handleDeleteSuccess(response),
+            error: xhr => this.handleDeleteError(xhr)
+        });
+    }
+
+    handleDeleteSuccess(response) {
+        if (response.status === 200) {
+            Swal.fire('Deleted!', response.message, 'success');
+            this.fetchData();
+        } else {
+            Swal.fire('Error!', response.message || 'An error occurred while deleting the product.', 'error');
+        }
+    }
+
+    handleDeleteError(xhr) {
+        Swal.fire('Error!', xhr.responseJSON.message || 'An error occurred while deleting the product.', 'error');
+    }
+
     fetchData() {
-        const self = this;
         $.ajax({
             url: this.fetchUrl,
             method: 'GET',
@@ -71,24 +144,34 @@ class CustomDataTable {
                 sortColumn: this.sortColumn,
                 sortDirection: this.sortDirection
             },
-            beforeSend: function() {
-                document.querySelector(`#loadingOverlay`).style.display = 'block';
-            },
-            success: function(response) {
-                document.querySelector(`#loadingOverlay`).style.display = 'none';
-                self.renderBody(response.data);
-                self.renderPagination(response);
-                console.log("CustomDataTable success response",response);
-            },
-            error: function(response) {
-                document.querySelector(`#loadingOverlay`).style.display = 'none';
-                console.log("CustomDataTable error response",response);
-            }
+            beforeSend: () => this.showLoading(),
+            success: response => this.handleFetchSuccess(response),
+            error: response => this.handleFetchError(response)
         });
     }
 
+    showLoading() {
+        this.loadingOverlay.style.display = 'block';
+    }
+
+    hideLoading() {
+        this.loadingOverlay.style.display = 'none';
+    }
+
+    handleFetchSuccess(response) {
+        this.hideLoading();
+        this.renderBody(response.data);
+        this.renderPagination(response);
+        console.log("CustomDataTable success response", response);
+    }
+
+    handleFetchError(response) {
+        this.hideLoading();
+        console.log("CustomDataTable error response", response);
+    }
+
     renderHeader() {
-        const thead = document.querySelector(`#${this.elementId} thead`);
+        const thead = this.table.querySelector('thead');
         thead.innerHTML = `
             <tr>
                 ${this.columns.map(column => `<th data-column="${column.data}" class="sortable">${column.title}</th>`).join('')}
@@ -98,54 +181,56 @@ class CustomDataTable {
     }
 
     renderBody(data) {
-        const tbody = document.querySelector(`#${this.elementId} tbody`);
-        tbody.innerHTML = '';
+        this.tbody.innerHTML = '';
         data.forEach(row => {
             const tr = document.createElement('tr');
-
-            // Create table cells for each column
             this.columns.forEach(column => {
                 const td = document.createElement('td');
                 td.textContent = row[column.data];
                 tr.appendChild(td);
             });
-
-            // Create the action buttons cell
             if (this.actionButtons) {
-                const actionTd = document.createElement('td');
-                actionTd.setAttribute("data-id", row["id"]);
-                let dataAttrs = "";
-                this.columns.forEach(column => {
-                    actionTd.setAttribute(column.data, row[column.data]);
-                    dataAttrs += "data-"+column.data+"='"+row[column.data]+"'";
-                });
-                actionTd.setAttribute("data-id", row['id']);
-                dataAttrs += "data-id='"+row['id']+"'";
-                actionTd.innerHTML = this.actionButtons.replace(/:data/g, dataAttrs); // Replace :id with actual row id
+                const actionTd = this.createActionButtonsCell(row);
                 tr.appendChild(actionTd);
             }
-            tbody.appendChild(tr);
+            this.tbody.appendChild(tr);
         });
     }
 
+    createActionButtonsCell(row) {
+        const actionTd = document.createElement('td');
+        let dataAttrs = "";
+        this.columns.forEach(column => {
+            actionTd.setAttribute(column.data, row[column.data]);
+            dataAttrs += `data-${column.data}='${row[column.data]}' `;
+        });
+        actionTd.setAttribute("data-id", row['id']);
+        dataAttrs += `data-id='${row['id']}' `;
+        actionTd.innerHTML = this.actionButtons.replace(/:data/g, dataAttrs.trim());
+        return actionTd;
+    }
+
     renderPagination(response) {
-        const pagination = document.querySelector(`#${this.elementId} #pagination`);
-        pagination.innerHTML = '';
+        this.pagination.innerHTML = '';
         const currentPage = response.current_page;
         const lastPage = response.last_page;
 
         if (currentPage > 1) {
-            pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage - 1}">Previous</button>`;
+            this.pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage - 1}">Previous</button>`;
         }
 
         for (let i = 1; i <= lastPage; i++) {
             const btnClass = i === currentPage ? 'btn-primary' : 'btn-secondary';
-            pagination.innerHTML += `<button class="btn ${btnClass}" data-page="${i}">${i}</button>`;
+            this.pagination.innerHTML += `<button class="btn ${btnClass}" data-page="${i}">${i}</button>`;
         }
 
         if (currentPage < lastPage) {
-            pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage + 1}">Next</button>`;
+            this.pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage + 1}">Next</button>`;
         }
     }
 }
 
+
+$(document).on('click','.sweet-delete-btn',()=>{
+    console.log("sweet-delete-btn clicked ");
+});
