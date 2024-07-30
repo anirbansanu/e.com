@@ -1,5 +1,5 @@
 {{-- Path = resources/views/vendor/anilte/components/datatables/ajax-datatable.blade.php --}}
-<div class="" id="table-container">
+<div class="" id="{{ $id }}">
     <div class="d-flex flex-row align-items-center justify-content-between">
         <div class="form-group d-flex flex-row align-items-center">
             <label for="show-entries" class="text-primary m-0 mr-1">Show</label>
@@ -41,12 +41,14 @@
     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
 </div>
 
-@push('js')
+@pushOnce('js')
 <script src="{{asset("anilte/anilte.js")}}"></script>
+@endPushOnce
 
+@push('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ajaxDataTable = new CustomDataTable('table-container', '{{ $fetchUrl }}', {!! json_encode($columns) !!}, `{!! $actionButtons !!}`, {{ $pageSize }});
+        window.{{ $id }} = new CustomDataTable('{{ $id }}', '{{ $fetchUrl }}', {!! json_encode($columns) !!}, `{!! $actionButtons !!}`, {{ $pageSize }});
     });
 
 </script>
