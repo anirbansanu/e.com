@@ -170,10 +170,13 @@
         console.log("productsVariantsUpdateModal",{{"productsVariantsUpdateModal"}});
 
         productsVariantsUpdateModal.addSuccessEvent(() => {
-            console.log('First success callback executed');
+            console.log('fetchData() callback executed from productsVariantsUpdateModal');
             ProductVariantsTable.fetchData();
         });
-
+        productsVariantsModal.addSuccessEvent(()=>{
+            console.log('fetchData() callback executed from productsVariantsModal');
+            ProductVariantsTable.fetchData();
+        });
 
     });
 
