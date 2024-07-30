@@ -13,6 +13,7 @@ use App\View\Components\Anilte\DeleteButton;
 use App\View\Components\Anilte\EditButton;
 use App\View\Components\Anilte\Form\Select2;
 use App\View\Components\Anilte\InputGroup;
+use App\View\Components\Anilte\Modals\AjaxModal;
 use App\View\Components\Anilte\RestoreButton;
 use App\View\Components\Anilte\ViewButton;
 
@@ -45,7 +46,8 @@ class AnilteServiceProvider extends ServiceProvider
             'view-btn' => ViewButton::class,
             'input-group' => InputGroup::class,
             'select2' => Select2::class,
-            'ajax-datatable' => AjaxDataTable::class
+            'ajax-datatable' => AjaxDataTable::class,
+            'modals.ajax-modal' => AjaxModal::class
         ];
 
         foreach ($components as $alias => $component) {
