@@ -2,11 +2,12 @@
 class ModalFormHandler {
     constructor(modalSelector, formSelector, submitBtnSelector, closeModalBtnSelector) {
         this.modal = document.querySelector(modalSelector);
-        this.modalNode = new bootstrap.Modal(this.modal);
 
         this.form = document.querySelector(modalSelector +" "+ formSelector);
         this.submitBtn = document.querySelector(modalSelector +" "+ submitBtnSelector);
         this.closeModalBtn = document.querySelector(modalSelector +" "+ closeModalBtnSelector);
+        this.successCallbacks = [];
+        this.action = "";
         this.init();
     }
 
@@ -14,7 +15,7 @@ class ModalFormHandler {
         $(`#${this.modal.id}`).on('show.bs.modal', this.showModal.bind(this));
         $(`#${this.modal.id}`).on('hidden.bs.modal', this.resetModal.bind(this));
         this.submitBtn.addEventListener('click', this.submitForm.bind(this));
-        console.log("ModalFormHandler init called");
+        console.log(`${this.modal.id} initiated `);
     }
 
     addSubmitEvent() {
@@ -70,12 +71,12 @@ class ModalFormHandler {
         const modalData = JSON.parse(this.form.dataset.modalData || '{}');
 
         try {
-            this.form.dataset.action = this.replacePlaceholders(this.form.dataset.action || '', modalData);
+            this.action = this.replacePlaceholders(this.form.dataset.action || '', modalData);
         } catch (error) {
             console.error(error.message);
             return;
         }
-        console.log("this.form.dataset.action : ",this.form.dataset.action);
+        console.log("this.action : ",this.action);
 
         console.log("Modal.modalData : ",data);
         this.populateFormData(data);
@@ -83,18 +84,17 @@ class ModalFormHandler {
 
     hideModal() {
         this.resetModal();
-        $(`#${this.modal.id}`).modal('toggle');
+        $(`#${this.modal.id}`).modal('hide');
         console.log(`Modal with id: #${this.modal.id} is hidden`);
     }
     resetModal() {
         this.form.reset();
-        const errorElements = this.modal.querySelectorAll('.error.text-danger');
-        errorElements.forEach(element => element.textContent = '');
+        this.clearExistingErrors();
     }
     submitForm() {
         const formData = new FormData(this.form);
         const method = this.form.dataset.method || 'POST';
-        const action = this.form.dataset.action || '';
+        const action = this.action || '';
         const requestData = Object.fromEntries(formData.entries());
         console.log("requestData : ", requestData);
 
@@ -111,8 +111,9 @@ class ModalFormHandler {
                     this.displayValidationErrors(data.errors);
                 }
                 else{
-
+                    this.hideModal();
                     this.displaySuccessMessage(data.message);
+                    this.onSuccessEvents();
                 }
             },
             error: (jqXHR, textStatus, errorThrown) => {
@@ -123,6 +124,31 @@ class ModalFormHandler {
                 else{
                     this.displayErrorMessage(jqXHR.responseJSON.message);
                 }
+            }
+        });
+    }
+
+    /**
+     * Adds a callback function to be executed on success.
+     * @param {Function} callback - The callback function to add.
+     */
+    addSuccessEvent(callback) {
+        if (typeof callback === 'function') {
+            this.successCallbacks.push(callback);
+        } else {
+            console.error('Callback is not a function', callback);
+        }
+    }
+
+    /**
+     * Executes all success callback functions.
+     */
+    onSuccessEvents() {
+        this.successCallbacks.forEach(callback => {
+            if (typeof callback === 'function') {
+                callback();
+            } else {
+                console.error('Callback is not a function', callback);
             }
         });
     }
@@ -175,13 +201,13 @@ class ModalFormHandler {
     }
 
     displaySuccessMessage(message) {
-        this.hideModal();
+
         Swal.fire({
             icon: 'success',
             title: 'Success',
             text: message,
-            toast: false,
-            position: 'center',
+            toast: true,
+            position: 'top-end',
             showConfirmButton: false,
             timer: 3000
         });
@@ -192,8 +218,8 @@ class ModalFormHandler {
             icon: 'error',
             title: 'Error',
             text: message,
-            toast: false,
-            position: 'center',
+            toast: true,
+            position: 'top-end',
             showConfirmButton: false,
             timer: 3000
         });

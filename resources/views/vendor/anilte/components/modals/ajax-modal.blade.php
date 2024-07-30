@@ -20,14 +20,12 @@
 </div>
 @pushOnce('js')
 <script src="{{asset("anilte/ModalFormHandler.js")}}"></script>
-
-
 @endPushOnce
 @push('js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize the ModalFormHandler for each modal instance
-        new ModalFormHandler('#{{ $id }}', `#{{ $formId }}`, `#{{ $buttonId }}`, '.close');
+        window.{{ $id }} = new ModalFormHandler('#{{ $id }}', `#{{ $formId }}`, `#{{ $buttonId }}`, '.close');
     });
 </script>
 @endpush
