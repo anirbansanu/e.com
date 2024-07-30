@@ -7,6 +7,7 @@ use App\Http\Resources\Product\ProductVariantResource;
 use App\Services\Products\ProductService;
 use App\Services\Products\ProductVariantService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\ValidationException;
 
 class ProductVariantController extends Controller
@@ -50,6 +51,7 @@ class ProductVariantController extends Controller
     }
     public function update(Request $request, $id)
     {
+
         try {
             // Validate the request data
             $validatedData = $request->validate([
@@ -71,11 +73,11 @@ class ProductVariantController extends Controller
         }
     }
 
-    public function delete($id)
+    public function destroy($variant)
     {
         try {
             // Attempt to delete the data
-            $this->productVariantService->delete($id);
+            $this->productVariantService->delete($variant);
 
             // Return a success response
             return $this->response(200, 'Product variant relationship deleted successfully', [], null);
@@ -87,6 +89,7 @@ class ProductVariantController extends Controller
     public function index(Request $request)
     {
         try {
+
             // Get all product variation relationships
             $productVariants = $this->productVariantService->getAll();
 

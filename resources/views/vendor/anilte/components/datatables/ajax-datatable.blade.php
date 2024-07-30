@@ -48,7 +48,7 @@
 @push('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        window.{{ $id }} = new CustomDataTable('{{ $id }}', '{{ $fetchUrl }}', {!! json_encode($columns) !!}, `{!! $actionButtons !!}`, {{ $pageSize }});
+        window.{{ $id }} = new CustomDataTable('{{ $id }}', '{{ $fetchUrl }}','{{ $deleteUrl }}', {!! json_encode($columns) !!}, `{!! $actionButtons !!}`, {{ $pageSize }});
     });
 
 </script>
