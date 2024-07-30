@@ -2,18 +2,19 @@
 
 namespace App\View\Components\Anilte;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\Component;
 
 class AjaxDataTable extends Component
 {
+    public $id;
     public $columns;
     public $fetchUrl;
     public $actionButtons;
     public $pageSize;
 
-    public function __construct($columns, $fetchUrl, $actionButtons = null, $pageSize = 10)
+    public function __construct($id, $columns, $fetchUrl, $actionButtons = null, $pageSize = 10)
     {
+        $this->id = $id;
         $this->columns = $columns;
         $this->fetchUrl = $fetchUrl;
         $this->actionButtons = $actionButtons;

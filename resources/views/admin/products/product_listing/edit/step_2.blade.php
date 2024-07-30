@@ -73,6 +73,7 @@
                                     </div>
                                     <div class="card-body" id="variant-table-container">
                                         <x-anilte::ajax-datatable
+                                            id="{{'ProductVariantsTable'}}"
                                             :columns="[['data'=>'attribute_name','title'=>'Attribute Name'],['data'=>'attribute_value','title'=>'Attribute Value'], ['data'=>'unit_name','title'=>'Unit Name'], ['data'=>'updated_at','title'=>'Updated At']]"
                                             fetch-url="{{ route('admin.products.variants.byproduct',['slug'=>$product->slug]) }}"
                                             :action-buttons="
@@ -119,7 +120,7 @@
             />
 
     </x-anilte::modals.ajax-modal>
-   
+
     <x-anilte::modals.ajax-modal id="products-variants-update-modal" form-id="update_variant" method="PUT" action="{{ url('admin/products/variants/{id}') }}" title="Update Variant" button-id="updateBtn">
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <x-anilte::select2
