@@ -5,6 +5,7 @@
 @section('content_header_title', 'Products')
 @section('content_header_subtitle', 'Manage Products')
 @section('css')
+
 @endsection
 @section('content_body')
     <x-anilte::card headerClass="p-0 border-bottom-0 " bodyClass="" footerClass="custom-footer-class" minimize maximize close>
@@ -84,6 +85,7 @@
                                         />
 
                                     </div>
+                                    <x-anilte::loader.round-loader />
                                 </div> <!-- /add Product Attributeions card -->
 
                                 <div class="d-flex justify-content-end">

@@ -37,9 +37,7 @@
         <!-- Pagination will be loaded here -->
     </div>
 </div>
-<div class="overlay" id="loadingOverlay" style="display: none;">
-    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-</div>
+
 
 @pushOnce('js')
 <script src="{{asset("anilte/anilte.js")}}"></script>
