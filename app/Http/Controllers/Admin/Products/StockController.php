@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Products\Stocks\SetDefaultSKURequest;
+use App\Http\Requests\Products\Stocks\StoreStockRequest;
+use App\Http\Requests\Products\Stocks\UpdateStockRequest;
 use App\Http\Resources\Product\StockResource;
 use App\Models\Stock;
-use App\Services\StockService;
-use App\Services\UploadService;
+use App\Services\Products\StockService;
+use App\Services\Medias\UploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -24,22 +27,12 @@ class StockController extends Controller
         $this->uploadService = $uploadService;
         $this->stockService = $stockService;
     }
-    public function ajaxStore(Request $request){
+    public function store(StoreStockRequest $request){
         try {
 
-            // Validate the request data
-            $validatedData = $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'combinations' => 'required|array',
-                'combinations.*' => 'required|exists:product_to_variations,id',
-                'price' => 'required|numeric',
-                'quantity' => 'required|integer|min:1',
-                'sku' => 'required|string|unique:stocks,sku',
-                'auto_generate_sku' => 'nullable|in:on',
-            ]);
-
-            // Attempt to store the data
+            $validatedData = $request->validated();
             $stock = $this->stockService->store($validatedData);
+
             if (isset($request['image']) && is_array($request['image'])) {
                 foreach ($request['image'] as $fileUuid) {
                     $cacheUpload = $this->uploadService->getByUuid($fileUuid);
@@ -50,129 +43,73 @@ class StockController extends Controller
                 }
             }
 
-            // If the storage operation is successful, return a success response
-            return response()->json([
-                'success' => true,
-                'message' => 'Stock stored successfully',
-                'data' => $stock
-            ], 200);
+            return $this->response(200, 'Stock stored successfully', new StockResource($stock), null);
         } catch (ValidationException $e) {
-            // If validation fails, return a response with validation error messages
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $e->errors()
-            ], 422);
+            return $this->response(422, 'Validation error', [], $e->errors());
         } catch (\Exception $e) {
-            // If an error occurs during the storage operation, return an error response
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to store stock',
-                'errors' => $e->getMessage()
-            ], 500);
+            return $this->response(500, 'Failed to store stock', [], $e->getMessage());
         }
     }
-    public function ajaxEdit($sku){
+    public function show($sku){
         try {
             $stock = $this->stockService->getBySku($sku,["productPrice","combinations"]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Stock fetched successfully',
-                'data' => new StockResource($stock)
-            ], 200);
+            return $this->response(200, 'Stock fetched successfully', new StockResource($stock), null);
         }catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetched stock',
-                'errors' => $e->getMessage()
-            ], 500);
+            return $this->response(500, 'Failed to fetch stock', [], $e->getMessage());
         }
     }
-    public function ajaxUpdate(Request $request,$sku){
+    public function update(UpdateStockRequest $request, $sku){
         try {
-            $validatedData = $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'sku' => 'required|string|exists:stocks,sku',
-            ]);
-            $stock = $this->stockService->update($request->all(),$sku);
-            return response()->json([
-                'success' => true,
-                'message' => 'Stock updated successfully',
-                'data' => $stock
-            ], 200);
+            $stock = $this->stockService->update($request->all(), $sku);
+            return $this->response(200, 'Stock updated successfully', new StockResource($stock), null);
+
         } catch (ValidationException $e) {
             // If validation fails, return a response with validation error messages
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error, please check inputs.',
-                'errors' => $e->errors()
-            ], 422);
+            return $this->response(422, 'Validation error, please check inputs.', [], $e->errors());
+
         } catch (\Exception $e) {
             // If an error occurs during the storage operation, return an error response
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update stock',
-                'errors' => $e->getMessage()
-            ], 500);
+            return $this->response(500, 'Failed to update stock', [], $e->getMessage());
+
         }
     }
-    public function ajaxGet(Request $request){
+    public function getByProduct(Request $request,$slug){
         try {
             $stocks = $this->stockService->getStocksByProductId($request->product_id,["productPrice","combinations"]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Stock fetched successfully',
-                'data' => $stocks
-            ], 200);
+            return $this->response(200, 'Stock fetched successfully', StockResource::collection($stocks), null);
+
         } catch (\Exception $e) {
             // If an error occurs during the storage operation, return an error response
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetched stock',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->response(500, 'Failed to fetch stock', [], $e->getMessage());
+
         }
     }
-    public function ajaxSetDefaultSKU(Request $request){
+    public function setDefaultSKU(SetDefaultSKURequest $request)
+    {
         try {
-            $validatedData = $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'sku' => 'required|string|exists:stocks,sku',
-            ]);
-            $stock = $this->stockService->setDefaultSKU($request->sku,$request->product_id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Default stock set successfully',
-                'data' => $stock
-            ], 200);
+            $stock = $this->stockService->setDefaultSKU($request->sku, $request->product_id);
+            return $this->response(200, 'Default stock set successfully', new StockResource($stock), null);
         } catch (ValidationException $e) {
             // If validation fails, return a response with validation error messages
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $e->errors()
-            ], 422);
+            return $this->response(422, 'Validation error', [], $e->errors());
         } catch (\Exception $e) {
-            // If an error occurs during the storage operation, return an error response
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to set default stock',
-                'errors' => $e->getMessage()
-            ], 500);
+            // If an error occurs during the update operation, return an error response
+            return $this->response(500, 'Failed to set default stock', [], $e->getMessage());
         }
     }
+
     public function removeMedia(Request $request)
     {
         $input = $request->all();
         try {
-            $salon = Stock::find($input['id']);
-            if ($salon->hasMedia($input['collection'])) {
-                $salon->getFirstMedia($input['collection'])->delete();
+            $stock = Stock::find($input['id']);
+            if ($stock->hasMedia($input['collection'])) {
+                $stock->getFirstMedia($input['collection'])->delete();
             }
-            $this->response(200,'success','Media removed',1);
+            return $this->response(200, 'Media removed successfully', [], null);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            $this->response(400,'error','Failed to remove media',0);
+            return $this->response(400, 'Failed to remove media', [], $e->getMessage());
         }
     }
 }

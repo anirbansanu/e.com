@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Products\ProductCategoryController;
 use App\Http\Controllers\Admin\Products\ProductController;
 use App\Http\Controllers\Admin\Products\ProductUnitController;
 use App\Http\Controllers\Admin\Products\ProductVariantController;
+use App\Http\Controllers\Admin\Products\StockController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
@@ -82,6 +83,10 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
 
         Route::apiResource('variants', ProductVariantController::class);
         Route::get('variants/byproduct/{slug}', [ProductVariantController::class, 'getByProductSlug'])->name('variants.byproduct');
+
+        Route::apiResource('stocks', StockController::class)->except('index');
+        Route::get('stocks/byproduct/{slug}', [StockController::class, 'getByProduct'])->name('variants.byproduct');
+        Route::post('stocks/remove-media', [StockController::class ,'removeMedia'] )->name('stock.ajax.remove.media');
 
     });
 });
