@@ -123,14 +123,16 @@ class ProductVariantController extends Controller
             $product = $this->productService->getBySlug($slug);
             if($product)
             {
-                $productVariants = $this->productVariantService->getByProductId($product->id);
+                $productVariants = $this->productVariantService->getByProductId($request,$product->id);
+                $current_page = $productVariants->currentPage(); // Current page number
+                $last_page = $productVariants->lastPage(); // Total number of pages
             }
             else{
                 return $this->response(404, 'Product not found', [],'Failed to retrieve product');
             }
 
             // Return a success response with the retrieved data
-            return $this->response(200, 'Product variant relationships retrieved successfully', ProductVariantResource::collection($productVariants), null);
+            return $this->response(200, 'Product variant relationships retrieved successfully', ProductVariantResource::collection($productVariants), [],[],["current_page"=>$current_page,"last_page"=>$last_page,"request"=>$request->all()]);
         } catch (\Exception $e) {
             // If an error occurs during the retrieval operation, return an error response
             return $this->response(500, 'Failed to retrieve product variant relationships', [], $e->getMessage());

@@ -32,14 +32,13 @@
         <tbody>
             <!-- Data will be loaded here via AJAX -->
         </tbody>
+
     </table>
-    <div id="pagination" class="mt-3">
+    <div id="pagination" class="d-flex justify-content-between mt-3">
         <!-- Pagination will be loaded here -->
     </div>
 </div>
-<div class="overlay" id="loadingOverlay" style="display: none;">
-    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-</div>
+
 
 @pushOnce('js')
 <script src="{{asset("anilte/anilte.js")}}"></script>

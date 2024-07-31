@@ -7,6 +7,7 @@ class CustomDataTable {
         this.actionButtons = actionButtons;
         this.showEntries = showEntries;
         this.currentPage = 1;
+        this.totalPages = 1;
         this.searchQuery = '';
         this.sortColumn = '';
         this.sortDirection = 'asc';
@@ -50,7 +51,8 @@ class CustomDataTable {
     }
 
     handlePagination(event) {
-        if (event.target.matches('button')) {
+        event.preventDefault();
+        if (event.target.matches('span')) {
             this.currentPage = event.target.dataset.page;
             this.fetchData();
         }
@@ -139,10 +141,10 @@ class CustomDataTable {
             method: 'GET',
             data: {
                 page: this.currentPage,
-                showEntries: this.showEntries,
+                entries: this.showEntries,
                 search: this.searchQuery,
-                sortColumn: this.sortColumn,
-                sortDirection: this.sortDirection
+                sort_by: this.sortColumn,
+                sort_order: this.sortDirection
             },
             beforeSend: () => this.showLoading(),
             success: response => this.handleFetchSuccess(response),
@@ -211,26 +213,34 @@ class CustomDataTable {
     }
 
     renderPagination(response) {
+        console.log("renderPagination response : ",response);
+        response = response.info;
+        this.currentPage = response.current_page;
+        this.totalPages = response.last_page;
+
         this.pagination.innerHTML = '';
         const currentPage = response.current_page;
         const lastPage = response.last_page;
 
-        if (currentPage > 1) {
-            this.pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage - 1}">Previous</button>`;
-        }
+        const pageLinksContainer = document.createElement('ul');
+        pageLinksContainer.classList.add('pagination','m-0');
+
+        this.pagination.innerHTML += `<div> <p>Show ${currentPage} of ${lastPage}</p> </div>`;
+
+        pageLinksContainer.innerHTML += `<li class="page-item ${currentPage > 1 ? "" :"disabled"}"><span class="page-link" ${currentPage > 1 ? "disabled" :""} data-page="${currentPage - 1}">Previous</span></li>`;
+
 
         for (let i = 1; i <= lastPage; i++) {
-            const btnClass = i === currentPage ? 'btn-primary' : 'btn-secondary';
-            this.pagination.innerHTML += `<button class="btn ${btnClass}" data-page="${i}">${i}</button>`;
+            const btnClass = i === currentPage ? 'btn-secondary' : 'btn-primary';
+            pageLinksContainer.innerHTML += `<li class="page-item ${i === currentPage ? "disabled" :""}"> <span class="page-link btn" data-page="${i}">${i}</span> </li> `;
         }
 
-        if (currentPage < lastPage) {
-            this.pagination.innerHTML += `<button class="btn btn-secondary" data-page="${currentPage + 1}">Next</button>`;
-        }
+
+        pageLinksContainer.innerHTML += `<li class="page-item ${currentPage < lastPage ? "" :"disabled"}"> <span class="page-link" ${currentPage < lastPage ? "disabled" :""} data-page="${currentPage + 1}">Next</span> </li>`;
+
+        this.pagination.appendChild(pageLinksContainer);
+
     }
 }
 
 
-$(document).on('click','.sweet-delete-btn',()=>{
-    console.log("sweet-delete-btn clicked ");
-});
