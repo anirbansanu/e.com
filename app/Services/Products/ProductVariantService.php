@@ -34,9 +34,26 @@ class ProductVariantService
         return ProductVariant::findOrFail($id);
     }
 
-    public function getByProductId($productId)
+    public function getByProductId($request,$productId)
     {
-        return ProductVariant::where('product_id', $productId)->get();
+        $search = $request->input('search');
+        $sort_by = $request->input('sort_by', 'updated_at');
+        $sort_order = $request->input('sort_order', 'desc');
+        $entries = $request->input('entries', config('app.pagination_limit'));
+        if($sort_by == "" )
+        {
+            $sort_by = "updated_at";
+            $sort_order = "desc";
+        }
+
+        return ProductVariant::where('product_id', $productId)
+        ->where(function ($q) use ($search) {
+            $q->where('attribute_name', 'like', '%' . $search . '%')
+                ->orWhere('unit_name', 'like', '%' . $search . '%')
+                ->orWhere('attribute_value', 'like', '%' . $search . '%');
+        })
+        ->orderBy($sort_by, $sort_order)
+        ->paginate($entries);
     }
     public function getByVariationId($variationId)
     {

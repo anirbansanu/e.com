@@ -32,8 +32,9 @@
         <tbody>
             <!-- Data will be loaded here via AJAX -->
         </tbody>
+
     </table>
-    <div id="pagination" class="mt-3">
+    <div id="pagination" class="d-flex justify-content-between mt-3">
         <!-- Pagination will be loaded here -->
     </div>
 </div>
