@@ -130,35 +130,35 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class, 'added_by');
     }
 
-    // public function productToVariations()
-    // {
-    //     return $this->hasMany(ProductToVariation::class);
-    // }
+    public function productToVariations()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 
-    // public function groupByVariation()
-    // {
-    //     return $this->productToVariations->groupBy('variation.name');
-    // }
+    public function groupByVariation()
+    {
+        return $this->productToVariations->groupBy('variation.name');
+    }
 
-    // public function stocks()
-    // {
-    //     return $this->hasMany(Stock::class);
-    // }
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
 
-    // public function defaultStock()
-    // {
-    //     return $this->hasOne(Stock::class)->where('is_default',1);
-    // }
+    public function defaultStock()
+    {
+        return $this->hasOne(Stock::class)->where('is_default',1);
+    }
 
-    // public function getHasVariationsAttribute()
-    // {
-    //     return $this->productToVariations()->exists();
-    // }
+    public function getHasVariationsAttribute()
+    {
+        return $this->productToVariations()->exists();
+    }
 
-    // public function getHasStocksAttribute()
-    // {
-    //     return $this->stocks()->exists();
-    // }
+    public function getHasStocksAttribute()
+    {
+        return $this->stocks()->exists();
+    }
 
     // public function reviews()
     // {

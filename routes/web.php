@@ -85,8 +85,10 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
         Route::get('variants/byproduct/{slug}', [ProductVariantController::class, 'getByProductSlug'])->name('variants.byproduct');
 
         Route::apiResource('stocks', StockController::class)->except('index');
-        Route::get('stocks/byproduct/{slug}', [StockController::class, 'getByProduct'])->name('variants.byproduct');
-        Route::post('stocks/remove-media', [StockController::class ,'removeMedia'] )->name('stock.ajax.remove.media');
+
+        Route::get('stocks/byproduct/{slug}', [StockController::class, 'getByProduct'])->name('stocks.byproduct');
+        Route::post('stocks/set-default', [StockController::class ,'setDefaultSKU'] )->name('stocks.setDefault');
+        Route::post('stocks/remove-media', [StockController::class ,'removeMedia'] )->name('stocks.remove.media');
 
     });
 });
