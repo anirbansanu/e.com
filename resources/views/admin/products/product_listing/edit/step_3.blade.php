@@ -5,6 +5,7 @@
 @section('content_header_title', 'Products')
 @section('content_header_subtitle', 'Manage Products')
 @section('css')
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
 @endsection
 @section('content_body')
@@ -117,7 +118,7 @@
                             name="variant"
                             id="variant"
                             label="Variant"
-                            label-class=""
+                            label-class="text"
                             select-class="custom-class another-class"
                             igroup-size="lg"
                             placeholder="Select an option of variant..."
@@ -172,23 +173,8 @@
                             igroup-size="sm"
                         />
                     </div>
-                    @php
-                        $config = [
-                            'allowedFileTypes' => ['text', 'office', 'pdf'],
-                            'browseOnZoneClick' => true,
-                            'theme' => 'explorer-fa5',
-                        ];
-                    @endphp
-
                     <div class="col-12">
-                        <x-adminlte-input-file-krajee
-                            name="kifLabel"
-                            label="Upload document file"
-                            data-msg-placeholder="Choose a text, office or pdf file..."
-                            label-class="text-primary"
-                            :config="$config"
-                            disable-feedback
-                        />
+                        <x-anilte::medias.dropzone id="createDropzone" url="{{ route('medias.create') }}" max-files="5" :existing-files="[]" />
                     </div>
                 </div>
             </x-anilte::modals.ajax-modal>
@@ -601,7 +587,7 @@
         // DropzoneJS Demo Code End
     </script> --}}
     {{-- Edit Upload Files  --}}
-    {{-- <script>
+     {{-- <script>
         var edit_existing = [];
 
         // DropzoneJS Demo Code Start

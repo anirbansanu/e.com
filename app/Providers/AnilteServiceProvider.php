@@ -14,6 +14,7 @@ use App\View\Components\Anilte\EditButton;
 use App\View\Components\Anilte\Form\Select2;
 use App\View\Components\Anilte\InputGroup;
 use App\View\Components\Anilte\Loaders\RoundLoader;
+use App\View\Components\Anilte\Medias\Dropzone;
 use App\View\Components\Anilte\Modals\AjaxModal;
 use App\View\Components\Anilte\RestoreButton;
 use App\View\Components\Anilte\ViewButton;
@@ -49,7 +50,8 @@ class AnilteServiceProvider extends ServiceProvider
             'select2' => Select2::class,
             'ajax-datatable' => AjaxDataTable::class,
             'modals.ajax-modal' => AjaxModal::class,
-            'loader.round-loader' => RoundLoader::class
+            'loader.round-loader' => RoundLoader::class,
+            'medias.dropzone' => Dropzone::class
         ];
 
         foreach ($components as $alias => $component) {
