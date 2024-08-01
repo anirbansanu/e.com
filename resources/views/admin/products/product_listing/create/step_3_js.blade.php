@@ -144,12 +144,12 @@
                                 </div>
                             </td>`;
                     row += `<td>
-                        <a  class="btn btn-info edit" data-route="{{route('admin.stock.ajax.edit')}}/${item.sku}" data-sku="${item.sku}">
+                        <a  class="btn btn-info edit" data-route="{{url('admin/products/stocks/{stock}')}}/${item.sku}" data-sku="${item.sku}">
                             <i class="fas fa-pencil-alt">
                             </i>
                             Edit
                         </a>
-                        <a class="btn btn-danger" data-route="{{route('admin.stock.ajax.edit')}}/${item.sku}" onclick="return confirm('Are you sure?')">
+                        <a class="btn btn-danger" data-route="{{url('admin/products/stocks/{stock}')}}/${item.sku}" onclick="return confirm('Are you sure?')">
                             <i class="fas fa-trash">
                             </i>
                             Delete
@@ -174,7 +174,7 @@
     function setDefaultSKU(sku, productId) {
         window.toastr.clear();
         $.ajax({
-            url: '{{ route("admin.stock.ajax.setDefault") }}',
+            url: '{{ route("admin.products.stocks.setDefault") }}',
             type: 'POST',
             headers: {
             'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content

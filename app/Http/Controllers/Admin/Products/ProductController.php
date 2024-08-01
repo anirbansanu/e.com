@@ -223,7 +223,7 @@ class ProductController extends Controller
                     else
                     {
 
-                        return redirect()->route('products.edit',["id"=>$product->id,"step"=>2]);
+                        return redirect()->route('admin.products.listing.edit',["slug"=>$product->slug,"step"=>2]);
                     }
                     break;
                 default:

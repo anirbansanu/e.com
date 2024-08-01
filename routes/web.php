@@ -6,10 +6,12 @@ use App\Http\Controllers\Admin\Products\ProductCategoryController;
 use App\Http\Controllers\Admin\Products\ProductController;
 use App\Http\Controllers\Admin\Products\ProductUnitController;
 use App\Http\Controllers\Admin\Products\ProductVariantController;
+use App\Http\Controllers\Admin\Products\StockController;
 use App\Http\Controllers\Admin\Settings\PermissionController;
 use App\Http\Controllers\Admin\Settings\RoleController;
 use App\Http\Controllers\Admin\Settings\SettingController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\API\Medias\UploadController;
 use App\Http\Controllers\HomeController;
 use App\Models\ProductAttribute;
 use Illuminate\Support\Facades\Artisan;
@@ -46,7 +48,18 @@ Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete']
 Route::resource('users',UserController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::group(['middleware' => ['auth'],'prefix' => 'medias', 'as' => 'medias.'], function () {
+    Route::post('uploads/store', [UploadController::class,'store'])->name('create');
+    Route::get('storage/app/public/{id}/{conversion}/{filename?}', [UploadController::class,'storage']);
+    Route::get('uploads/all/{collection?}', [UploadController::class,'all']);
+    Route::get('uploads/collectionsNames', [UploadController::class,'collectionsNames']);
+    Route::post('uploads/clear', [UploadController::class,'clear'])->name('delete');
+    Route::get('medias', [UploadController::class,'index'])->name('medias');
+    Route::get('uploads/clear-all', [UploadController::class,'clearAll']);
+});
 Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+
+
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::get('app', [SettingController::class, 'appIndex'])->name('app');
         Route::post('app', [SettingController::class, 'appUpdate'])->name('app.update');
@@ -82,6 +95,12 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
 
         Route::apiResource('variants', ProductVariantController::class);
         Route::get('variants/byproduct/{slug}', [ProductVariantController::class, 'getByProductSlug'])->name('variants.byproduct');
+
+        Route::apiResource('stocks', StockController::class)->except('index');
+
+        Route::get('stocks/byproduct/{slug}', [StockController::class, 'getByProduct'])->name('stocks.byproduct');
+        Route::post('stocks/set-default', [StockController::class ,'setDefaultSKU'] )->name('stocks.setDefault');
+        Route::post('stocks/remove-media', [StockController::class ,'removeMedia'] )->name('stocks.remove.media');
 
     });
 });
