@@ -122,8 +122,9 @@
                             select-class="custom-class another-class"
                             igroup-size="lg"
                             placeholder="Select an option of variant..."
-                            ajaxRoute="{{ route('admin.products.variants.byproduct',["slug"=>$product->slug]) }}"
+                            ajaxRoute="{{ route('admin.products.variants.byproduct',['slug'=>$product->slug]) }}"
                             :useAjax="true"
+                            ajaxMethod="GET"
                             :options="[]"
                             :template="['id' => 'id', 'text' => 'name']"
                         />

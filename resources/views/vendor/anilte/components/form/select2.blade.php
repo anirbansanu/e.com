@@ -10,6 +10,7 @@
     'options' => [],
     'selected' => null,
     'useAjax' => false,
+    'ajaxMethod' => "POST",
     'template' => ['id' => 'id', 'text' => 'text'] // Adding template as prop
 ])
 
@@ -41,7 +42,7 @@
                     theme: 'bootstrap4',
                     ajax: {
                         url: "{{ $ajaxRoute }}",
-                        type: "POST",
+                        type: "{{ $ajaxMethod }}",
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {
