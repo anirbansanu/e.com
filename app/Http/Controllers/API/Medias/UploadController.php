@@ -97,7 +97,7 @@ class UploadController extends Controller
     /**
      * clear cache from Upload table
      */
-    public function clear(UploadRequest $request)
+    public function clear(Request $request)
     {
         $input = $request->all();
 
@@ -108,7 +108,7 @@ class UploadController extends Controller
 
         if ($input['uuid']) {
             $result = $this->uploadService->clear($input['uuid']);
-            return $this->response(200, __('lang.deleted_successfully', ['operator' => __('lang.media')]), $result, []);
+            return $this->response(200, __('File deleted successfully', ['operator' => __('lang.media')]), $result, []);
         }
         return $this->response(400,  __('lang.error').__('lang.will').__('lang.in').__('lang.delete') , [], []);
 

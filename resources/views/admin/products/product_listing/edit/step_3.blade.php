@@ -175,7 +175,16 @@
                         />
                     </div>
                     <div class="col-12">
-                        <x-anilte::medias.dropzone id="createDropzone" url="{{ route('medias.create') }}" max-files="5" :existing-files="[]" />
+                        {{-- <x-anilte::medias.dropzone id="createDropzone" url="{{ route('medias.create') }}" max-files="5" :existing-files="[]" /> --}}
+                        <x-anilte.form.dropzone
+                            id="create-dropzone"
+                            url="{{ route('medias.create') }}"
+                            max-files="5"
+                            field="image"
+                            :is-multiple="true"
+                            removeUrl="{{ route('medias.delete') }}"
+                            collection="image"
+                        />
                     </div>
                 </div>
             </x-anilte::modals.ajax-modal>
@@ -486,7 +495,7 @@
     {{-- DropZone  --}}
     {{-- <script src="{{ asset('admin/plugins/dropzone/dropzone.js') }}"></script> --}}
 
-    {{-- Upload Files  --}}
+    {{-- Start Code of Upload Files For Create Form --}}
     {{-- <script>
         var existing = [];
 
@@ -587,7 +596,8 @@
         }
         // DropzoneJS Demo Code End
     </script> --}}
-    {{-- Edit Upload Files  --}}
+    {{-- End Code of Upload Files For Create Form --}}
+    {{-- Start Code of Upload Files For Edit Form --}}
      {{-- <script>
         var edit_existing = [];
 
@@ -704,4 +714,5 @@
         }
         // DropzoneJS Demo Code End
     </script> --}}
+    {{-- End Code of Upload Files For Edit Form --}}
 @endpush
