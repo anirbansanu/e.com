@@ -96,6 +96,8 @@ Route::group(['middleware' => ['auth', 'role:admin', 'check.route.permissions'],
         Route::apiResource('variants', ProductVariantController::class);
         Route::get('variants/byproduct/{slug}', [ProductVariantController::class, 'getByProductSlug'])->name('variants.byproduct');
 
+        Route::get('variants/byproduct/byrequest/{slug}', [ProductVariantController::class, 'getByRequest'])->name('variants.byproduct.byrequest');
+
         Route::apiResource('stocks', StockController::class)->except('index');
 
         Route::get('stocks/byproduct/{slug}', [StockController::class, 'getByProduct'])->name('stocks.byproduct');

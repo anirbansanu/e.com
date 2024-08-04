@@ -52,6 +52,11 @@
     </div>
 @stop
 
+@section('adminlte_modals')
+    @stack('modals')
+    @yield('modals')
+@endsection
+
 @section('adminlte_js')
     @stack('js')
     @yield('js')

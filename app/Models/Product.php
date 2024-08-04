@@ -130,14 +130,14 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class, 'added_by');
     }
 
-    public function productToVariations()
+    public function productVariants()
     {
         return $this->hasMany(ProductVariant::class);
     }
 
-    public function groupByVariation()
+    public function groupByVariants()
     {
-        return $this->productToVariations->groupBy('variation.name');
+        return $this->productVariants->groupBy('attribute_name');
     }
 
     public function stocks()
@@ -152,7 +152,7 @@ class Product extends Model implements HasMedia
 
     public function getHasVariationsAttribute()
     {
-        return $this->productToVariations()->exists();
+        return $this->productVariants()->exists();
     }
 
     public function getHasStocksAttribute()

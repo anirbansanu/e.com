@@ -42,7 +42,7 @@ class ProductController extends Controller
 
 
             $products = Product::with(['brand','category','addedBy'])
-            // with(['productToVariations','defaultStock.productPrice'])
+            // with(['productVariants','defaultStock.productPrice'])
             ->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                     ->orWhere('description', 'like', '%' . $search . '%');
@@ -78,7 +78,7 @@ class ProductController extends Controller
                 case 2:
                     if($request->has("product_id"))
                     {
-                        $product = $this->productService->getById($request->get("product_id"),["productToVariations"]);
+                        $product = $this->productService->getById($request->get("product_id"),["productVariants"]);
 
                         return view('admin.products.product_listing.create.step_2',compact('product','step'));
                     }
@@ -91,7 +91,7 @@ class ProductController extends Controller
                 case 3:
                     if($request->has("product_id"))
                     {
-                        $product = $this->productService->getById($request->get("product_id"),["productToVariations"]);
+                        $product = $this->productService->getById($request->get("product_id"),["productVariants"]);
                         // Check if the product has any variations
 
                         if($product->has_variations)
@@ -209,15 +209,16 @@ class ProductController extends Controller
                     break;
                 case 2:
                     $product = $this->productService->getBySlug($id,[]);
-                    // $product = $this->productService->getBySlug($id,["productToVariations"]);
+                    // $product = $this->productService->getBySlug($id,["productVariants"]);
                     return view('admin.products.product_listing.edit.step_2',compact('product','step'));
                     break;
                 case 3:
-                    $product = $this->productService->getBySlug($id,["productToVariations"]);
+                    $product = $this->productService->getBySlug($id,["productVariants"]);
                     // Check if the product has any variations
 
                     if($product->has_variations)
                     {
+                        // return $product->productVariants->groupBy('attribute_name');
                         return view('admin.products.product_listing.edit.step_3',compact('product','step'));
                     }
                     else
@@ -317,7 +318,7 @@ class ProductController extends Controller
             // Update or create product variations
 
             if (isset($request->variantions['variation_id']) && count($request->variantions['variation_id']) > 0) {
-                $product->productToVariations()->delete();
+                $product->productVariants()->delete();
                 foreach ($request->variantions['variation_id'] as $index => $variant) {
 
 

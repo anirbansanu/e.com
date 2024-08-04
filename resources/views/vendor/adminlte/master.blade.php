@@ -18,7 +18,7 @@
         @yield('title', config('adminlte.title', 'AdminLTE 3'))
         @yield('title_postfix', config('adminlte.title_postfix', ''))
     </title>
-    
+
     {{-- Custom stylesheets (pre AdminLTE) --}}
     @yield('adminlte_css_pre')
 
@@ -102,6 +102,9 @@
             <livewire:scripts />
         @endif
     @endif
+
+    {{-- Custom modals --}}
+    @yield('adminlte_modals')
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')

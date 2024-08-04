@@ -10,6 +10,7 @@
     'options' => [],
     'selected' => null,
     'useAjax' => false,
+    'ajaxMethod' => "POST",
     'template' => ['id' => 'id', 'text' => 'text'] // Adding template as prop
 ])
 
@@ -21,6 +22,7 @@
 
         <select id="{{ $id }}" name="{{ $name }}" class="form-control select2 {{ $selectClass }}">
             @unless($useAjax)
+                <option></option>
                 @foreach($options as $option)
                     <option value="{{ $option[$template['id']] }}" {{ (old($name, $selected ?? "") == $option[$template['id']]) ? 'selected' : '' }}>
                         {{ $option[$template['text']] ?? ""}}
@@ -41,7 +43,7 @@
                     theme: 'bootstrap4',
                     ajax: {
                         url: "{{ $ajaxRoute }}",
-                        type: "POST",
+                        type: "{{ $ajaxMethod }}",
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {
