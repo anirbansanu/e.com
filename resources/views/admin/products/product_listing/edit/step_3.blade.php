@@ -204,160 +204,86 @@
             </div>
         </div>
     </x-anilte::modals.ajax-modal>
-    <div class="modal fade" id="product-stock-update-modal">
-        <form class="modal-dialog modal-xl" id="product-stock-update-form"
-            data-update-action="{{ route('admin.products.stocks.store') }}" data-update-method="post">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><strong>Edit Stock</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="product_id" id="update-product-id" value="{{ $product->id }}"
+    
+    <x-anilte::modals.ajax-modal id="productStockUpdateModal" size="modal-xl" form-id="productStockUpdateModalForm" method="put" action="{{ route('admin.products.stocks.update') }}" title="Edit Stock" button-id="update-submitBtn">
+        <input type="hidden" name="product_id" id="update-product-id" value="{{ $product->id }}"
                         data-product-name="{{ $product->name }}" />
-                    <div class="row">
-                        @php
-                            $groupByVariants = $product->groupByVariants();
-                        @endphp
-                        @forelse ($groupByVariants as $key=>$item)
-                            <div class="col-md-6 col-lg-4">
-                                <div class="form-group">
-                                    <label for="{{ $key }}">{{ $key }}</label>
-                                    <select class="form-control select2-single"
-                                        data-placeholder="{{ 'Select ' . $key }}"
-                                        id="update-combinations-{{ $key }}"
-                                        name="combinations[{{ $key }}]">
-                                        <option value="">{{ 'Select ' . $key }}</option>
-                                        @forelse ($item as $element)
-                                            <option value="{{ $element->id }}"
-                                                data-suggestive-sku="{{ substr($element->variant_name, 0, 1) }}{{ $element->variant_value }}">
-                                                {{ $element->variant_name . ' ' . $element->variant_value . ' ' . $element->unit_name }}
-                                            </option>
-                                        @empty
-                                        @endforelse
+        <div class="row">
+            @php
+                $groupByVariants = $product->groupByVariants();
+            @endphp
+            @forelse ($groupByVariants as $key=>$item)
+                <div class="col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label for="{{ $key }}">{{ $key }}</label>
+                        <select class="form-control select2-single"
+                            data-placeholder="{{ 'Select ' . $key }}"
+                            id="update-combinations-{{ $key }}"
+                            name="combinations[{{ $key }}]">
+                            <option value="">{{ 'Select ' . $key }}</option>
+                            @forelse ($item as $element)
+                                <option value="{{ $element->id }}"
+                                    data-suggestive-sku="{{ substr($element->variant_name, 0, 1) }}{{ $element->variant_value }}">
+                                    {{ $element->variant_name . ' ' . $element->variant_value . ' ' . $element->unit_name }}
+                                </option>
+                            @empty
+                            @endforelse
 
-                                    </select>
-                                    @error('variant_id')
-                                        <span class="error text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                        @empty
-                            No Variants
-                        @endforelse
-                        <div class="col-md-6 col-lg-4">
-                            <div class="mb-3 position-relative">
-                                <label class="form-label" for="sku">
-                                    SKU
-                                </label>
-                                <input class="form-control" type="text" name="sku" id="update-sku"
-                                    placeholder="Enter sku">
-                            </div>
-
-                            <label class="form-check">
-                                <input type="checkbox" name="auto_generate_sku" class="form-check-input ">
-                                <span class="form-check-label">
-                                    Auto generate SKU?
-                                </span>
-                            </label>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="form-group">
-                                <label for="price">Price</label>
-                                <input type="text" class="form-control" name="price" id="update-price"
-                                    placeholder="Enter price">
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="form-group">
-                                <label for="quantity">Quantity</label>
-                                <input type="text" class="form-control" name="quantity" id="update-quantity"
-                                    placeholder="Enter quantity">
-                            </div>
-                        </div>
+                        </select>
+                        @error('variant_id')
+                            <span class="error text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
-                    <div class="card-body">
-                        <div id="edit-actions" class="row">
-                            <div class="col-lg-6">
-                                <div class="btn-group w-100">
-                                    <span class="btn btn-sm btn-success col edit-fileinput-button dz-clickable">
-                                        <i class="fas fa-plus"></i>
-                                        <span>Add</span>
-                                    </span>
-                                    <span class="btn btn-sm btn-primary col start">
-                                        <i class="fas fa-upload"></i>
-                                        <span>Upload</span>
-                                    </span>
-                                    <span class="btn btn-sm btn-warning col cancel">
-                                        <i class="fas fa-times-circle"></i>
-                                        <span>Cancel</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="fileupload-process w-100">
-                                    <div id="edit-total-progress" class="progress progress-striped active"
-                                        role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                                        aria-valuenow="0">
-                                        <div class="progress-bar progress-bar-success" style="width:0%;"
-                                            data-dz-uploadprogress=""></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table table-striped files" id="edit-previews">
-                            <div id="edit-template" class="row mt-2" data-field="image">
-                                <div class="col-auto">
-                                    <span class="preview"><img src="data:," alt data-dz-thumbnail /></span>
-                                </div>
-                                <div class="col d-flex align-items-center">
-                                    <p class="mb-0">
-                                        <span class="lead" data-dz-name></span>
-                                        (<span data-dz-size></span>)
-                                    </p>
-                                    <strong class="error text-danger" data-dz-errormessage></strong>
-                                </div>
-                                <div class="col-4 d-flex align-items-center">
-                                    <div class="progress progress-striped active w-100" role="progressbar"
-                                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                        <div class="progress-bar progress-bar-success" style="width:0%;"
-                                            data-dz-uploadprogress></div>
-                                    </div>
-                                </div>
-                                <div class="col-auto d-flex align-items-center">
-                                    <div class="btn-group">
-                                        <a class="btn btn-primary start">
-                                            <i class="fas fa-upload"></i>
-                                            <span></span>
-                                        </a>
-                                        <a data-dz-remove class="btn btn-warning cancel">
-                                            <i class="fas fa-times-circle"></i>
-                                            <span></span>
-                                        </a>
-                                        <a data-dz-remove class="btn btn-danger delete">
-                                            <i class="fas fa-trash"></i>
-                                            <span></span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="update-submitBtn">Update</button>
+            @empty
+                No Variants
+            @endforelse
+            <div class="col-md-6 col-lg-4">
+                <div class="mb-3 position-relative">
+                    <label class="form-label" for="sku">
+                        SKU
+                    </label>
+                    <input class="form-control" type="text" name="sku" id="update-sku"
+                        placeholder="Enter sku">
+                </div>
+
+                <label class="form-check">
+                    <input type="checkbox" name="auto_generate_sku" class="form-check-input ">
+                    <span class="form-check-label">
+                        Auto generate SKU?
+                    </span>
+                </label>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="text" class="form-control" name="price" id="update-price"
+                        placeholder="Enter price">
                 </div>
             </div>
-        </form>
-    </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="text" class="form-control" name="quantity" id="update-quantity"
+                        placeholder="Enter quantity">
+                </div>
+            </div>
+            <div class="col-12">
+                <x-anilte.form.dropzone
+                    id="edit-dropzone"
+                    url="{{ route('medias.create') }}"
+                    max-files="5"
+                    field="image"
+                    :is-multiple="true"
+                    removeUrl="{{ route('medias.delete') }}"
+                    collection="image"
+                    :existing="[]"
+                />
+            </div>
+        </div>
+
+    </x-anilte::modals.ajax-modal>
 @endpush
 @push('js')
-    
+
 @endpush
