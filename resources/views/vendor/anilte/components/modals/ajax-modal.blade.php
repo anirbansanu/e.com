@@ -1,6 +1,6 @@
 <!-- resources/views/vendor/anilte/components/modals/ajax-modal.blade.php -->
-<div class="modal" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true">
-    <form class="modal-dialog {{ $size ?? 'modal-lg' }}" id="{{ $formId }}" data-method="{{ $method }}" data-action="{{ $action }}">
+<div class="modal px-sm-2" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true">
+    <form class="modal-dialog {{ $size ?? 'modal-xl' }}" id="{{ $formId }}" data-method="{{ $method }}" data-action="{{ $action }}">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="{{ $id }}Label">{{ $title }}</h4>
