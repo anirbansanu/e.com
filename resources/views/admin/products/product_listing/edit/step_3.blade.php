@@ -359,30 +359,5 @@
     </div>
 @endpush
 @push('js')
-    <script>
-        $(document).ready(function(){
-            $.ajax({
-                url: "{{route('admin.products.variants.byproduct.byrequest',$product->slug)}}",
-                method: 'GET',
-                data: {
-                    with: ['product'],
-                    // 'where[attribute_name]': 'Power',
-                    // 'where[unit_name]': 'value2',
-                    // 'where[product.anme]': 'value3',
-                    group_by: ['attribute_name'],
-                    // having_clause: 'SUM(column4) > 100',
-                    search: '',
-                    sort_by: 'attribute_name',
-                    sort_order: 'desc',
-                    entries: 10
-                },
-                success: function(response) {
-                    console.log('variants API response:', response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('variants API request failed:', xhr, status, error);
-                }
-            });
-        });
-    </script>
+    
 @endpush
