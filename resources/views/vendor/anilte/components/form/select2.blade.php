@@ -22,6 +22,7 @@
 
         <select id="{{ $id }}" name="{{ $name }}" class="form-control select2 {{ $selectClass }}">
             @unless($useAjax)
+                <option></option>
                 @foreach($options as $option)
                     <option value="{{ $option[$template['id']] }}" {{ (old($name, $selected ?? "") == $option[$template['id']]) ? 'selected' : '' }}>
                         {{ $option[$template['text']] ?? ""}}

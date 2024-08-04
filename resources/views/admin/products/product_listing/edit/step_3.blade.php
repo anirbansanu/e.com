@@ -17,17 +17,14 @@
             <x-anilte::tab-nav-item route="admin.products.listing.create" icon="fas fa-plus-square">
                 Create Product
             </x-anilte::tab-nav-item>
-            <x-anilte::tab-nav-item route="admin.products.listing.edit" routeParams="{{ $product->id }}"
-                icon="fas fa-plus-square">
+            <x-anilte::tab-nav-item route="admin.products.listing.edit" routeParams="{{ $product->id }}" icon="fas fa-plus-square">
                 Edit Product
             </x-anilte::tab-nav-item>
         </x-slot>
         <x-slot name="body">
             <div class="row">
                 <div class="col-md-12">
-                    <form action="{{ route('admin.products.listing.create') }}" method="post">
-                        @csrf
-                        @method('post')
+
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                         <ul class="nav nav-tabs" id="tablist" role="tablist">
@@ -54,81 +51,94 @@
 
                         </ul>
                         <div class="tab-content p-sm-2 p-lg-3 border-right border-left border-bottom" id="tabListContent">
-                            <div class="tab-pane fade active show" id="stock-tab-block" role="tabpanel"
-                                aria-labelledby="custom-content-below-profile-tab">
-                                <div class="card border-0 shadow-none">
-                                    <div class="card-header">
-                                        <div class="d-flex justify-content-between">
-                                            <span class="card-title">
-                                                <span class="w-100 h5">Product Stock</span>
-                                                <br />
-                                                <span class="w-100 "><small>Add combinations of variations with
-                                                        stock</small></span>
-                                            </span>
-                                            <div class="card-tools m-0">
-                                                <button type="button" class="btn btn-sm btn-primary " data-toggle="modal"
-                                                    data-target="#productStockModal" title="Add Variation">
-                                                    <i class="fas fa-plus"></i>
-                                                    ADD
-                                                </button>
+                            <form action="{{ route('admin.products.listing.create') }}" method="post">
+                                @csrf
+                                @method('post')
+                                <div class="tab-pane fade active show" id="stock-tab-block" role="tabpanel"
+                                    aria-labelledby="custom-content-below-profile-tab">
+                                    <div class="card border-0 shadow-none">
+                                        <div class="card-header">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="card-title">
+                                                    <span class="w-100 h5">Product Stock</span>
+                                                    <br />
+                                                    <span class="w-100 "><small>Add combinations of variations with
+                                                            stock</small></span>
+                                                </span>
+                                                <div class="card-tools m-0">
+                                                    <button type="button" class="btn btn-sm btn-primary " data-toggle="modal"
+                                                        data-target="#productStockModal" title="Add Variation">
+                                                        <i class="fas fa-plus"></i>
+                                                        ADD
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body" data-hx="init" data-hx-method="post"
-                                        data-hx-target="#stock_table" data-hx-route="">
-                                        <table class="table table-hover text-nowrap border" id="stock_table">
-                                            <thead class="border-top">
+                                        <div class="card-body" data-hx="init" data-hx-method="post"
+                                            data-hx-target="#stock_table" data-hx-route="">
+                                            <table class="table table-hover text-nowrap border" id="stock_table">
+                                                <thead class="border-top">
 
-                                            </thead>
-                                            <tbody id="stock-table-body"
-                                                data-route="{{ route('admin.products.stocks.byproduct',['slug'=>$product->slug]) }}">
+                                                </thead>
+                                                <tbody id="stock-table-body"
+                                                    data-route="{{ route('admin.products.stocks.byproduct',['slug'=>$product->slug]) }}">
 
-                                            </tbody>
-                                        </table>
-                                        <div class="d-flex justify-content-end mt-4">
-                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-end mt-4">
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                </div> <!-- /add Product Variantions card -->
+                                    </div> <!-- /add Product Variantions card -->
 
 
-                            </div>
-
+                                </div>
+                            </form>
                         </div>
 
                 </div>
 
             </div>
-            </form>
-            </div>
-
-            </div>
-            </div>
-            </section>
-            </div>
-
 
             <x-anilte::modals.ajax-modal id="productStockModal" form-id="add_variant" method="post" action="{{ route('admin.products.stocks.store') }}" title="Add Stock" button-id="submitBtn">
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <div class="row">
 
-                    <div class="col-md-6 col-lg-4">
-                        <x-anilte::select2
-                            name="variant"
-                            id="variant"
-                            label="Variant"
-                            label-class="text"
-                            select-class="custom-class another-class"
-                            igroup-size="lg"
-                            placeholder="Select an option of variant..."
-                            ajaxRoute="{{ route('admin.products.variants.byproduct',['slug'=>$product->slug]) }}"
-                            :useAjax="true"
-                            ajaxMethod="GET"
-                            :options="[]"
-                            :template="['id' => 'id', 'text' => 'name']"
-                        />
-                    </div>
+
+                        @php
+                            $groupByVariants = $product->groupByVariants();
+                        @endphp
+                        @forelse ($groupByVariants as $key=>$variants)
+
+                            @php
+                                $variantsdata = json_decode($variants, true);
+                                $select2_options = array_map(function($item) {
+                                    return [
+                                        'id' => $item['id'],
+                                        'text' => $item['attribute_value'] . ' ' . $item['unit_name']
+                                    ];
+                                }, $variantsdata);
+
+                            @endphp
+                            <div class="col-md-4 col-lg-3">
+                                <x-anilte::select2
+                                    name="variant"
+                                    id="{{$key}}"
+                                    label="{{ $key }}"
+                                    label-class="text"
+                                    select-class="custom-class another-class"
+                                    igroup-size="lg"
+                                    placeholder="Select {{ $key }}..."
+                                    :options="$select2_options"
+                                    :template="['id' => 'id', 'text' => 'text']"
+                                />
+                            </div>
+                        @empty
+                            No Variants
+                        @endforelse
+
+
                     <div class="col-md-6 col-lg-4">
                         <x-anilte::input-group
                             id="auto_generate_sku"
@@ -184,6 +194,7 @@
                             :is-multiple="true"
                             removeUrl="{{ route('medias.delete') }}"
                             collection="image"
+                            :existing="[]"
                         />
                     </div>
                 </div>
@@ -203,9 +214,9 @@
                                 data-product-name="{{ $product->name }}" />
                             <div class="row">
                                 @php
-                                    $groupByVariations = $product->groupByVariation();
+                                    $groupByVariants = $product->groupByVariants();
                                 @endphp
-                                @forelse ($groupByVariations as $key=>$item)
+                                @forelse ($groupByVariants as $key=>$item)
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="{{ $key }}">{{ $key }}</label>
@@ -345,374 +356,30 @@
     </x-anilte::card>
 @endsection
 @push('js')
-    {{-- <script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
-
-    <script src="{{ asset('admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
-
-    <script src="{{ asset('admin/plugins/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
-
-    @include('admin.products.product_listing.create.step_3_js') --}}
-    {{-- <script>
-        //Stock generater start
-
-        var varitions = {!! count($product->productToVariations) > 0 ? json_encode($product->groupByVariation()) : [] !!};
-        console.log(varitions);
-        // Extract variant_name and id from the data
-        const variantData = {};
-
-        for (const item in varitions) {
-            console.log("item : ", item);
-            if (varitions.hasOwnProperty(item)) {
-                let temp = [];
-                varitions[item].forEach(element => {
-                    temp.push({
-                        "text": element.variant_name,
-                        "id": element.id
-                    });
-                });
-                variantData[item] = temp;
-            }
-        }
-
-        console.log("variantData", variantData);
-        let variationkeys = Object.keys(varitions);
-        updateheader();
-        var templateData = {};
-
-        function updateheader() {
-            $('#stock_table tbody').html();
-            let variationkeys = Object.keys(varitions);
-            let newRow = $("<tr>");
-            newRow.append($("<th>").text("#"));
-            newRow.append($("<th>").text("SKU"));
-            for (let i = 0; i < variationkeys.length; i++)
-                newRow.append($("<th>").text(variationkeys[i]));
-            newRow.append($("<th>").text("Price"));
-            newRow.append($("<th>").text("Quantity"));
-            newRow.append($("<th>").text("Is Default"));
-            newRow.append($("<th>").text("Action"));
-            $('#stock_table thead').append(newRow);
-        }
-
-
-        //Stock generater end
-    </script> --}}
-
-
-    {{-- Select 2 , And Update Variants --}}
-    {{-- <script>
-        $(document).ready(function() {
-
-            $('.variant').select2({
-                width: '100%',
-                theme: 'bootstrap4',
-                ajax: {
-                    url: "{{ route('admin.products.stocks.byproduct',[$product->slug]) }}",
-                    type: "POST",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        console.log(params);
-                        return {
-                            q: params.term,
-                            page: params.page || 1
-                        };
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.data.map(function(item) {
-                                return {
-                                    id: item.id,
-                                    text: item.name,
-                                    customData: item.has_unit
-                                };
-                            }),
-                            pagination: {
-                                more: data.current_page < data.last_page
-                            }
-                        };
-                    },
-
-                    cache: true
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "{{route('admin.products.variants.byproduct.byrequest',$product->slug)}}",
+                method: 'GET',
+                data: {
+                    with: ['product'],
+                    // 'where[attribute_name]': 'Power',
+                    // 'where[unit_name]': 'value2',
+                    // 'where[product.anme]': 'value3',
+                    group_by: ['attribute_name'],
+                    // having_clause: 'SUM(column4) > 100',
+                    search: '',
+                    sort_by: 'attribute_name',
+                    sort_order: 'desc',
+                    entries: 10
                 },
-
-                placeholder: 'Select a variant',
-                templateSelection: function(data, container) {
-                    // Add custom attributes to the <option> tag for the selected option
-                    $(data.element).attr('data-has-unit', data.customData ? true : false);
-                    return data.text;
+                success: function(response) {
+                    console.log('variants API response:', response);
                 },
-
-            });
-
-            $('.select2-single').select2({
-                width: '100%',
-                theme: 'bootstrap4',
-
-                placeholder: $(this).data('placeholder'),
-
-
-            });
-            $('[name="auto_generate_sku"]').on('change', function(ev) {
-                console.log("auto_generate_sku");
-                var suggestiveSku = "";
-                console.log($(this).is(':checked'));
-                $('[name="sku"]').val('');
-                if ($(this).is(':checked')) {
-                    $('.select2-single').each(function(index) {
-                        if ($(this).val() !== '') {
-                            // Get the selected option's data-suggestive-sku attribute
-                            suggestiveSku += "-" + $(this).find('option:selected').data(
-                                'suggestive-sku');
-                        }
-
-                    });
-                    let productName = $('#product-id').data('product-name');
-                    console.log(productName);
-                    productName = productName.substring(0, 3);
-                    productName = productName.replace(/\s/g, '');
-                    productName = productName.toUpperCase();
-
-                    // productName attached to suggestiveSku
-                    suggestiveSku = productName + suggestiveSku;
-
-                    // Log  with the suggestiveSku value
-                    console.log(suggestiveSku);
-                    $('[name="sku"]').val(suggestiveSku);
-
-                } else {
-                    $('[name="sku"]').val('');
+                error: function(xhr, status, error) {
+                    console.error('variants API request failed:', xhr, status, error);
                 }
             });
-
         });
-    </script> --}}
-
-    {{-- DropZone  --}}
-    {{-- <script src="{{ asset('admin/plugins/dropzone/dropzone.js') }}"></script> --}}
-
-    {{-- Start Code of Upload Files For Create Form --}}
-    {{-- <script>
-        var existing = [];
-
-        // DropzoneJS Demo Code Start
-        Dropzone.autoDiscover = false
-
-        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
-        var previewNode = document.querySelector("#template")
-        previewNode.id = ""
-        var previewTemplate = previewNode.parentNode.innerHTML
-        previewNode.parentNode.removeChild(previewNode)
-
-        var myDropzone = new Dropzone('div#product-stock-modal', { // Make the whole body a dropzone
-            url: "{{ route('medias.create') }}", // Set the url
-            headers: {
-                'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content
-            },
-            // Include additional parameters
-            params: {
-                field: 'image'
-            },
-            thumbnailWidth: 80,
-            thumbnailHeight: 80,
-            parallelUploads: 20,
-            previewTemplate: previewTemplate,
-            autoQueue: false, // Make sure the files aren't queued until manually added
-            previewsContainer: "#previews", // Define the container to display the previews
-            clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-            maxFiles: 5 - existing.length,
-            init: function() {
-                if (existing.length > 0)
-                    existing.forEach(media => {
-                        dzInit(this, media, media.thumb);
-                    });
-            },
-            accept: function(file, done) {
-                dzAccept(file, done, this.element, "{!! config('medialibrary.icons_folder') !!}");
-            },
-            sending: function(file, xhr, formData) {
-                dzSendingMultiple(file.previewElement, file, formData, '{!! csrf_token() !!}');
-                console.log("sending");
-                console.log(formData);
-                // Show the total progress bar when upload starts
-                document.querySelector("#total-progress").style.opacity = "1"
-                // And disable the start button
-                file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
-            },
-            maxfilesexceeded: function(file) {
-                console.log("maxfilesexceeded");
-                console.log(file);
-                existing[0].mockFile = '';
-                dzMaxfile(file.previewElement, file);
-            },
-            complete: function(file) {
-                console.log("complete");
-                console.log(file);
-
-                dzCompleteMultiple(file.previewElement, file);
-                existing[0] ? (existing[0].mockFile = file) : "";
-
-            },
-            removedfile: function(file) {
-                console.log("removedfile");
-                console.log(file);
-                dzRemoveFileMultiple(
-                    file, existing, '{!! route('admin.products.stocks.remove.media') !!}',
-                    'image', '{!! isset($product) ? $product->id : 0 !!}', '{!! url('uploads/clear') !!}', '{!! csrf_token() !!}'
-                );
-            }
-        });
-
-        myDropzone.on("addedfile", function(file) {
-            // Hookup the start button
-            console.log("addedfile", file);
-            file.previewElement.querySelector(".start").onclick = function() {
-                myDropzone.enqueueFile(file)
-            }
-        });
-
-        // Update the total progress bar
-        myDropzone.on("totaluploadprogress", function(progress) {
-            document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
-        });
-
-        // Hide the total progress bar when nothing's uploading anymore
-        myDropzone.on("queuecomplete", function(progress) {
-            document.querySelector("#total-progress").style.opacity = "0"
-        });
-
-        // Setup the buttons for all transfers
-        // The "add files" button doesn't need to be setup because the config
-        // `clickable` has already been specified.
-        document.querySelector("#actions .start").onclick = function() {
-            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
-        }
-        document.querySelector("#actions .cancel").onclick = function() {
-            myDropzone.removeAllFiles(true)
-        }
-        // DropzoneJS Demo Code End
-    </script> --}}
-    {{-- End Code of Upload Files For Create Form --}}
-    {{-- Start Code of Upload Files For Edit Form --}}
-     {{-- <script>
-        var edit_existing = [];
-
-        // DropzoneJS Demo Code Start
-        Dropzone.autoDiscover = false
-
-        // Get the edit-template HTML and remove it from the doumenthe edit-template HTML and remove it from the doument
-        var edit_previewNode = document.querySelector("#edit-template")
-        edit_previewNode.id = ""
-        var editPreviewNode = edit_previewNode.parentNode.innerHTML
-        edit_previewNode.parentNode.removeChild(edit_previewNode)
-
-        var editDropzone = new Dropzone('div#product-stock-update-modal', { // Make the whole body a dropzone
-            url: "{{ route('medias.create') }}", // Set the url
-            headers: {
-                'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content
-            },
-            // Include additional parameters
-            params: {
-                field: 'image'
-            },
-            thumbnailWidth: 80,
-            thumbnailHeight: 80,
-            parallelUploads: 20,
-            previewTemplate: editPreviewNode,
-            autoQueue: false, // Make sure the files aren't queued until manually added
-            previewsContainer: "#edit-previews", // Define the container to display the previews
-            clickable: ".edit-fileinput-button", // Define the element that should be used as click trigger to select files.
-            maxFiles: 5 - edit_existing.length,
-            init: function() {
-                if (edit_existing.length > 0) {
-                    edit_existing.forEach(media => {
-                        dzInit(this, media, media.thumb);
-
-                    });
-                }
-            },
-            accept: function(file, done) {
-                dzAccept(file, done, this.element, "{!! config('medialibrary.icons_folder') !!}");
-            },
-            sending: function(file, xhr, formData) {
-                dzSendingMultiple(file.previewElement, file, formData, '{!! csrf_token() !!}');
-                console.log("sending");
-                console.log(formData);
-                // Show the total progress bar when upload starts
-                document.querySelector("#edit-total-progress").style.opacity = "1";
-                // And disable the start button
-                file.previewElement.querySelector(".start").classList.add('disabled');
-            },
-            maxfilesexceeded: function(file) {
-                console.log("maxfilesexceeded");
-                console.log(file);
-                edit_existing[0].mockFile = '';
-                dzMaxfile(file.previewElement, file);
-            },
-            complete: function(file) {
-                console.log("complete");
-                console.log(file);
-
-                dzCompleteMultiple(file.previewElement, file);
-                edit_existing[0] ? (edit_existing[0].mockFile = file) : "";
-
-            },
-            removedfile: function(file) {
-                console.log("removedfile");
-                console.log(file);
-                dzRemoveFileMultiple(
-                    file, edit_existing, '{!! url('product/remove-media') !!}',
-                    'image', '{!! isset($product) ? $product->id : 0 !!}', '{!! url('uploads/clear') !!}',
-                    '{!! csrf_token() !!}'
-                );
-            }
-        });
-
-        editDropzone.on("addedfile", function(file) {
-            // Hookup the start button
-            console.log("addedfile", file);
-            if (file.uuid) {
-                file.previewElement.querySelector(".start").classList.add('disabled');
-                file.previewElement.querySelector(".cancel").classList.add('disabled');
-            }
-            file.previewElement.querySelector(".start").onclick = function() {
-                editDropzone.enqueueFile(file)
-            }
-        });
-
-        // Update the total progress bar
-        editDropzone.on("totaluploadprogress", function(progress) {
-            document.querySelector("#edit-total-progress .progress-bar").style.width = progress + "%"
-        });
-
-        // Hide the total progress bar when nothing's uploading anymore
-        editDropzone.on("queuecomplete", function(progress) {
-            document.querySelector("#edit-total-progress").style.opacity = "0"
-        });
-
-        // Setup the buttons for all transfers
-        // The "add files" button doesn't need to be setup because the config
-        // `clickable` has already been specified.
-        document.querySelector("#edit-actions .start").onclick = function() {
-            editDropzone.enqueueFiles(editDropzone.getFilesWithStatus(Dropzone.ADDED))
-        }
-        document.querySelector("#edit-actions .cancel").onclick = function() {
-            editDropzone.removeAllFiles(true)
-        }
-
-        function clearDropZone(dz) {
-            console.log(dz);
-            dz.removeAllFiles();
-            var previewContainer = document.getElementById("edit-previews");
-            previewContainer.innerHTML = "";
-            var previewContainer = document.getElementById("previews");
-            previewContainer.innerHTML = "";
-        }
-        // DropzoneJS Demo Code End
-    </script> --}}
-    {{-- End Code of Upload Files For Edit Form --}}
+    </script>
 @endpush
