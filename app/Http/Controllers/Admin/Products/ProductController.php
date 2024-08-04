@@ -8,7 +8,7 @@ use App\Helpers\EnumHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Models\ProductToVariation;
+use App\Models\ProductVariant;
 use App\Models\Upload;
 use App\Services\Products\ProductService;
 use App\Services\Medias\UploadService;
@@ -48,7 +48,7 @@ class ProductController extends Controller
                     ->orWhere('description', 'like', '%' . $search . '%');
             })
             ->orderBy($sort_by, $sort_order)
-            ->paginate(config('app.pagination_limit'));
+            ->paginate($entries);
 
             $products->appends(['search' => $search,'entries' => $entries, 'sort_by' => $sort_by, 'sort_order' => $sort_order]);
 
@@ -322,7 +322,7 @@ class ProductController extends Controller
                 foreach ($request->variantions['variation_id'] as $index => $variant) {
 
 
-                    $v = new ProductToVariation;
+                    $v = new ProductVariant;
                     $v->product_id = $product->id;
                     $v->variation_id = $request->variantions['variation_id'][$index];
                     $v->variant_value = $request->variantions['variant_value'][$index];

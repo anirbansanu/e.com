@@ -204,8 +204,8 @@
             </div>
         </div>
     </x-anilte::modals.ajax-modal>
-    
-    <x-anilte::modals.ajax-modal id="productStockUpdateModal" size="modal-xl" form-id="productStockUpdateModalForm" method="put" action="{{ route('admin.products.stocks.update') }}" title="Edit Stock" button-id="update-submitBtn">
+
+    <x-anilte::modals.ajax-modal id="productStockUpdateModal" size="modal-xl" form-id="productStockUpdateModalForm" method="put" action="{{ url('admin/products/stocks/{sku}') }}" title="Edit Stock" button-id="update-submitBtn">
         <input type="hidden" name="product_id" id="update-product-id" value="{{ $product->id }}"
                         data-product-name="{{ $product->name }}" />
         <div class="row">
