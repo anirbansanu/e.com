@@ -2,13 +2,16 @@
 
 <template>
     <div>
-        <router-view></router-view>
+        <router-view />
     </div>
 </template>
 
 <script>
 export default {
     name: 'Root',
+    components:{
+       
+    },
     mounted() {
     console.log('Root component mounted.');
   }
