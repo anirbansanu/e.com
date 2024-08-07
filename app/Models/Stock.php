@@ -6,18 +6,42 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
 class Stock extends Model implements HasMedia
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory,HasSlug,SoftDeletes;
     use InteractsWithMedia {
         getFirstMediaUrl as protected getFirstMediaUrlTrait;
     }
-    protected $fillable = ['product_id', 'product_price_id', 'sku', 'quantity'];
+    protected $fillable = ['product_id', 'price', 'sku', 'quantity'];
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('sku')
+            ->slugsShouldBeNoLongerThan(50)
+            ->usingSeparator('_')
+            ->preventOverwrite();
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'sku';
+    }
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -75,17 +99,16 @@ class Stock extends Model implements HasMedia
 
     public function combinations()
     {
-        return $this->belongsToMany('App\Models\ProductToVariation', 'combinations', 'stock_id', 'product_to_variation_id');
+        return $this->belongsToMany('App\Models\ProductVariant', 'combinations', 'stock_id', 'product_variant_id');
     }
 
     public function scopeWithCombinations($query)
     {
         return $query->join('combinations', 'stocks.id', '=', 'combinations.stock_id')
-                    ->join('product_to_variations', 'combinations.product_to_variation_id', '=', 'product_to_variations.id')
-                    ->join('variations', 'product_to_variations.variation_id', '=', 'variations.id')
+                    ->join('product_variants', 'combinations.product_variant_id', '=', 'product_variants.id')
                     ->select('stocks.*',
-                            \DB::raw('GROUP_CONCAT(variations.name) as variation_names'),
-                            \DB::raw('GROUP_CONCAT(product_to_variations.variant_value) as variant_values')
+                            DB::raw('GROUP_CONCAT(product_variants.attribute_name) as attribute_names'),
+                            DB::raw('GROUP_CONCAT(product_variants.attribute_value) as attribute_values')
                     )
                     ->groupBy('stocks.id');
     }
