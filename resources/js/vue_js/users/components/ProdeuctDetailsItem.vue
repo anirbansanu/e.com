@@ -171,7 +171,7 @@
                                 <div
                                     class="input-group mb-3"
                                     style="width: 170px;border:1px solid #b29a76;  border-radius:5px;"
-                                    
+
                                 >
                                     <button
                                         class="btn btn-white   px-3"
@@ -220,7 +220,7 @@
 <script>
 export default {
     setup() {
-        
+
     },
 }
 </script>
@@ -252,23 +252,22 @@ export default {
 }
 
 .btn.bye-now:hover {
-    transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     border: 2px solid #b29a76;
     color:#b29a76;
 }
 
 .btn-primary:hover {
-      transform: translateY(-3px);
     background-color: #004085;
 }
 
 .btn-light:hover {
-      transform: translateY(-3px);
     background-color: #f8f9fa;
      border: 1px solid #b29a76;
 }
-
+.btn:active{
+    transform: translateY(2px);
+}
 .fa {
     margin-right: 8px;
 }

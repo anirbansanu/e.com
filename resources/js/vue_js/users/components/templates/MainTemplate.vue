@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import NavbarComponent from "../organisms/NavbarComponent.vue";
-import FooterComponent from "../organisms/FooterComponent.vue";
+import NavbarComponent from "@/vue_js/users/components/molecules/NavbarComponent.vue";
+import FooterComponent from "@/vue_js/users/components/organisms/FooterComponent.vue";
 
 export default {
     components: {

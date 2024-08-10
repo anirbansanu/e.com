@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import MainTemplate from "../templates/MainTemplate.vue";
-import CartComponent from "../organisms/CartComponent.vue";
+import MainTemplate from "@/vue_js/users/components/templates/MainTemplate.vue";
+import CartComponent from "@/vue_js/users/components/organisms/CartComponent.vue";
 
 export default {
     components: {
