@@ -19,19 +19,18 @@ class StockResource extends JsonResource
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'product_price_id' => $this->product_price_id,
+            'price' => $this->price,
             'sku' => $this->sku,
             'quantity' => $this->quantity,
             'is_default'=> $this->is_default,
             'has_media' => $this->has_media,
             'media' => MediaResource::collection($this->getMedia('image')),
             'product' => new ProductResource($this->whenLoaded('product')),
-            'product_price' => $this->whenLoaded('productPrice',$this->productPrice->price),
             'variations' => $this->whenLoaded('combinations', function () {
                 return $this->combinations->groupBy('variant_name');
             }),
             'combinations' => $this->whenLoaded('combinations',$this->combinations),
-            'shipping_information' => new ShippingInformationResource($this->whenLoaded('shippingInformation')),
+            // 'shipping_information' => new ShippingInformationResource($this->whenLoaded('shippingInformation')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

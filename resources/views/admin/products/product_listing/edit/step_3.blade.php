@@ -128,7 +128,7 @@
                     @endphp
                     <div class="col-md-4 col-lg-3">
                         <x-anilte::select2
-                            name="variant[{{$key}}]"
+                            name="combinations[{{$key}}]"
                             id="{{$key}}"
                             label="{{ $key }}"
                             label-class="text"
@@ -146,11 +146,11 @@
 
             <div class="col-md-6 col-lg-4">
                 <x-anilte::input-group
-                    id="auto_generate_sku"
-                    name="auto_generate_sku"
-                    label="Auto generate SKU?"
+                    id="sku"
+                    name="sku"
+                    label="SKU"
                     value=""
-                    placeholder="Enter Attribute Value"
+                    placeholder="Enter SKU"
                     :required="true" icon="fas fa-keyboard"
                 />
             </div>
