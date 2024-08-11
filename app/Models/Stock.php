@@ -66,8 +66,7 @@ class Stock extends Model implements HasMedia
         $url = $this->getFirstMediaUrlTrait($collectionName);
         Log::info($url);
         if ($url) {
-            $array = explode(".", $url);
-            $extension = strtolower(end($array));
+            $extension = strtolower(pathinfo($url, PATHINFO_EXTENSION));
             if (in_array($extension, config('media-library.extensions_has_thumb'))) {
                 if($this->media->first()->disk != "s3")
                 {
