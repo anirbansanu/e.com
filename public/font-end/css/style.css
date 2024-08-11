@@ -172,7 +172,7 @@ h2 {
 
 .custom_menu-btn .s-2 {
   -webkit-transition: all 0.1s;
-  transition: all 0.1s;
+  transition: all 0.03s;
 }
 
 .menu_btn-style button span {
@@ -201,8 +201,8 @@ h2 {
   top: 0;
   left: 0;
   overflow-x: hidden;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
+  -webkit-transition: 0.3s;
+  transition: all 0.3s ease;
   z-index: 9;
 }
 

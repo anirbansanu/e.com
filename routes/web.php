@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\Settings\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Medias\UploadController;
 use App\Http\Controllers\HomeController;
-use App\Models\ProductAttribute;
+use App\Http\Controllers\MigrationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +36,9 @@ Route::get('/clear-cache', function() {
     Artisan::call('route:clear');
     return 'Cache cleared!';
 });
+
+Route::get('/run-migration', [MigrationController::class, 'runMigration']);
+
 Route::get('/', function () {
     return view('welcome');
 });

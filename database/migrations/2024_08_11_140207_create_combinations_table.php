@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddHasUnitToProductVariations extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddHasUnitToProductVariations extends Migration
      */
     public function up()
     {
-        Schema::table('product_variations', function (Blueprint $table) {
-            $table->boolean('has_unit')->default(false)->after('value');
+        Schema::create('combinations', function (Blueprint $table) {
+            $table->foreignId('product_variant_id')->constrained('product_variants');
+            $table->foreignId('stock_id')->constrained('stocks')->onDelete('cascade');
         });
     }
 
@@ -25,8 +26,6 @@ class AddHasUnitToProductVariations extends Migration
      */
     public function down()
     {
-        Schema::table('product_variations', function (Blueprint $table) {
-            $table->dropColumn('has_unit');
-        });
+        Schema::dropIfExists('combinations');
     }
-}
+};

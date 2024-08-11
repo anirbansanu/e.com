@@ -7,6 +7,7 @@ use App\Models\Price;
 use App\Models\Product;
 use App\Models\Stock;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class StockService.
@@ -16,116 +17,146 @@ class StockService
     public function store($data)
     {
 
-        // SKU
-        $sku = $data['sku'];
+        // Use DB transaction closure for better readability and error handling
+        return DB::transaction(function () use ($data) {
+            // Create the stock record
+            $stock = Stock::create([
+                'product_id' => $data['product_id'],
+                'sku' => $data['sku'],
+                'quantity' => $data['quantity'],
+                'price' => $data['price'],
+            ]);
 
-        // Create price
-        $price = Price::create([
-            'price' => $data['price'],
-        ]);
-        // Create stock
-        $stock = Stock::create([
-            'product_id' => $data["product_id"],
-            'sku' => $sku,
-            'quantity' => $data['quantity'],
-            'product_price_id' => $price->id
-        ]);
-        $stock->save();
+            // Create the combinations using the belongsToMany relationship
+            $combinations = [];
+            foreach ($data['combinations'] as $combinationId) {
+                $combinations[$combinationId] = []; // You can add any pivot table data here if needed
+            }
 
-        // Create combination
-        foreach ($data['combinations'] as $key => $value) {
+            // Attach combinations to the stock
+            $stock->combinations()->attach($combinations);
 
-            // Create combination
-            $combinationData = [
-                'product_to_variation_id' => $value,
-                'stock_id' => $stock->id,
-            ];
+            return $stock;
+        });
 
-            Combination::create($combinationData);
-        }
 
-        return $stock;
     }
 
-    public function getStocksByProductId($product_id,$relations=[]){
-        return $stock = Stock::with($relations)->where('product_id',$product_id)->get();
+     /**
+     * Get all stocks by product ID.
+     *
+     * @param int $product_id
+     * @param array $relations
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getStocksByProductId(int $product_id, array $relations = [])
+    {
+        return Stock::with($relations)->where('product_id', $product_id)->get();
     }
-    public function getProductById($id,$relations=[]){
-        if(count($relations)>0)
-        $p = Product::with($relations);
-        else
-        $p = new Product;
-        $p = $p->findOrFail($id);
-        return $p;
+
+    /**
+     * Get a product by its ID with optional relations.
+     *
+     * @param int $id
+     * @param array $relations
+     * @return Product
+     */
+    public function getProductById(int $id, array $relations = []): Product
+    {
+        $query = count($relations) > 0 ? Product::with($relations) : new Product;
+        return $query->findOrFail($id);
     }
-    public function setDefaultSKU($sku, $product_id)
+
+    /**
+     * Set a specific SKU as the default for a product.
+     *
+     * @param string $sku
+     * @param int $product_id
+     * @return int
+     */
+    public function setDefaultSKU(string $sku, int $product_id): int
     {
         // Set all stocks for the product to not default
         Stock::where('product_id', $product_id)->update(['is_default' => 0]);
 
         // Set the specified SKU as default
-        $setDefault = Stock::where('sku', $sku)->where('product_id', $product_id)->update(['is_default' => 1]);
-
-        // Return the number of updated records
-        return $setDefault;
+        return Stock::where('sku', $sku)->where('product_id', $product_id)->update(['is_default' => 1]);
     }
-    public function getBySku($sku,$relations=[]){
+
+    /**
+     * Get stock by its SKU with optional relations.
+     *
+     * @param string $sku
+     * @param array $relations
+     * @return Stock
+     * @throws Exception
+     */
+    public function getBySku(string $sku, array $relations = []): Stock
+    {
         $stock = Stock::with($relations)->where('sku', $sku)->first();
+
         if (!$stock) {
             throw new Exception("Stock with SKU $sku not found.");
         }
+
         return $stock;
     }
+
+    /**
+     * Update stock and its combinations by SKU.
+     *
+     * @param array $data
+     * @param string $sku
+     * @return Stock
+     * @throws Exception
+    */
     public function update($data,$sku)
     {
-        // Get the existing stock record
-        $stock = $this->getBySku($sku);
-        if (!$stock) {
-            // If the stock doesn't exist, return null
-            throw new Exception("Stock with SKU $sku not found.");
-        }
-        // Update the price
-        $stock = Stock::with('productPrice')->find($stock->id);
-        $stock->productPrice->update(['price' => $data['price']]);
-
-        // Update the stock
-        $stock->update([
-            'sku' => $data['sku'],
-            'quantity' => $data['quantity'],
-        ]);
-
-        // Update or create combinations
-        $combinationIds = [];
-        foreach ($data['combinations'] as $combination) {
-            $combinationData = [
-                'product_to_variation_id' => $combination,
-                'stock_id' => $stock->id,
-            ];
-
-            // Update or create combination
-            $existingCombination = Combination::where('product_to_variation_id', $combination)
-                                            ->where('stock_id', $stock->id)
-                                            ->first();
-
-            if ($existingCombination) {
-                $existingCombination->update($combinationData);
-                $combinationIds[] = $existingCombination->id;
-            } else {
-                $newCombination = Combination::create($combinationData);
-                $combinationIds[] = $newCombination->id;
+        return DB::transaction(function () use ($data, $sku) {
+            // Get the existing stock record
+            $stock = $this->getBySku($sku);
+            if (!$stock) {
+                throw new Exception("Stock with SKU $sku not found.");
             }
-        }
 
-        return $stock;
+            $stock->update([
+                'sku' => $data['sku'],
+                'price' => $data['price'],
+                'quantity' => $data['quantity'],
+            ]);
+
+            // Prepare combinations for syncing
+            $combinations = [];
+            foreach ($data['combinations'] as $combinationId) {
+                $combinations[$combinationId] = [];
+            }
+
+            // Sync the combinations using the belongsToMany relationship
+            $stock->combinations()->sync($combinations);
+
+            return $stock;
+        });
+
     }
+
+    /**
+     * Get stock by its ID with optional relations.
+     *
+     * @param int $id
+     * @param array $relations
+     * @return Stock
+     */
     public function getStockById($id,$relations=[]){
-        if(count($relations)>0)
-        $p = Stock::with($relations);
-        else
-        $p = new Stock;
-        $p = $p->findOrFail($id);
-        return $p;
+        $query = count($relations) > 0 ? Stock::with($relations) : new Stock;
+        return $query->findOrFail($id);
     }
+
+    /**
+     * Delete stock by its ID.
+     *
+     * @param int $id
+     * @return Stock
+     */
     public function delete($id)
     {
         $stock = Stock::findOrFail($id);
@@ -133,13 +164,21 @@ class StockService
 
         return $stock;
     }
+
+    /**
+     * Delete stock by its SKU.
+     *
+     * @param string $sku
+     * @return void
+     */
     public function deleteBySku($sku)
     {
-        $stock = Stock::where('sku', $sku);
-        if(auth()->user()->hasRole("vendor"))
-        $stock = $stock->where("added_by",auth()->id());
-        $stock->delete();
+        $query = Stock::where('sku', $sku);
+        // Additional condition for vendor role
+        if (auth()->user()->hasRole("vendor")) {
+            $query->where("added_by", auth()->id());
+        }
 
-        return $stock;
+        $query->delete();
     }
 }
