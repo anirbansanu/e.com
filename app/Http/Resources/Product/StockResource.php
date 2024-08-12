@@ -26,13 +26,19 @@ class StockResource extends JsonResource
             'has_media' => $this->has_media,
             'media' => MediaResource::collection($this->getMedia('image')),
             'product' => new ProductResource($this->whenLoaded('product')),
-            'variations' => $this->whenLoaded('combinations', function () {
-                return $this->combinations->groupBy('variant_name');
-            }),
+            // 'variations' => $this->whenLoaded('combinations', function () {
+            //     return $this->combinations->groupBy('variant_name');
+            // }),
             'combinations' => $this->whenLoaded('combinations',$this->combinations),
+            'combosInString' => $this->whenLoaded('combinations', function () {
+                return $this->combinations->map(function ($combination) {
+                    $unit = $combination->unit_name ? " {$combination->unit_name}" : '';
+                    return "{$combination->attribute_name}: {$combination->attribute_value}{$unit}";
+                })->implode(', ');
+            }),
             // 'shipping_information' => new ShippingInformationResource($this->whenLoaded('shippingInformation')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at?->diffForHumans(),
+            'updated_at' => $this->updated_at?->diffForHumans(),
         ];
     }
 }
