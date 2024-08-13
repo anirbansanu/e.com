@@ -1,3 +1,4 @@
+// Start of CustomDataTable for handle Ajax Datatable Blade Component
 class CustomDataTable {
     constructor(elementId, fetchUrl, deleteUrl, columns, actionButtons = null, showEntries = 10) {
         this.elementId = elementId;
@@ -243,4 +244,5 @@ class CustomDataTable {
     }
 }
 
+// End of CustomDataTable for handle Ajax Datatable Blade Component
 

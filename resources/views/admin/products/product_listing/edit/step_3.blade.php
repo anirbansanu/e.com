@@ -75,13 +75,16 @@
                                             </div>
                                         </div>
                                         <div class="card-body" id="stockTableContainer">
+                                            {{-- This is how i call ajax-datatable Component --}}
                                             <x-anilte::ajax-datatable
                                                 id="{{'stockTable'}}"
                                                 :columns="[
                                                     [
                                                         'data' => 'combosInString',
                                                         'title' => 'Combinations',
-                                                        
+                                                        'html' => function($stock_item){
+                                                            return str_replace(', ', '<br>', $stock_item->combosInString);
+                                                        }
                                                     ],
                                                     ['data'=>'price','title'=>'Price'],
                                                     ['data'=>'sku','title'=>'SKU'],
