@@ -37,6 +37,10 @@
 @push('js')
     <script>
         $(document).ready(function() {
+            $('form').on('reset', function() {
+                $('#{{ $id }}').val('').trigger('change'); // Clear the select value
+                console.log("form reset called");
+            });
             @if($useAjax)
                 $('#{{ $id }}').select2({
                     width: '100%',

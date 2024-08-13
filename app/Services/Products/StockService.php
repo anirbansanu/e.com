@@ -49,9 +49,25 @@ class StockService
      * @param array $relations
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function getStocksByProductId(int $product_id, array $relations = [])
+    public function getStocksByProduct($request,$productId, array $relations = [])
     {
-        return Stock::with($relations)->where('product_id', $product_id)->get();
+        $search = $request->input('search');
+        $sort_by = $request->input('sort_by', 'updated_at');
+        $sort_order = $request->input('sort_order', 'desc');
+        $entries = $request->input('entries', config('app.pagination_limit'));
+        if($sort_by == "" )
+        {
+            $sort_by = "updated_at";
+            $sort_order = "desc";
+        }
+        return Stock::with($relations)->where('product_id', $productId)
+        ->where(function ($q) use ($search) {
+            $q->where('price', 'like', '%' . $search . '%')
+                ->orWhere('sku', 'like', '%' . $search . '%')
+                ->orWhere('quantity', 'like', '%' . $search . '%');
+        })
+        ->orderBy($sort_by, $sort_order)
+        ->paginate($entries);
     }
 
     /**

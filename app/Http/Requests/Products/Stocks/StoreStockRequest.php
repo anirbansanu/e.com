@@ -21,7 +21,7 @@ class StoreStockRequest extends FormRequest
         return [
             'product_id' => 'required|exists:products,id',
             'combinations' => 'required|array',
-            'combinations.*' => 'required|exists:product_to_variations,id',
+            'combinations.*' => 'required|exists:product_variants,id',
             'price' => 'required|numeric',
             'quantity' => 'required|integer|min:1',
             'sku' => 'required|string|unique:stocks,sku',

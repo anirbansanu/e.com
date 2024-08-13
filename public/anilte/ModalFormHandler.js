@@ -83,7 +83,6 @@ class ModalFormHandler {
     }
 
     hideModal() {
-        this.resetModal();
         $(`#${this.modal.id}`).modal('hide');
         console.log(`Modal with id: #${this.modal.id} is hidden`);
     }

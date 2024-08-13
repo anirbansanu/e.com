@@ -10,20 +10,24 @@ use App\Http\Resources\Product\StockResource;
 use App\Models\Stock;
 use App\Services\Products\StockService;
 use App\Services\Medias\UploadService;
+use App\Services\Products\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class StockController extends Controller
 {
+    private $productService;
     private $uploadService;
     private $stockService;
+
     /**
      * ProductController constructor.
      * @param UploadService $uploadService
      */
-    public function __construct(StockService $stockService,UploadService $uploadService)
+    public function __construct(ProductService $productService,StockService $stockService,UploadService $uploadService)
     {
+        $this->productService = $productService;
         $this->uploadService = $uploadService;
         $this->stockService = $stockService;
     }
@@ -75,8 +79,19 @@ class StockController extends Controller
     }
     public function getByProduct(Request $request,$slug){
         try {
-            $stocks = $this->stockService->getStocksByProductId($request->product_id,["productPrice","combinations"]);
-            return $this->response(200, 'Stock fetched successfully', StockResource::collection($stocks), null);
+
+            $product = $this->productService->getBySlug($slug);
+            if($product)
+            {
+                $stocks = $this->stockService->getStocksByProduct($request, $product->id,["combinations"]);
+                $current_page = $stocks->currentPage(); // Current page number
+                $last_page = $stocks->lastPage(); // Total number of pages
+                return $this->response(200, 'Stock fetched successfully', StockResource::collection($stocks), [],[],["current_page"=>$current_page,"last_page"=>$last_page,"request"=>$request->all()]);
+            }
+            else
+            {
+                return $this->response(404, 'Product not found', [],'Failed to retrieve product');
+            }
 
         } catch (\Exception $e) {
             // If an error occurs during the storage operation, return an error response

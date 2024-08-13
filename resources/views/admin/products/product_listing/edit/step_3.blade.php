@@ -74,21 +74,31 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-body" data-hx="init" data-hx-method="post"
-                                            data-hx-target="#stock_table" data-hx-route="">
-                                            <table class="table table-hover text-nowrap border" id="stock_table">
-                                                <thead class="border-top">
-
-                                                </thead>
-                                                <tbody id="stock-table-body"
-                                                    data-route="{{ route('admin.products.stocks.byproduct',['slug'=>$product->slug]) }}">
-
-                                                </tbody>
-                                            </table>
-                                            <div class="d-flex justify-content-end mt-4">
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
+                                        <div class="card-body" id="stockTableContainer">
+                                            {{-- This is how i call ajax-datatable Component --}}
+                                            <x-anilte::ajax-datatable
+                                                id="{{'stockTable'}}"
+                                                :columns="[
+                                                    [
+                                                        'data' => 'combosInString',
+                                                        'title' => 'Combinations',
+                                                        'html' => function($stock_item){
+                                                            return str_replace(', ', '<br>', $stock_item->combosInString);
+                                                        }
+                                                    ],
+                                                    ['data'=>'price','title'=>'Price'],
+                                                    ['data'=>'sku','title'=>'SKU'],
+                                                    ['data'=>'quantity','title'=>'Quantity'],
+                                                    ['data'=>'updated_at','title'=>'Updated At']
+                                                ]"
+                                                fetch-url="{{ route('admin.products.stocks.byproduct',['slug'=>$product->slug]) }}"
+                                                delete-url="{{url('admin/products/stocks/{id}')}}"
+                                                :action-buttons="'<button class=\'btn btn-sm edit-ajax btn-primary\' data-toggle=\'modal\' data-target=\'#productsVariantsUpdateModal\' :data>Edit</button>
+                                                    <button class=\'btn btn-sm delete-ajax btn-danger sweet-delete-btn\' :data>Delete</button>'"
+                                                :page-size="10"
+                                            />
                                         </div>
+                                        <x-anilte::loader.round-loader />
 
                                     </div> <!-- /add Product Variantions card -->
 
@@ -128,7 +138,7 @@
                     @endphp
                     <div class="col-md-4 col-lg-3">
                         <x-anilte::select2
-                            name="variant[{{$key}}]"
+                            name="combinations[{{$key}}]"
                             id="{{$key}}"
                             label="{{ $key }}"
                             label-class="text"
@@ -146,11 +156,11 @@
 
             <div class="col-md-6 col-lg-4">
                 <x-anilte::input-group
-                    id="auto_generate_sku"
-                    name="auto_generate_sku"
-                    label="Auto generate SKU?"
+                    id="sku"
+                    name="sku"
+                    label="SKU"
                     value=""
-                    placeholder="Enter Attribute Value"
+                    placeholder="Enter SKU"
                     :required="true" icon="fas fa-keyboard"
                 />
             </div>
