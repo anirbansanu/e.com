@@ -1,0 +1,45 @@
+Sorted Tables:
+permissions
+roles
+users
+brands
+product_categories
+product_units
+product_attributes
+settings
+uploads
+failed_jobs
+migrations
+personal_access_tokens
+media
+password_resets
+model_has_permissions
+model_has_roles
+role_has_permissions
+products
+product_variants
+stocks
+combinations
+
+Dependencies:
+product_variants -> ['combinations']
+stocks -> ['combinations']
+permissions -> ['model_has_permissions', 'role_has_permissions']
+roles -> ['model_has_roles', 'role_has_permissions']
+products -> ['product_variants', 'stocks']
+users -> ['products']
+brands -> ['products']
+product_categories -> ['products']
+product_units -> []
+model_has_roles -> []
+product_attributes -> []
+settings -> []
+combinations -> []
+uploads -> []
+role_has_permissions -> []
+failed_jobs -> []
+migrations -> []
+personal_access_tokens -> []
+model_has_permissions -> []
+media -> []
+password_resets -> []
